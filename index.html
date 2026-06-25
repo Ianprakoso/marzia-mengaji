@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marzia Mengaji</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Amiri&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --c1:#FF3D00;--c2:#FF006E;--c3:#8338EC;--c4:#3A86FF;
+  --c5:#06D6A0;--c6:#FFB700;--c7:#FB5607;--c8:#00B4D8;
+  --bg:#F0F4FF;--white:#FFFFFF;--dark:#1A1A2E;
+  --font:'Nunito',sans-serif;--arabic:'Amiri',serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:100vh;}
+.hidden{display:none!important;}
+
+/* ===== AUTH ===== */
+.auth-wrap{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#FF006E 0%,#8338EC 50%,#3A86FF 100%);
+  padding:24px;
+}
+.auth-box{
+  background:#fff;border-radius:28px;padding:36px 32px;
+  width:100%;max-width:400px;
+  box-shadow:0 24px 64px rgba(131,56,236,0.35);
+}
+.auth-logo{text-align:center;margin-bottom:28px;}
+.auth-icon{font-size:56px;display:block;margin-bottom:8px;}
+.auth-title{font-size:26px;font-weight:900;background:linear-gradient(135deg,#FF006E,#8338EC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.auth-sub{font-size:13px;color:#888;margin-top:4px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;font-weight:900;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.field input{
+  width:100%;padding:14px 16px;
+  border:2.5px solid #E8E8F0;border-radius:14px;
+  font-size:15px;font-family:var(--font);outline:none;
+  transition:border-color 0.2s;background:#FAFAFF;
+}
+.field input:focus{border-color:#8338EC;}
+.btn-auth{
+  width:100%;padding:15px;border:none;border-radius:14px;
+  font-size:16px;font-weight:900;font-family:var(--font);cursor:pointer;
+  background:linear-gradient(135deg,#FF006E,#8338EC);color:#fff;
+  box-shadow:0 8px 24px rgba(131,56,236,0.4);
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.btn-auth:active{transform:scale(0.97);}
+.auth-link{text-align:center;font-size:13px;color:#888;margin-top:18px;}
+.auth-link a{color:#8338EC;font-weight:900;cursor:pointer;}
+.msg{padding:12px 16px;border-radius:12px;font-size:13px;font-weight:700;margin-bottom:14px;}
+.msg-err{background:#FFE0E8;color:#CC0055;}
+.msg-ok{background:#D0FFF0;color:#007A50;}
+.msg-info{background:#E0EEFF;color:#0055CC;}
+
+/* ===== APP LAYOUT ===== */
+.app-wrap{display:flex;flex-direction:column;min-height:100vh;}
+
+/* ===== HEADER ===== */
+.app-header{flex-shrink:0;position:sticky;top:0;z-index:200;}
+.header-hero{padding:16px 20px 0;color:#fff;}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.header-greeting{font-size:12px;font-weight:800;opacity:0.9;}
+.header-name{font-size:22px;font-weight:900;line-height:1.1;}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.streak-badge{
+  background:rgba(255,255,255,0.25);border-radius:12px;
+  padding:6px 12px;display:flex;align-items:center;gap:6px;
+}
+.streak-num{font-size:14px;font-weight:900;color:#fff;}
+.streak-lbl{font-size:9px;color:rgba(255,255,255,0.85);font-weight:800;}
+.btn-keluar{
+  background:rgba(255,255,255,0.2);border:none;color:#fff;
+  padding:5px 12px;border-radius:8px;font-size:11px;
+  font-weight:800;cursor:pointer;font-family:var(--font);
+}
+.prog-wrap{
+  background:rgba(255,255,255,0.2);border-radius:14px;
+  padding:10px 14px;margin-bottom:12px;
+}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.prog-lbl{font-size:10px;font-weight:900;color:rgba(255,255,255,0.9);}
+.prog-val{font-size:12px;font-weight:900;color:#fff;}
+.pbar{height:8px;background:rgba(255,255,255,0.25);border-radius:99px;overflow:hidden;}
+.pbar-fill{height:100%;border-radius:99px;background:#FFB700;transition:width 0.5s;}
+
+/* ===== TABS ===== */
+.tabs{display:flex;gap:3px;padding:0 6px;}
+.tab{
+  flex:1;padding:9px 4px;text-align:center;
+  font-size:9px;font-weight:900;
+  border-radius:12px 12px 0 0;cursor:pointer;
+  border:none;font-family:var(--font);
+  transition:all 0.15s;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.tab.on{background:#fff;color:inherit;}
+.tab.off{background:rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);}
+
+/* ===== CONTENT ===== */
+.app-content{flex:1;padding:16px;overflow-y:auto;}
+
+/* Responsive */
+@media(min-width:768px){
+  .app-content{max-width:860px;margin:0 auto;padding:24px 32px;}
+  .header-hero{max-width:860px;margin:0 auto;}
+  .tabs{max-width:860px;margin:0 auto;padding:0;}
+  .tab{font-size:11px;padding:10px 8px;}
+  .header-name{font-size:26px;}
+}
+
+/* ===== CARDS ===== */
+.card{
+  background:#fff;border-radius:20px;
+  padding:18px;margin-bottom:14px;
+  border:3px solid transparent;
+}
+.card-title{font-size:14px;font-weight:900;margin-bottom:14px;}
+
+/* ===== STATS ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.stat-card{
+  border-radius:18px;padding:14px 10px;text-align:center;
+  border:3px solid transparent;
+}
+.stat-icon{font-size:24px;margin-bottom:4px;}
+.stat-num{font-size:22px;font-weight:900;}
+.stat-lbl{font-size:9px;font-weight:900;opacity:0.8;text-transform:uppercase;letter-spacing:0.3px;}
+
+/* ===== SURAH LIST ===== */
+.surah-item{
+  background:#fff;border-radius:18px;padding:14px;
+  margin-bottom:10px;display:flex;align-items:center;
+  gap:12px;cursor:pointer;border:3px solid #E8E8F0;
+  transition:all 0.15s;
+}
+.surah-item:active{transform:scale(0.98);}
+.surah-bubble{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;color:#fff;flex-shrink:0;
+}
+.surah-info{flex:1;min-width:0;}
+.surah-name{font-size:14px;font-weight:900;color:var(--dark);}
+.surah-meta{font-size:11px;color:#888;margin-top:1px;}
+.surah-bar{height:5px;background:#E8E8F0;border-radius:99px;margin-top:5px;overflow:hidden;}
+.surah-fill{height:100%;border-radius:99px;}
+.surah-badge{font-size:10px;font-weight:900;padding:4px 10px;border-radius:99px;flex-shrink:0;border:2.5px solid transparent;}
+
+/* ===== HAFAL AYAT ===== */
+.player-bar{
+  background:#fff;border-radius:20px;padding:14px;
+  margin-bottom:14px;border:3px solid var(--c3);
+}
+.player-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.play-btn{
+  width:46px;height:46px;border-radius:50%;border:none;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:18px;color:#fff;flex-shrink:0;
+  box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.15s;
+}
+.play-btn:active{transform:scale(0.92);}
+.player-info{flex:1;}
+.player-ayat{font-size:13px;font-weight:900;color:var(--dark);}
+.player-sub{font-size:10px;color:#888;margin-top:2px;}
+.track{height:6px;background:#E8E8F0;border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.track-fill{height:100%;border-radius:99px;transition:width 0.2s;}
+.auto-row{display:flex;align-items:center;gap:8px;}
+.toggle{
+  width:40px;height:22px;border-radius:99px;
+  cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;
+}
+.toggle-dot{
+  width:16px;height:16px;background:#fff;border-radius:50%;
+  position:absolute;top:3px;transition:left 0.2s;
+}
+.toggle.on .toggle-dot{left:21px;}
+.toggle.off .toggle-dot{left:3px;}
+.toggle-lbl{font-size:11px;font-weight:800;color:#555;}
+
+.ayat-card{
+  background:#fff;border-radius:18px;padding:14px;
+  margin-bottom:10px;border-left:5px solid #E8E8F0;
+  transition:border-color 0.2s;
+}
+.ayat-card.active{border-left-color:var(--c3);background:#F5F0FF;}
+.ayat-card.hafal{border-left-color:var(--c5);}
+.ayat-card.sedang{border-left-color:var(--c6);}
+.ayat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.ayat-num{font-size:11px;font-weight:900;}
+.ayat-audio-btn{
+  display:flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:99px;border:none;
+  font-size:11px;font-weight:900;cursor:pointer;
+  font-family:var(--font);transition:transform 0.15s;
+}
+.ayat-audio-btn:active{transform:scale(0.95);}
+.arab{
+  font-family:var(--arabic);font-size:26px;text-align:right;
+  direction:rtl;line-height:1.9;color:var(--dark);margin-bottom:6px;
+}
+.trans{font-size:12px;color:#666;line-height:1.5;margin-bottom:10px;}
+.status-row{display:flex;gap:6px;flex-wrap:wrap;}
+.st-btn{
+  padding:6px 14px;border:2.5px solid transparent;
+  border-radius:99px;font-size:11px;font-weight:900;
+  cursor:pointer;font-family:var(--font);transition:transform 0.15s;
+}
+.st-btn:active{transform:scale(0.95);}
+
+/* ===== TEBAK AYAT ===== */
+.soal-progress{display:flex;gap:8px;margin-bottom:16px;}
+.soal-dot{
+  height:8px;border-radius:99px;flex:1;background:#E8E8F0;
+  transition:background 0.3s;
+}
+.soal-dot.done{background:var(--c5);}
+.soal-dot.active{background:var(--c6);}
+
+.soal-card{
+  background:#fff;border-radius:22px;padding:18px;
+  border:3px solid var(--c2);margin-bottom:14px;
+}
+.soal-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:900;padding:5px 14px;
+  border-radius:99px;margin-bottom:14px;color:#fff;
+}
+.btn-dengar{
+  width:100%;padding:14px;border:none;border-radius:14px;
+  font-size:14px;font-weight:900;font-family:var(--font);
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:8px;color:#fff;
+  margin-bottom:14px;box-shadow:0 6px 20px rgba(0,0,0,0.2);
+  transition:transform 0.15s;
+}
+.btn-dengar:active{transform:scale(0.97);}
+.soal-arab-box{
+  border-radius:14px;padding:14px;margin-bottom:12px;
+}
+.soal-arab{
+  font-family:var(--arabic);font-size:22px;text-align:right;
+  direction:rtl;line-height:1.9;color:var(--dark);
+}
+.soal-hint{
+  font-size:12px;font-weight:900;text-align:center;
+  color:#888;margin-bottom:12px;
+}
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.choice{
+  background:#FAFAFF;border:3px solid #E8E8F0;
+  border-radius:16px;padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+  cursor:pointer;transition:all 0.15s;
+}
+.choice:active{transform:scale(0.98);}
+.choice.sel{border-color:var(--c2);background:#FFF0F5;}
+.choice.ok{border-color:var(--c5);background:#E0FFF5;}
+.choice.no{border-color:var(--c1);background:#FFE8E5;}
+.c-play{
+  width:36px;height:36px;border-radius:50%;border:none;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:14px;color:#fff;
+  flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  transition:transform 0.15s;
+}
+.c-play:active{transform:scale(0.9);}
+.c-arab{
+  font-family:var(--arabic);font-size:20px;
+  direction:rtl;flex:1;text-align:right;color:var(--dark);
+  line-height:1.7;
+}
+.btn-kirim{
+  width:100%;padding:14px;border:none;border-radius:14px;
+  font-size:15px;font-weight:900;font-family:var(--font);
+  cursor:pointer;color:#fff;
+  box-shadow:0 6px 20px rgba(0,0,0,0.2);
+  transition:transform 0.15s;
+}
+.btn-kirim:active{transform:scale(0.97);}
+
+/* ===== FEEDBACK CARD ===== */
+.feedback-card{
+  border-radius:24px;padding:28px;text-align:center;
+  border:4px solid transparent;margin-bottom:14px;
+}
+.fb-emoji{font-size:60px;margin-bottom:10px;}
+.fb-title{font-size:22px;font-weight:900;margin-bottom:6px;}
+.fb-msg{font-size:14px;font-weight:700;margin-bottom:14px;line-height:1.5;}
+.fb-stars{display:flex;justify-content:center;gap:6px;font-size:32px;margin-bottom:14px;}
+.fb-skor{
+  display:inline-block;padding:8px 20px;
+  border-radius:12px;font-size:16px;font-weight:900;
+  margin-bottom:18px;
+}
+.btn-lanjut{
+  width:100%;padding:14px;border:none;border-radius:14px;
+  font-size:15px;font-weight:900;font-family:var(--font);
+  cursor:pointer;color:#fff;
+  box-shadow:0 6px 20px rgba(0,0,0,0.2);
+  transition:transform 0.15s;
+}
+.btn-lanjut:active{transform:scale(0.97);}
+
+/* ===== LANJUTKAN AYAT ===== */
+.rec-soal-box{
+  border-radius:16px;padding:16px;margin-bottom:14px;
+  border:3px solid var(--c4);
+}
+.rec-label{font-size:11px;font-weight:900;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.rec-arab{
+  font-family:var(--arabic);font-size:22px;text-align:right;
+  direction:rtl;line-height:1.9;color:var(--dark);
+}
+.rec-hint{font-size:11px;color:#888;margin-top:4px;font-weight:700;}
+.btn-contoh{
+  width:100%;padding:12px;border:3px solid var(--c4);
+  border-radius:14px;font-size:13px;font-weight:900;
+  font-family:var(--font);cursor:pointer;
+  background:#E8F4FF;color:var(--c4);
+  margin-bottom:16px;display:flex;
+  align-items:center;justify-content:center;gap:6px;
+  transition:transform 0.15s;
+}
+.btn-contoh:active{transform:scale(0.97);}
+.rec-center{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px;}
+.rec-btn{
+  width:80px;height:80px;border-radius:50%;border:none;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:32px;color:#fff;
+  box-shadow:0 8px 28px rgba(255,61,0,0.45);
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.rec-btn:active{transform:scale(0.9);}
+.rec-btn.recording{
+  background:linear-gradient(135deg,var(--c1),var(--c2))!important;
+  animation:pulse 1s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(255,61,0,0.5);}
+  70%{box-shadow:0 0 0 20px rgba(255,61,0,0);}
+  100%{box-shadow:0 0 0 0 rgba(255,61,0,0);}
+}
+.rec-lbl{font-size:12px;font-weight:900;color:#888;}
+.wave{
+  height:40px;background:#F0F4FF;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  gap:3px;margin-bottom:14px;padding:0 12px;overflow:hidden;
+}
+.wb{width:4px;border-radius:99px;background:var(--c4);transition:height 0.1s;}
+
+/* ===== MUROJAAH ===== */
+.sched-card{
+  background:#fff;border-radius:20px;padding:16px;
+  margin-bottom:10px;border:3px solid #E8E8F0;
+}
+.sched-card.today{border-color:var(--c5);background:#F0FFFB;}
+.today-tag{
+  display:inline-block;background:var(--c5);color:#fff;
+  font-size:10px;font-weight:900;padding:4px 12px;
+  border-radius:99px;margin-bottom:8px;
+}
+.sched-title{font-size:16px;font-weight:900;color:var(--dark);}
+.sched-meta{font-size:11px;color:#888;margin-bottom:10px;}
+.btn-dengar-muroj{
+  width:100%;padding:12px;border:none;border-radius:12px;
+  font-size:13px;font-weight:900;font-family:var(--font);
+  cursor:pointer;color:#fff;background:var(--c5);
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;margin-bottom:10px;
+  box-shadow:0 4px 14px rgba(6,214,160,0.4);
+  transition:transform 0.15s;
+}
+.btn-dengar-muroj:active{transform:scale(0.97);}
+.nilai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.nbtn{
+  padding:12px 6px;border-radius:14px;border:3px solid transparent;
+  font-size:10px;font-weight:900;cursor:pointer;
+  font-family:var(--font);display:flex;flex-direction:column;
+  align-items:center;gap:4px;transition:transform 0.15s;
+}
+.nbtn:active{transform:scale(0.95);}
+.nbtn-icon{font-size:24px;}
+.nl{background:#00F5C4;color:#006B54;border-color:#00D4A8;}
+.na{background:#FFD60A;color:#7A5800;border-color:#F5C400;}
+.np{background:#FF6B6B;color:#7A0000;border-color:#FF3D3D;}
+
+.next-section{background:#F0F4FF;border-radius:16px;padding:14px;margin-top:10px;}
+.next-lbl{font-size:10px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.next-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.next-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.next-text{font-size:13px;font-weight:800;color:var(--dark);}
+
+.btn-gen{
+  width:100%;padding:14px;border:none;border-radius:14px;
+  font-size:15px;font-weight:900;font-family:var(--font);
+  cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--c5),var(--c4));
+  box-shadow:0 6px 20px rgba(6,214,160,0.35);
+  transition:transform 0.15s;
+}
+.btn-gen:active{transform:scale(0.97);}
+.btn-gen-outline{
+  width:100%;padding:12px;border:3px solid var(--c5);
+  border-radius:14px;font-size:13px;font-weight:900;
+  font-family:var(--font);cursor:pointer;
+  background:#fff;color:var(--c5);margin-top:10px;
+  transition:transform 0.15s;
+}
+.btn-gen-outline:active{transform:scale(0.97);}
+
+/* ===== LOADING ===== */
+.loading{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:60px 20px;
+}
+.spinner{
+  width:44px;height:44px;
+  border:4px solid #E8E8F0;
+  border-top-color:var(--c3);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  margin-bottom:14px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading p{font-size:14px;font-weight:800;color:#888;}
+
+.empty{text-align:center;padding:48px 20px;}
+.empty-icon{font-size:56px;margin-bottom:10px;}
+.empty p{font-size:14px;font-weight:800;color:#888;}
+</style>
+</head>
+<body>
+
+<div id="pg-login">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <span class="auth-icon">🌙</span>
+        <div class="auth-title">Marzia Mengaji</div>
+        <div class="auth-sub">Belajar Juz 30 dengan menyenangkan!</div>
+      </div>
+      <div id="msg-login"></div>
+      <div class="field"><label>Username</label><input type="text" id="in-user" placeholder="Masukkan username"></div>
+      <div class="field"><label>Password</label><input type="password" id="in-pass" placeholder="Masukkan password"></div>
+      <button class="btn-auth" id="do-login">Masuk ✨</button>
+      <div class="auth-link">Belum punya akun? <a id="go-reg">Daftar dulu</a></div>
+    </div>
+  </div>
+</div>
+
+<div id="pg-reg" class="hidden">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <span class="auth-icon">⭐</span>
+        <div class="auth-title">Daftar Baru</div>
+        <div class="auth-sub">Yuk mulai perjalanan mengajimu!</div>
+      </div>
+      <div id="msg-reg"></div>
+      <div class="field"><label>Username</label><input type="text" id="in-ru" placeholder="Pilih username"></div>
+      <div class="field"><label>Password</label><input type="password" id="in-rp" placeholder="Buat password"></div>
+      <button class="btn-auth" id="do-reg">Daftar Sekarang 🚀</button>
+      <div class="auth-link">Sudah punya akun? <a id="go-login">Masuk di sini</a></div>
+    </div>
+  </div>
+</div>
+
+<div id="pg-app" class="hidden">
+  <div class="app-wrap">
+    <div class="app-header" id="app-header">
+      <div class="header-hero" id="header-hero">
+        <div class="header-top">
+          <div>
+            <div class="header-greeting">Assalamu'alaikum 👋</div>
+            <div class="header-name" id="hdr-name">Marzia</div>
+          </div>
+          <div class="header-right">
+            <div class="streak-badge">
+              <span style="font-size:18px;">🔥</span>
+              <div>
+                <div class="streak-num" id="hdr-streak">0</div>
+                <div class="streak-lbl">Hari Streak</div>
+              </div>
+            </div>
+            <button class="btn-keluar" id="btn-logout">Keluar</button>
+          </div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-row">
+            <span class="prog-lbl">Hafalan Juz 30</span>
+            <span class="prog-val" id="hdr-prog-val">0 / 564 ayat</span>
+          </div>
+          <div class="pbar"><div class="pbar-fill" id="hdr-pbar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="tabs" id="tab-bar">
+        <button class="tab on" data-tab="beranda" style="color:#FF3D00;">🏠 Beranda</button>
+        <button class="tab off" data-tab="hafal">📖 Hafal Ayat</button>
+        <button class="tab off" data-tab="tebak">🎵 Tebak Ayat</button>
+        <button class="tab off" data-tab="lanjut">🎤 Lanjutkan Ayat</button>
+        <button class="tab off" data-tab="murojaah">🔄 Muroja'ah</button>
+      </div>
+    </div>
+    <div class="app-content" id="app-content"></div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// PENGATURAN API (NETLIFY -> GOOGLE SCRIPT)
+// ==========================================
+// MASUKKAN URL DEPLOYMENT GOOGLE APPS SCRIPT (/exec) KAMU DI SINI NANTI
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6t5frYANPwjzL_Nh0Cn1tdqeb_7KggMMBRJy7XZk99BchxQUTt5juIFYUuPhtRcE/exec";
+
+// ===== WARNA =====
+var COLORS = ['#FF3D00','#FF006E','#8338EC','#3A86FF','#06D6A0','#FFB700','#FB5607','#00B4D8','#FF006E','#3A86FF'];
+var SURAH_COLORS = {};
+
+// ===== STATE =====
+var S = {
+  token: localStorage.getItem('mm_token'),
+  userId: localStorage.getItem('mm_uid'),
+  username: localStorage.getItem('mm_uname'),
+  surahList: [],
+  ayatList: [],
+  progressMap: {},
+  totalHafal: 0,
+  totalSedang: 0,
+  currentTab: 'beranda',
+  currentSurah: null,
+  audio: null,
+  autoPlay: false,
+  ayatIndex: 0,
+  soalSet: [],
+  soalIndex: 0,
+  mediaRecorder: null,
+  recording: false,
+  audioChunks: [],
+  recSoalIndex: 0,
+  recSoalSet: []
+};
+
+function $(id){ return document.getElementById(id); }
+function show(id){ $(id).classList.remove('hidden'); }
+function hide(id){ $(id).classList.add('hidden'); }
+function showPg(id){
+  ['pg-login','pg-reg','pg-app'].forEach(function(x){ $(x).classList.add('hidden'); });
+  $(id).classList.remove('hidden');
+}
+function loading(txt){ $('app-content').innerHTML='<div class="loading"><div class="spinner"></div><p>'+(txt||'Memuat...')+'</p></div>'; }
+function msg(id,t,m){ $(id).innerHTML='<div class="msg msg-'+t+'">'+m+'</div>'; }
+
+// BARU: Menggunakan Fetch API ke Server Google Apps Script secara langsung
+function post(body){
+  body.token = S.token;
+  return fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain' // Sengaja menggunakan text/plain agar tidak memicu pemblokiran CORS Preflight (OPTIONS) oleh Apps Script
+    },
+    body: JSON.stringify(body)
+  })
+  .then(function(response){ 
+    return response.json(); 
+  })
+  .catch(function(e){ 
+    console.error("API Error:", e);
+    return {success: false, message: "Gagal terhubung ke server: " + e.message}; 
+  });
+}
+
+// ===== AUDIO =====
+function stopAudio(){
+  if(S.audio){ S.audio.pause(); S.audio=null; }
+}
+function playAudio(url, onEnd){
+  stopAudio();
+  if(!url) return;
+  S.audio = new Audio(url);
+  S.audio.play().catch(function(){});
+  if(onEnd) S.audio.onended = onEnd;
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function(){
+  $('go-reg').onclick = function(){ showPg('pg-reg'); };
+  $('go-login').onclick = function(){ showPg('pg-login'); };
+  $('do-login').onclick = doLogin;
+  $('do-reg').onclick = doReg;
+  $('in-pass').onkeydown = function(e){ if(e.key==='Enter') doLogin(); };
+  $('in-rp').onkeydown = function(e){ if(e.key==='Enter') doReg(); };
+
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.onclick = function(){
+      stopAudio();
+      switchTab(t.dataset.tab);
+    };
+  });
+
+  if(S.token){ initApp(); } else { showPg('pg-login'); }
+});
+
+// ===== AUTH =====
+async function doLogin(){
+  var u=$('in-user').value.trim(), p=$('in-pass').value;
+  if(!u||!p){ msg('msg-login','err','Username dan password wajib diisi.'); return; }
+  msg('msg-login','info','Memproses...');
+  var d = await post({action:'login',username:u,password:p});
+  if(d.success){
+    S.token=d.token; S.userId=d.userId; S.username=d.username;
+    localStorage.setItem('mm_token',d.token);
+    localStorage.setItem('mm_uid',d.userId);
+    localStorage.setItem('mm_uname',d.username);
+    initApp();
+  } else { msg('msg-login','err',d.message); }
+}
+
+async function doReg(){
+  var u=$('in-ru').value.trim(), p=$('in-rp').value;
+  if(!u||!p){ msg('msg-reg','err','Username dan password wajib diisi.'); return; }
+  msg('msg-reg','info','Memproses...');
+  var d = await post({action:'register',username:u,password:p});
+  if(d.success){
+    msg('msg-reg','ok','Berhasil! Silakan login.');
+    setTimeout(function(){ showPg('pg-login'); },1500);
+  } else { msg('msg-reg','err',d.message); }
+}
+
+function doLogout(){
+  post({action:'logout'});
+  localStorage.clear();
+  S.token=null; stopAudio();
+  showPg('pg-login');
+}
+
+// ===== APP INIT =====
+async function initApp(){
+  showPg('pg-app');
+  loading('Memuat data...');
+  $('btn-logout').onclick = doLogout;
+
+  var r = await post({action:'getInitialData'});
+  if(!r.success){
+    $('app-content').innerHTML='<div class="empty"><div class="empty-icon">😢</div><p>Gagal memuat: '+r.message+'</p></div>';
+    return;
+  }
+
+  S.surahList = r.data.surahList;
+  S.ayatList = r.data.ayatList;
+  S.progressMap = r.data.progressMap;
+  S.totalHafal = r.data.totalHafal;
+  S.totalSedang = r.data.totalSedang;
+
+  // Assign warna per surah
+  S.surahList.forEach(function(s,i){ SURAH_COLORS[s.surah_number] = COLORS[i%COLORS.length]; });
+
+  // Update header
+  $('hdr-name').textContent = r.data.username || 'Sahabat';
+  updateHeader();
+  updateStreak();
+  switchTab('beranda');
+}
+
+function updateHeader(){
+  var pct = Math.round(S.totalHafal/564*100);
+  $('hdr-prog-val').textContent = S.totalHafal+' / 564 ayat';
+  $('hdr-pbar').style.width = pct+'%';
+}
+
+function updateStreak(){
+  var today = new Date().toDateString();
+  var last = localStorage.getItem('mm_streak_date');
+  var streak = parseInt(localStorage.getItem('mm_streak')||'0');
+  if(last!==today){
+    streak++;
+    localStorage.setItem('mm_streak',streak);
+    localStorage.setItem('mm_streak_date',today);
+  }
+  $('hdr-streak').textContent = streak;
+}
+
+// ===== TAB SWITCH =====
+function switchTab(tab){
+  S.currentTab = tab;
+  stopAudio();
+
+  // Update tab colors
+  var tabColors = {beranda:'#FF3D00',hafal:'#8338EC',tebak:'#FF006E',lanjut:'#00B4D8',murojaah:'#06D6A0'};
+  var heroBg = {
+    beranda:'linear-gradient(135deg,#FF3D00,#FF006E)',
+    hafal:'linear-gradient(135deg,#8338EC,#3A86FF)',
+    tebak:'linear-gradient(135deg,#FF006E,#8338EC)',
+    lanjut:'linear-gradient(135deg,#00B4D8,#3A86FF)',
+    murojaah:'linear-gradient(135deg,#06D6A0,#00B4D8)'
+  };
+
+  $('header-hero').style.background = heroBg[tab]||heroBg.beranda;
+
+  document.querySelectorAll('.tab').forEach(function(t){
+    if(t.dataset.tab===tab){
+      t.classList.remove('off'); t.classList.add('on');
+      t.style.color = tabColors[tab]||'#333';
+    } else {
+      t.classList.remove('on'); t.classList.add('off');
+      t.style.color = '';
+    }
+  });
+
+  if(tab==='beranda') renderBeranda();
+  else if(tab==='hafal') renderHafalList();
+  else if(tab==='tebak') renderTebakAyat();
+  else if(tab==='lanjut') renderLanjutkanAyat();
+  else if(tab==='murojaah') renderMurojaah();
+}
+
+// ===== BERANDA =====
+function renderBeranda(){
+  var pct = Math.round(S.totalHafal/564*100);
+  var surahHtml = S.surahList.slice().reverse().map(function(s,i){
+    var c = SURAH_COLORS[s.surah_number]||COLORS[0];
+    var badge = s.status==='hafal'
+      ? '<span class="surah-badge" style="background:'+c+';color:#fff;">✓ Hafal</span>'
+      : s.status==='sedang'
+      ? '<span class="surah-badge" style="border-color:'+c+';color:'+c+';">Sedang</span>'
+      : '<span class="surah-badge" style="border-color:#E8E8F0;color:#bbb;">Belum</span>';
+    return '<div class="surah-item" onclick="bukaHafal('+s.surah_number+')" style="border-color:'+(s.status!=='belum'?c:'#E8E8F0')+'">'+
+      '<div class="surah-bubble" style="background:'+c+';">'+s.surah_number+'</div>'+
+      '<div class="surah-info">'+
+        '<div class="surah-name">'+s.nama_latin+'</div>'+
+        '<div class="surah-meta">'+s.jumlah_ayat+' ayat • '+s.terjemahan_nama+'</div>'+
+        '<div class="surah-bar"><div class="surah-fill" style="width:'+s.pct+'%;background:'+c+';"></div></div>'+
+      '</div>'+
+      badge+
+    '</div>';
+  }).join('');
+
+  $('app-content').innerHTML =
+    '<div class="stats-grid">'+
+      '<div class="stat-card" style="background:#FFF0E5;border-color:#FF3D00;">'+
+        '<div class="stat-icon">⭐</div>'+
+        '<div class="stat-num" style="color:#FF3D00;">'+Math.floor(S.totalHafal/10)+'</div>'+
+        '<div class="stat-lbl" style="color:#FF3D00;">Bintang</div>'+
+      '</div>'+
+      '<div class="stat-card" style="background:#E8FFF5;border-color:#06D6A0;">'+
+        '<div class="stat-icon">✅</div>'+
+        '<div class="stat-num" style="color:#06D6A0;">'+S.totalHafal+'</div>'+
+        '<div class="stat-lbl" style="color:#06D6A0;">Ayat Hafal</div>'+
+      '</div>'+
+      '<div class="stat-card" style="background:#FFF5E0;border-color:#FFB700;">'+
+        '<div class="stat-icon">🔥</div>'+
+        '<div class="stat-num" style="color:#FFB700;">'+pct+'%</div>'+
+        '<div class="stat-lbl" style="color:#FFB700;">Progress</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Surah Juz 30</div>'+
+    '<div>'+surahHtml+'</div>';
+}
+
+// ===== HAFAL AYAT =====
+function renderHafalList(){
+  var surahHtml = S.surahList.slice().reverse().map(function(s){
+    var c = SURAH_COLORS[s.surah_number]||COLORS[0];
+    return '<div class="surah-item" onclick="bukaHafal('+s.surah_number+')" style="border-color:'+(s.status!=='belum'?c:'#E8E8F0')+'">'+
+      '<div class="surah-bubble" style="background:'+c+';">'+s.surah_number+'</div>'+
+      '<div class="surah-info">'+
+        '<div class="surah-name">'+s.nama_latin+'</div>'+
+        '<div class="surah-meta">'+S.hafal+'/'+s.jumlah_ayat+' ayat dihafal</div>'+
+        '<div class="surah-bar"><div class="surah-fill" style="width:'+s.pct+'%;background:'+c+';"></div></div>'+
+      '</div>'+
+      '<span style="font-size:18px;">'+(s.status==='hafal'?'✅':s.status==='sedang'?'📝':'📖')+'</span>'+
+    '</div>';
+  }).join('');
+
+  $('app-content').innerHTML = '<div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Pilih Surah</div>'+surahHtml;
+}
+
+async function bukaHafal(surahNum){
+  stopAudio();
+  loading('Memuat surah...');
+
+  var surah = S.surahList.find(function(s){ return s.surah_number===surahNum; });
+  var ayatList = S.ayatList.filter(function(a){ return a.surah_number===surahNum; });
+  if(!surah||!ayatList.length){ $('app-content').innerHTML='<div class="empty"><div class="empty-icon">😢</div><p>Data tidak ditemukan.</p></div>'; return; }
+
+  S.currentSurah = { surah:surah, ayat:ayatList };
+  S.ayatIndex = 0;
+
+  var c = SURAH_COLORS[surahNum]||COLORS[0];
+  renderSurahDetail(surah, ayatList, c);
+}
+
+function renderSurahDetail(surah, ayatList, c){
+  var ayatHtml = ayatList.map(function(a){
+    var key = a.surah_number+'_'+a.ayat_number;
+    var st = S.progressMap[key]||'belum';
+    var leftColor = st==='hafal'?'#06D6A0':st==='sedang'?'#FFB700':'#E8E8F0';
+    return '<div class="ayat-card '+st+'" id="ayat-'+a.ayat_number+'">'+
+      '<div class="ayat-top">'+
+        '<span class="ayat-num" style="color:'+c+';">Ayat '+a.ayat_number+(st==='hafal'?' ✓':'')+'</span>'+
+        '<button class="ayat-audio-btn" style="background:'+c+';color:#fff;" onclick="playAudio(\''+a.audio_url+'\')">▶ Dengar</button>'+
+      '</div>'+
+      '<div class="arab">'+a.teks_arab+'</div>'+
+      '<div class="trans">'+a.terjemahan_id+'</div>'+
+      '<div class="status-row">'+
+        '<button class="st-btn" style="background:#06D6A0;color:#fff;border-color:#06D6A0;" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'hafal\')">✓ Hafal</button>'+
+        '<button class="st-btn" style="background:#FFB700;color:#fff;border-color:#FFB700;" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'sedang\')">⏳ Sedang</button>'+
+        '<button class="st-btn" style="background:#E8E8F0;color:#888;border-color:#E8E8F0;" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'belum\')">✕ Belum</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  $('app-content').innerHTML =
+    '<div class="player-bar">'+
+      '<div style="font-size:10px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🎵 Mishary Rashid Al-Afasy</div>'+
+      '<div class="player-top">'+
+        '<button class="play-btn" id="btn-play-all" style="background:'+c+';" onclick="togglePlayAll()">▶</button>'+
+        '<div class="player-info">'+
+          '<div class="player-ayat" id="player-ayat-lbl">Ayat 1 dari '+ayatList.length+'</div>'+
+          '<div class="player-sub">'+surah.nama_latin+' • Tap untuk putar semua</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="track"><div class="track-fill" id="player-track" style="width:0%;background:'+c+';"></div></div>'+
+      '<div class="auto-row">'+
+        '<div class="toggle off" id="auto-toggle" onclick="toggleAuto()" style="background:#E8E8F0;">'+
+          '<div class="toggle-dot"></div>'+
+        '</div>'+
+        '<span class="toggle-lbl">Putar otomatis ayat berikutnya</span>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">'+surah.nama_latin+' • '+surah.jumlah_ayat+' Ayat</div>'+
+    ayatHtml;
+}
+
+function togglePlayAll(){
+  var ayat = S.currentSurah.ayat[S.ayatIndex];
+  if(S.audio&&!S.audio.paused){ stopAudio(); $('btn-play-all').textContent='▶'; return; }
+  if(ayat) playAudioAyat(S.ayatIndex);
+}
+
+function playAudioAyat(idx){
+  var ayatList = S.currentSurah.ayat;
+  if(idx>=ayatList.length){ $('btn-play-all').textContent='▶'; return; }
+  S.ayatIndex = idx;
+  var ayat = ayatList[idx];
+  var pct = Math.round((idx+1)/ayatList.length*100);
+  $('player-ayat-lbl').textContent = 'Ayat '+(idx+1)+' dari '+ayatList.length;
+  $('player-track').style.width = pct+'%';
+  $('btn-play-all').textContent = '⏸';
+  document.querySelectorAll('.ayat-card').forEach(function(el){ el.classList.remove('active'); });
+  var el = $('ayat-'+ayat.ayat_number);
+  if(el){ el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  playAudio(ayat.audio_url, function(){
+    if(S.autoPlay) playAudioAyat(idx+1);
+    else $('btn-play-all').textContent='▶';
+  });
+}
+
+function toggleAuto(){
+  S.autoPlay = !S.autoPlay;
+  var t = $('auto-toggle');
+  t.classList.toggle('on',S.autoPlay);
+  t.classList.toggle('off',!S.autoPlay);
+  t.style.background = S.autoPlay?'#8338EC':'#E8E8F0';
+}
+
+async function setStatus(surahNum, ayatNum, status){
+  var key = surahNum+'_'+ayatNum;
+  var old = S.progressMap[key]||'belum';
+  S.progressMap[key] = status;
+
+  // Update count
+  if(old==='hafal') S.totalHafal--;
+  else if(old==='sedang') S.totalSedang--;
+  if(status==='hafal') S.totalHafal++;
+  else if(status==='sedang') S.totalSedang++;
+
+  updateHeader();
+
+  // Update surah stats
+  var surah = S.surahList.find(function(s){ return s.surah_number===surahNum; });
+  if(surah){
+    var ayatList = S.ayatList.filter(function(a){ return a.surah_number===surahNum; });
+    var hafal=0, sedang=0;
+    ayatList.forEach(function(a){
+      var k=surahNum+'_'+a.ayat_number, st=S.progressMap[k]||'belum';
+      if(st==='hafal') hafal++; else if(st==='sedang') sedang++;
+    });
+    surah.hafal=hafal; surah.sedang=sedang;
+    surah.pct=Math.round(hafal/surah.jumlah_ayat*100);
+    surah.status=hafal===surah.jumlah_ayat?'hafal':hafal>0||sedang>0?'sedang':'belum';
+  }
+
+  // Re-render ayat card
+  var el = $('ayat-'+ayatNum);
+  if(el){
+    el.className = 'ayat-card '+(status||'belum');
+    var numEl = el.querySelector('.ayat-num');
+    if(numEl) numEl.textContent = 'Ayat '+ayatNum+(status==='hafal'?' ✓':'');
+  }
+
+  await post({action:'updateProgress',surah_number:surahNum,ayat_number:ayatNum,status:status});
+  updateStreak();
+}
+
+// ===== TEBAK AYAT =====
+function renderTebakAyat(){
+  var lastGen = parseInt(localStorage.getItem('mm_tebak_time')||'0');
+  var now = Date.now();
+  var sixHours = 6*60*60*1000;
+
+  if(now-lastGen > sixHours || !S.soalSet.length){
+    generateSoalSet();
+  } else {
+    S.soalIndex = 0;
+    tampilSoal();
+  }
+}
+
+function generateSoalSet(){
+  var surahDenganHafalan = S.surahList.filter(function(s){ return s.status==='hafal'||s.status==='sedang'; });
+
+  if(surahDenganHafalan.length===0){
+    $('app-content').innerHTML =
+      '<div class="empty"><div class="empty-icon">📖</div>'+
+      '<p>Belum ada hafalan! Tandai ayat sebagai Hafal atau Sedang dulu di tab Hafal Ayat.</p></div>';
+    return;
+  }
+
+  var soalList = [];
+
+  surahDenganHafalan.forEach(function(s){
+    var ayatSurah = S.ayatList.filter(function(a){ return a.surah_number===s.surah_number; });
+    for(var i=0; i<ayatSurah.length-1; i++){
+      var key = s.surah_number+'_'+ayatSurah[i].ayat_number;
+      var st = S.progressMap[key]||'belum';
+      if(st==='hafal'||st==='sedang'){
+        soalList.push({ surah:s, ayatSoal:ayatSurah[i], ayatJawaban:ayatSurah[i+1], allAyat:ayatSurah });
+      }
+    }
+  });
+
+  if(soalList.length===0){
+    $('app-content').innerHTML =
+      '<div class="empty"><div class="empty-icon">🤔</div>'+
+      '<p>Tidak ada soal yang tersedia. Pastikan surah yang dihafal memiliki lebih dari 1 ayat.</p></div>';
+    return;
+  }
+
+  soalList.sort(function(){ return Math.random()-0.5; });
+  S.soalSet = soalList.slice(0,3).map(function(item){
+    var pengecoh = item.allAyat
+      .filter(function(a){
+        return a.ayat_number!==item.ayatSoal.ayat_number &&
+               a.ayat_number!==item.ayatJawaban.ayat_number;
+      })
+      .sort(function(){ return Math.random()-0.5; })
+      .slice(0,2);
+
+    var pilihanRaw = [item.ayatJawaban].concat(pengecoh);
+    pilihanRaw.sort(function(){ return Math.random()-0.5; });
+
+    return {
+      surah: item.surah,
+      ayatSoal: item.ayatSoal,
+      ayatJawaban: item.ayatJawaban,
+      pilihan: pilihanRaw,
+      jawabanIndex: pilihanRaw.findIndex(function(p){ return p.ayat_number===item.ayatJawaban.ayat_number; })
+    };
+  });
+
+  localStorage.setItem('mm_tebak_time', Date.now().toString());
+  S.soalIndex = 0;
+  tampilSoal();
+}
+
+function tampilSoal(){
+  if(S.soalIndex>=S.soalSet.length){
+    tampilHasilAkhir();
+    return;
+  }
+
+  var soal = S.soalSet[S.soalIndex];
+  var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[0];
+  var progDots = S.soalSet.map(function(_,i){
+    return '<div class="soal-dot '+(i<S.soalIndex?'done':i===S.soalIndex?'active':'')+'"></div>';
+  }).join('');
+
+  var pilihanHtml = soal.pilihan.map(function(p,i){
+    var btnColors = ['#8338EC','#FF006E','#FF3D00'];
+    return '<div class="choice" id="choice-'+i+'" onclick="pilihJawaban('+i+',this)">'+
+      '<button class="c-play" style="background:'+btnColors[i%btnColors.length]+';" onclick="event.stopPropagation();playAudio(\''+p.audio_url+'\')">▶</button>'+
+      '<div class="c-arab">'+p.teks_arab+'</div>'+
+    '</div>';
+  }).join('');
+
+  $('app-content').innerHTML =
+    '<div class="soal-progress">'+progDots+'</div>'+
+    '<div class="soal-card">'+
+      '<div class="soal-badge" style="background:'+c+';">🎵 Tebak Ayat • '+soal.surah.nama_latin+'</div>'+
+      '<button class="btn-dengar" style="background:'+c+';" onclick="playAudio(\''+soal.ayatSoal.audio_url+'\')">▶ &nbsp;Dengarkan Soal</button>'+
+      '<div class="soal-arab-box" style="background:'+c+'20;border:2.5px solid '+c+';">'+
+        '<div class="soal-arab">'+soal.ayatSoal.teks_arab+'</div>'+
+      '</div>'+
+      '<div class="soal-hint">👇 Pilih ayat selanjutnya</div>'+
+      '<div class="choices">'+pilihanHtml+'</div>'+
+      '<button class="btn-kirim" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="kirimTebak('+soal.jawabanIndex+')">Kirim Jawaban ✓</button>'+
+    '</div>';
+
+  S.pilihanDipilih = null;
+}
+
+var pilihanDipilih = null;
+function pilihJawaban(idx, el){
+  document.querySelectorAll('.choice').forEach(function(c){ c.classList.remove('sel'); });
+  el.classList.add('sel');
+  pilihanDipilih = idx;
+}
+
+async function kirimTebak(jawabanIdx){
+  if(pilihanDipilih===null){ alert('Pilih jawaban dulu! 👆'); return; }
+  var soal = S.soalSet[S.soalIndex];
+  var benar = pilihanDipilih===jawabanIdx;
+
+  document.querySelectorAll('.choice').forEach(function(el,i){
+    if(i===jawabanIdx) el.classList.add('ok');
+    else if(i===pilihanDipilih) el.classList.add('no');
+    el.onclick = null;
+  });
+
+  await post({
+    action:'saveLog',
+    surah_number:soal.surah.surah_number,
+    ayat_number:soal.ayatSoal.ayat_number,
+    fitur:'tebak_ayat',
+    hasil:benar?'benar':'salah',
+    skor:benar?100:0,
+    catatan:''
+  });
+
+  setTimeout(function(){
+    var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[0];
+    var stars = benar?'⭐⭐⭐':'';
+    var fbHtml =
+      '<div class="feedback-card" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
+        '<div class="fb-emoji">'+(benar?'🎉':'💪')+'</div>'+
+        '<div class="fb-title" style="color:'+(benar?'#06D6A0':'#FF3D00')+'">'+(benar?'Benar! Keren!':'Yuk coba lagi!')+'</div>'+
+        '<div class="fb-msg">'+(benar?'MasyaAllah, hafalanmu bagus!':'Jangan menyerah, semangat!')+'</div>'+
+        (stars?'<div class="fb-stars">'+stars+'</div>':'')+
+        '<div class="fb-skor" style="background:'+(benar?'#06D6A0':'#FF3D00')+';color:#fff;">'+
+          (benar?'Skor: 100/100':'Skor: 0/100')+
+        '</div>'+
+        '<button class="btn-lanjut" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="lanjutSoal()">'+
+          (S.soalIndex<S.soalSet.length-1?'Soal Berikutnya ➡':'Lihat Hasil 🏆')+
+        '</button>'+
+      '</div>';
+
+    var prog = $('app-content').querySelector('.soal-progress');
+    var progHtml = prog ? prog.outerHTML : '';
+    $('app-content').innerHTML = progHtml + fbHtml;
+  },800);
+
+  pilihanDipilih = null;
+}
+
+function lanjutSoal(){
+  S.soalIndex++;
+  tampilSoal();
+}
+
+function tampilHasilAkhir(){
+  $('app-content').innerHTML =
+    '<div class="feedback-card" style="background:linear-gradient(135deg,#FFF0FF,#E8F0FF);border-color:#8338EC;">'+
+      '<div class="fb-emoji">🏆</div>'+
+      '<div class="fb-title" style="color:#8338EC;">Keren! Selesai!</div>'+
+      '<div class="fb-msg">Kamu sudah menyelesaikan semua soal hari ini. Terus semangat berlatih!</div>'+
+      '<div class="fb-stars">⭐⭐⭐</div>'+
+      '<button class="btn-lanjut" style="background:linear-gradient(135deg,#8338EC,#3A86FF);margin-bottom:8px;" onclick="generateSoalSet()">Main Lagi 🔄</button>'+
+      '<button class="btn-gen-outline" onclick="switchTab(\'hafal\')">Tambah Hafalan 📖</button>'+
+    '</div>';
+}
+
+// ===== LANJUTKAN AYAT =====
+function renderLanjutkanAyat(){
+  var surahDenganHafalan = S.surahList.filter(function(s){ return s.status==='hafal'||s.status==='sedang'; });
+  if(surahDenganHafalan.length===0){
+    $('app-content').innerHTML =
+      '<div class="empty"><div class="empty-icon">📖</div>'+
+      '<p>Belum ada hafalan! Tandai ayat dulu di tab Hafal Ayat.</p></div>';
+    return;
+  }
+
+  var kandidat = [];
+  surahDenganHafalan.forEach(function(s){
+    var ayatSurah = S.ayatList.filter(function(a){ return a.surah_number===s.surah_number; });
+    for(var i=0;i<ayatSurah.length-1;i++){
+      var key=s.surah_number+'_'+ayatSurah[i].ayat_number;
+      var st=S.progressMap[key]||'belum';
+      if(st==='hafal'||st==='sedang'){
+        kandidat.push({ surah:s, ayatSoal:ayatSurah[i], ayatJawaban:ayatSurah[i+1] });
+      }
+    }
+  });
+
+  if(kandidat.length===0){
+    $('app-content').innerHTML='<div class="empty"><div class="empty-icon">🤔</div><p>Tidak ada soal tersedia.</p></div>';
+    return;
+  }
+
+  kandidat.sort(function(){ return Math.random()-0.5; });
+  S.recSoalSet = kandidat.slice(0,3);
+  S.recSoalIndex = 0;
+  tampilSoalRekam();
+}
+
+function tampilSoalRekam(){
+  if(S.recSoalIndex>=S.recSoalSet.length){
+    $('app-content').innerHTML =
+      '<div class="feedback-card" style="background:linear-gradient(135deg,#E8F4FF,#F0FFFF);border-color:#00B4D8;">'+
+        '<div class="fb-emoji">🎤</div>'+
+        '<div class="fb-title" style="color:#00B4D8;">Sesi Selesai!</div>'+
+        '<div class="fb-msg">Bagus sekali! Kamu sudah berlatih membaca hari ini.</div>'+
+        '<button class="btn-lanjut" style="background:linear-gradient(135deg,#00B4D8,#3A86FF);" onclick="renderLanjutkanAyat()">Ulangi Lagi 🔄</button>'+
+      '</div>';
+    return;
+  }
+
+  var soal = S.recSoalSet[S.recSoalIndex];
+  var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[3];
+  var progDots = S.recSoalSet.map(function(_,i){
+    return '<div class="soal-dot '+(i<S.recSoalIndex?'done':i===S.recSoalIndex?'active':'')+'"></div>';
+  }).join('');
+
+  $('app-content').innerHTML =
+    '<div class="soal-progress">'+progDots+'</div>'+
+    '<div class="card" style="border-color:#00B4D8;">'+
+      '<div class="soal-badge" style="background:'+c+';">🎤 Lanjutkan Ayat • '+soal.surah.nama_latin+'</div>'+
+      '<div class="rec-soal-box">'+
+        '<div class="rec-label">Soal — '+soal.surah.nama_latin+' Ayat '+soal.ayatSoal.ayat_number+'</div>'+
+        '<div class="rec-arab">'+soal.ayatSoal.teks_arab+'</div>'+
+        '<div class="rec-hint">Bacakan ayat selanjutnya...</div>'+
+      '</div>'+
+      '<button class="btn-contoh" onclick="playAudio(\''+soal.ayatJawaban.audio_url+'\')">▶ Dengar contoh jawaban</button>'+
+      '<div class="rec-center">'+
+        '<button class="rec-btn" id="rec-btn" style="background:linear-gradient(135deg,#FF3D00,#FF006E);" onclick="toggleRekam('+soal.surah.surah_number+','+soal.ayatSoal.ayat_number+','+soal.ayatJawaban.ayat_number+')">🎤</button>'+
+        '<div class="rec-lbl" id="rec-lbl">Tap untuk merekam</div>'+
+      '</div>'+
+      '<div class="wave" id="wave-viz">'+
+        '<div class="wb" style="height:8px;"></div>'+
+        '<div class="wb" style="height:16px;"></div>'+
+        '<div class="wb" style="height:10px;"></div>'+
+        '<div class="wb" style="height:20px;"></div>'+
+        '<div class="wb" style="height:12px;"></div>'+
+        '<div class="wb" style="height:18px;"></div>'+
+        '<div class="wb" style="height:8px;"></div>'+
+        '<div class="wb" style="height:14px;"></div>'+
+      '</div>'+
+      '<div id="rec-result"></div>'+
+    '</div>';
+}
+
+var waveInterval = null;
+async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
+  if(S.recording){
+    S.recording = false;
+    if(S.mediaRecorder) S.mediaRecorder.stop();
+    clearInterval(waveInterval);
+    $('rec-btn').classList.remove('recording');
+    $('rec-btn').textContent = '🎤';
+    $('rec-lbl').textContent = 'Memproses...';
+    return;
+  }
+
+  try {
+    var stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    S.recording = true;
+    S.audioChunks = [];
+    $('rec-btn').classList.add('recording');
+    $('rec-btn').textContent = '⏹';
+    $('rec-lbl').textContent = 'Sedang merekam... tap untuk berhenti';
+
+    waveInterval = setInterval(function(){
+      var bars = document.querySelectorAll('.wb');
+      bars.forEach(function(b){
+        b.style.height = (Math.random()*28+6)+'px';
+      });
+    },150);
+
+    S.mediaRecorder = new MediaRecorder(stream);
+    S.mediaRecorder.ondataavailable = function(e){
+      if(e.data.size>0) S.audioChunks.push(e.data);
+    };
+    S.mediaRecorder.onstop = async function(){
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      clearInterval(waveInterval);
+      $('rec-lbl').textContent = 'Menilai bacaan...';
+
+      var blob = new Blob(S.audioChunks, {type:'audio/webm'});
+      var reader = new FileReader();
+      reader.onload = async function(){
+        var base64 = reader.result.split(',')[1];
+        var soal = S.recSoalSet[S.recSoalIndex];
+        var r = await post({
+          action:'nilaiRekaman',
+          surah_number:surahNum,
+          ayat_number:ayatSoalNum,
+          audio_base64:base64,
+          mime_type:'audio/webm'
+        });
+
+        S.recording = false;
+
+        if(!r.success){
+          $('rec-result').innerHTML='<div class="msg msg-err">Gagal menilai: '+r.message+'</div>';
+          return;
+        }
+
+        var d=r.data;
+        var benar=d.hasil==='benar'||d.hasil==='hampir_benar';
+        $('rec-result').innerHTML =
+          '<div class="feedback-card" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
+            '<div class="fb-emoji">'+(d.emoji||( benar?'🎉':'💪'))+'</div>'+
+            '<div class="fb-title" style="color:'+(benar?'#06D6A0':'#FF3D00')+';">'+(benar?'MasyaAllah!':'Yuk coba lagi!')+'</div>'+
+            '<div class="fb-msg">'+d.feedback+'</div>'+
+            (d.catatan_tajwid?'<div style="background:#FFF5E0;border-radius:12px;padding:10px;margin-bottom:14px;font-size:12px;font-weight:700;color:#7A5800;">📝 '+d.catatan_tajwid+'</div>':'')+
+            '<div class="fb-skor" style="background:'+(benar?'#06D6A0':'#FF3D00')+';color:#fff;">Skor: '+d.skor+'/100</div>'+
+            '<button class="btn-lanjut" style="background:linear-gradient(135deg,#00B4D8,#3A86FF);margin-top:14px;" onclick="nextRekam()">'+
+              (S.recSoalIndex<S.recSoalSet.length-1?'Soal Berikutnya ➡':'Selesai 🏆')+
+            '</button>'+
+          '</div>';
+      };
+      reader.readAsDataURL(blob);
+    };
+
+    S.mediaRecorder.start();
+
+    setTimeout(function(){
+      if(S.recording&&S.mediaRecorder&&S.mediaRecorder.state==='recording'){
+        S.mediaRecorder.stop();
+        S.recording=false;
+      }
+    },15000);
+
+  } catch(err){
+    $('rec-lbl').textContent = 'Tap untuk merekam';
+    $('rec-result').innerHTML='<div class="msg msg-err">Tidak dapat mengakses mikrofon. Pastikan izin mikrofon diberikan.</div>';
+    S.recording = false;
+  }
+}
+
+function nextRekam(){
+  S.recSoalIndex++;
+  tampilSoalRekam();
+}
+
+// ===== MUROJAAH =====
+async function renderMurojaah(){
+  loading('Memuat jadwal...');
+  var r = await post({action:'getMurojaahSchedule'});
+  if(!r.success){
+    $('app-content').innerHTML='<div class="empty"><div class="empty-icon">😢</div><p>Gagal memuat jadwal.</p></div>';
+    return;
+  }
+
+  var jadwal = r.data.filter(function(j){ return j.status==='terjadwal'; });
+  var today = new Date().toISOString().split('T')[0];
+  var todayList = jadwal.filter(function(j){ return j.tanggal_jadwal===today; });
+  var upcoming = jadwal.filter(function(j){ return j.tanggal_jadwal>today; }).slice(0,5);
+  var dotColors = ['#8338EC','#00B4D8','#FF006E','#FFB700','#06D6A0'];
+
+  if(jadwal.length===0){
+    $('app-content').innerHTML=
+      '<div class="empty"><div class="empty-icon">📅</div><p>Belum ada jadwal muroja\'ah.</p></div>'+
+      '<button class="btn-gen" onclick="doGenJadwal()">Buat Jadwal Otomatis ✨</button>';
+    return;
+  }
+
+  var todayHtml = todayList.map(function(j){
+    var surah = S.surahList.find(function(s){ return s.surah_number===j.surah_number; });
+    var nama = surah?surah.nama_latin:'Surah '+j.surah_number;
+    var c = SURAH_COLORS[j.surah_number]||COLORS[0];
+    var audioUrl = '';
+    var ayatFirst = S.ayatList.find(function(a){ return a.surah_number===j.surah_number&&a.ayat_number===j.ayat_awal; });
+    if(ayatFirst) audioUrl = ayatFirst.audio_url||'';
+    return '<div class="sched-card today">'+
+      '<span class="today-tag">📅 Hari Ini</span>'+
+      '<div class="sched-title">'+nama+'</div>'+
+      '<div class="sched-meta">Ayat '+j.ayat_awal+'–'+j.ayat_akhir+' • '+j.catatan+'</div>'+
+      '<button class="btn-dengar-muroj" onclick="playAudio(\''+audioUrl+'\')">▶ Dengarkan dulu</button>'+
+      '<div class="nilai-grid">'+
+        '<button class="nbtn nl" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'lancar\')">'+
+          '<span class="nbtn-icon">😄</span>Lancar'+
+        '</button>'+
+        '<button class="nbtn na" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'agak_lupa\')">'+
+          '<span class="nbtn-icon">🤔</span>Agak Lupa'+
+        '</button>'+
+        '<button class="nbtn np" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'perlu_diulang\')">'+
+          '<span class="nbtn-icon">😅</span>Perlu Diulang'+
+        '</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  var upcomingHtml = upcoming.length>0
+    ? '<div class="next-section">'+
+        '<div class="next-lbl">Jadwal Berikutnya</div>'+
+        upcoming.map(function(j,i){
+          var surah=S.surahList.find(function(s){ return s.surah_number===j.surah_number; });
+          var nama=surah?surah.nama_latin:'Surah '+j.surah_number;
+          return '<div class="next-item">'+
+            '<div class="next-dot" style="background:'+dotColors[i%dotColors.length]+';"></div>'+
+            '<div class="next-text">'+nama+' — '+j.tanggal_jadwal+'</div>'+
+          '</div>';
+        }).join('')+
+      '</div>'
+    : '';
+
+  $('app-content').innerHTML=
+    (todayList.length>0?todayHtml:'<div class="empty"><div class="empty-icon">✅</div><p>Tidak ada jadwal hari ini.</p></div>')+
+    upcomingHtml+
+    '<button class="btn-gen-outline" onclick="doGenJadwal()">↻ Perbarui Jadwal</button>';
+}
+
+async function doGenJadwal(){
+  loading('Menyusun jadwal muroja\'ah...');
+  var r = await post({action:'generateJadwal'});
+  if(r.success){ renderMurojaah(); }
+  else {
+    $('app-content').innerHTML=
+      '<div class="empty"><div class="empty-icon">😢</div><p>'+r.message+'</p></div>'+
+      '<button class="btn-gen" onclick="doGenJadwal()">Coba Lagi</button>';
+  }
+}
+
+async function nilaiMurojaah(scheduleId, surahNum, namaSurah, penilaian){
+  loading('Memproses...');
+  var r = await post({action:'selesaiMurojaah',schedule_id:scheduleId,surah_number:surahNum,penilaian:penilaian});
+  if(r.success){
+    var d=r.data;
+    $('app-content').innerHTML=
+      '<div class="feedback-card" style="background:linear-gradient(135deg,#E8FFF5,#E8F4FF);border-color:#06D6A0;">'+
+        '<div class="fb-emoji">'+(d.emoji||'🌟')+'</div>'+
+        '<div class="fb-title" style="color:#06D6A0;">Muroja\'ah Selesai!</div>'+
+        '<div class="fb-msg">'+d.pesan+'</div>'+
+        '<div class="fb-skor" style="background:#06D6A0;color:#fff;">Ulangi dalam '+d.ulang_dalam_hari+' hari</div>'+
+        '<button class="btn-lanjut" style="background:linear-gradient(135deg,#06D6A0,#00B4D8);margin-top:16px;" onclick="renderMurojaah()">Lihat Jadwal 📅</button>'+
+      '</div>';
+  } else { renderMurojaah(); }
+}
+</script>
+</body>
+</html>
