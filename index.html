@@ -1,1302 +1,1653 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marzia Mengaji</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marzia Mengaji ✨ Petualangan Hafalan Juz 30</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts (Fredoka & Plus Jakarta Sans) -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: {
-          nunito: ['Nunito', 'sans-serif'],
-          arabic: ['Amiri', 'serif'],
-        },
-        colors: {
-          primary: '#8338EC',
-          secondary: '#FF006E',
-          accent: '#FF3D00',
-        }
-      }
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
-  }
-</script>
-
-<style>
-:root {
-  --c1: #FF3D00; --c2: #FF006E; --c3: #8338EC; --c4: #3A86FF;
-  --c5: #06D6A0; --c6: #FFB700; --c7: #FB5607; --c8: #00B4D8;
-  --bg: #F8FAFC; --white: #FFFFFF; --dark: #0F172A;
-  --font: 'Nunito', sans-serif; --arabic: 'Amiri', serif;
-}
-
-body {
-  font-family: var(--font);
-  background: #0f172a; /* Dark background out of the frame */
-  color: var(--dark);
-  min-height: 100vh;
-}
-
-.hidden { display: none !important; }
-
-/* Custom Scrollbar for modern touch */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 99px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Glassmorphism Auth */
-.auth-glass {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Dynamic State Styling */
-.tab.on {
-  background: #ffffff !important;
-  color: inherit !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-2px);
-  border-radius: 16px 16px 0 0;
-}
-.tab.off {
-  color: rgba(255, 255, 255, 0.7) !important;
-  opacity: 0.8;
-}
-
-/* Beautiful custom style for Surah Items generated dynamically */
-.surah-item {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 18px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  cursor: pointer;
-  border: 2px solid #f1f5f9;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.01);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.surah-item:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 12px 20px -8px rgba(0,0,0,0.08);
-}
-.surah-item:active {
-  transform: translateY(0px) scale(0.99);
-}
-.surah-bubble {
-  width: 50px;
-  height: 50px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 900;
-  color: #ffffff;
-  flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-.surah-info {
-  flex: 1;
-  min-width: 0;
-}
-.surah-name {
-  font-size: 16px;
-  font-weight: 800;
-  color: #0f172a;
-}
-.surah-meta {
-  font-size: 13px;
-  color: #64748b;
-  margin-top: 2px;
-}
-.surah-bar {
-  height: 6px;
-  background: #f1f5f9;
-  border-radius: 99px;
-  margin-top: 8px;
-  overflow: hidden;
-}
-.surah-fill {
-  height: 100%;
-  border-radius: 99px;
-}
-.surah-badge {
-  font-size: 11px;
-  font-weight: 800;
-  padding: 6px 14px;
-  border-radius: 99px;
-  flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-
-/* Stats Cards */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.stat-card {
-  border-radius: 20px;
-  padding: 16px 10px;
-  text-align: center;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-}
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-}
-.stat-icon {
-  font-size: 26px;
-  margin-bottom: 6px;
-}
-.stat-num {
-  font-size: 26px;
-  font-weight: 900;
-}
-.stat-lbl {
-  font-size: 11px;
-  font-weight: 800;
-  opacity: 0.8;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Ayat Cards inside Detail view */
-.ayat-card {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 22px;
-  margin-bottom: 16px;
-  border-left: 6px solid #e2e8f0;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-  transition: all 0.3s ease;
-}
-.ayat-card.active {
-  border-left-color: var(--c3) !important;
-  background: #faf8ff;
-  box-shadow: 0 10px 20px -5px rgba(131, 56, 236, 0.08);
-  transform: translateY(-2px);
-}
-.ayat-card.hafal { border-left-color: var(--c5) !important; }
-.ayat-card.sedang { border-left-color: var(--c6) !important; }
-
-/* Arabic Typography */
-.arab {
-  font-family: var(--arabic);
-  font-size: 30px;
-  text-align: right;
-  direction: rtl;
-  line-height: 2.2;
-  color: #0f172a;
-  margin-bottom: 12px;
-}
-
-/* Choices inside Quiz */
-.choice {
-  background: #ffffff;
-  border: 2px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.choice:hover {
-  border-color: var(--c2);
-  background: #fff8f9;
-  transform: translateY(-2px);
-}
-.choice.sel { border-color: var(--c2); background: #fff0f5; box-shadow: 0 4px 12px rgba(255,0,110,0.1); }
-.choice.ok { border-color: var(--c5) !important; background: #ecfdf5 !important; }
-.choice.no { border-color: var(--c1) !important; background: #fef2f2 !important; }
-
-/* Custom beautiful input styling */
-.custom-input {
-  width: 100%;
-  padding: 14px 18px;
-  border: 2px solid #e2e8f0;
-  border-radius: 16px;
-  font-size: 15px;
-  outline: none;
-  transition: all 0.2s ease;
-  background: #f8fafc;
-}
-.custom-input:focus {
-  border-color: var(--c3);
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(131, 56, 236, 0.1);
-}
-
-/* Toast Notification overlay */
-#toast-container {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  pointer-events: none;
-}
-.toast-msg {
-  background: #1e293b;
-  color: #ffffff;
-  padding: 14px 24px;
-  border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-  font-weight: 700;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: slideInDown 0.3s ease-out forwards;
-}
-@keyframes slideInDown {
-  from { transform: translateY(-40px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-</style>
+    h1, h2, h3, h4, .font-kids {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .arabic-text {
+      font-family: 'Amiri', serif;
+    }
+    /* Efek bouncy pada tombol */
+    .bouncy-btn {
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .bouncy-btn:active {
+      transform: scale(0.95);
+    }
+    /* Animasi denyut halus untuk tombol rekam */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.6; }
+      50% { transform: scale(1.1); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.6; }
+    }
+    .recording-pulse {
+      animation: pulse-ring 1.5s infinite ease-in-out;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 99px;
+    }
+  </style>
 </head>
-<body class="flex justify-center items-stretch font-nunito">
+<body class="bg-indigo-50/40 min-h-screen flex flex-col justify-between text-slate-700 overflow-x-hidden">
 
-<div id="toast-container"></div>
+  <!-- NOTIFIKASI TOAST CUSTOM -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-xs px-4 pointer-events-none"></div>
 
-<!-- Container Utama: Desktop centered app view, mobile full screen -->
-<div class="w-full max-w-xl bg-slate-50 min-h-screen flex flex-col shadow-2xl relative">
-
-  <!-- ========================================== -->
-  <!-- PAGE: LOGIN                                -->
-  <!-- ========================================== -->
-  <div id="pg-login" class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-[#FF006E] via-[#8338EC] to-[#3A86FF]">
-    <div class="auth-glass w-full max-w-md rounded-[32px] p-8 md:p-10 shadow-2xl transition-all duration-300">
-      <div class="auth-logo text-center mb-8">
-        <span class="text-6xl block mb-4 animate-bounce">🌙</span>
-        <div class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#FF006E] to-[#8338EC] -webkit-background-clip-text -webkit-text-fill-color:transparent bg-clip-text text-transparent">Marzia Mengaji</div>
-        <div class="text-sm text-slate-500 font-semibold mt-2">Belajar Juz 30 dengan menyenangkan!</div>
-      </div>
-      <div id="msg-login" class="mb-4"></div>
-      
-      <div class="field mb-4">
-        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Username</label>
-        <input type="text" id="in-user" class="custom-input" placeholder="Masukkan username">
-      </div>
-      
-      <div class="field mb-6">
-        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Password</label>
-        <input type="password" id="in-pass" class="custom-input" placeholder="Masukkan password">
-      </div>
-      
-      <button class="w-full py-4 bg-gradient-to-r from-[#FF006E] to-[#8338EC] text-white rounded-2xl font-extrabold hover:opacity-95 transition-all shadow-lg active:scale-95" id="do-login">Masuk ✨</button>
-      <div class="text-center text-sm font-semibold text-slate-500 mt-6">Belum punya akun? <a id="go-reg" class="text-[#8338EC] font-extrabold cursor-pointer hover:underline">Daftar dulu</a></div>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE: REGISTER                             -->
-  <!-- ========================================== -->
-  <div id="pg-reg" class="hidden flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-[#FF006E] via-[#8338EC] to-[#3A86FF]">
-    <div class="auth-glass w-full max-w-md rounded-[32px] p-8 md:p-10 shadow-2xl transition-all duration-300">
-      <div class="auth-logo text-center mb-8">
-        <span class="text-6xl block mb-4">⭐</span>
-        <div class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#FF006E] to-[#8338EC] -webkit-background-clip-text -webkit-text-fill-color:transparent bg-clip-text text-transparent">Daftar Baru</div>
-        <div class="text-sm text-slate-500 font-semibold mt-2">Yuk mulai perjalanan mengajimu!</div>
-      </div>
-      <div id="msg-reg" class="mb-4"></div>
-      
-      <div class="field mb-4">
-        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Username</label>
-        <input type="text" id="in-ru" class="custom-input" placeholder="Pilih username">
-      </div>
-      
-      <div class="field mb-6">
-        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Password</label>
-        <input type="password" id="in-rp" class="custom-input" placeholder="Buat password">
-      </div>
-      
-      <button class="w-full py-4 bg-gradient-to-r from-[#FF006E] to-[#8338EC] text-white rounded-2xl font-extrabold hover:opacity-95 transition-all shadow-lg active:scale-95" id="do-reg">Daftar Sekarang 🚀</button>
-      <div class="text-center text-sm font-semibold text-slate-500 mt-6">Sudah punya akun? <a id="go-login" class="text-[#8338EC] font-extrabold cursor-pointer hover:underline">Masuk di sini</a></div>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PAGE: MAIN APP                             -->
-  <!-- ========================================== -->
-  <div id="pg-app" class="hidden flex-1 flex flex-col min-h-screen">
+  <!-- CONTAINER UTAMA -->
+  <div class="flex-grow flex flex-col">
     
-    <div class="app-header sticky top-0 z-[200] shadow-md transition-all duration-300" id="app-header">
-      <div class="header-hero rounded-b-[32px] p-5 pb-0 text-white transition-all duration-500" id="header-hero">
-
-        <!-- Baris 1: Nama + Kontrol -->
-        <div class="header-top flex justify-between items-center mb-4">
-          <div class="header-left">
-            <div class="text-xs font-extrabold text-white/80 tracking-wider">Assalamu'alaikum 👋</div>
-            <div class="text-2xl font-extrabold leading-tight text-white drop-shadow" id="hdr-name">Marzia</div>
+    <!-- 1. HALAMAN AUTENTIKASI (LOGIN & REGISTER) -->
+    <section id="pg-auth" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+      <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-2xl w-full max-w-sm border-4 border-white/20 backdrop-blur-sm space-y-6">
+        
+        <!-- Logo & Maskot Bintang Marz -->
+        <div class="text-center space-y-2">
+          <div class="w-24 h-24 mx-auto filter drop-shadow-md">
+            <svg viewBox="0 0 100 100" class="w-full h-full animate-bounce">
+              <polygon points="50,5 64,36 98,36 70,57 81,91 50,70 19,91 30,57 2,36 36,36" fill="#FCD34D" stroke="#D97706" stroke-width="3"/>
+              <ellipse cx="50" cy="22" rx="12" ry="6" fill="#EF4444" />
+              <rect x="46" y="15" width="8" height="7" fill="#EF4444" />
+              <line x1="50" y1="15" x2="54" y2="9" stroke="#10B981" stroke-width="2"/>
+              <circle cx="40" cy="48" r="4.5" fill="#1E293B" />
+              <circle cx="60" cy="48" r="4.5" fill="#1E293B" />
+              <circle cx="35" cy="54" r="3" fill="#FCA5A5" />
+              <circle cx="65" cy="54" r="3" fill="#FCA5A5" />
+              <path d="M43 58 Q50 64 57 58" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+            </svg>
           </div>
-          <div class="header-right flex items-center gap-3">
-            <div class="streak-badge flex items-center gap-1.5 bg-white/20 border border-white/20 rounded-full px-4 py-1.5 backdrop-blur-md">
-              <span class="text-lg">🔥</span>
-              <div class="flex items-baseline gap-1">
-                <div class="text-base font-extrabold text-yellow-300 leading-none" id="hdr-streak">0</div>
-                <div class="text-[10px] font-bold text-white/95">hari</div>
+          <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Marzia Mengaji</h2>
+          <p class="text-xs text-slate-400 font-semibold" id="auth-subtitle">Belajar & hafal Juz 30 dengan menyenangkan!</p>
+        </div>
+
+        <!-- Formulir Input -->
+        <div class="space-y-4">
+          <div id="msg-auth"></div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">Username</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </span>
+              <input type="text" id="auth-username" placeholder="Masukkan username" class="w-full pl-9 pr-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-purple-400 focus:bg-white focus:outline-none transition-all font-semibold text-slate-700 text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">Password</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i data-lucide="lock" class="w-4 h-4"></i>
+              </span>
+              <input type="password" id="auth-password" placeholder="Masukkan password" class="w-full pl-9 pr-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-purple-400 focus:bg-white focus:outline-none transition-all font-semibold text-slate-700 text-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="space-y-3 pt-2">
+          <button id="btn-login-submit" onclick="app.submitAuth(true)" class="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-black rounded-2xl shadow-lg hover:shadow-purple-200/50 hover:scale-[1.02] active:scale-[0.98] border-b-4 border-indigo-800 bouncy-btn text-sm tracking-wide flex justify-center items-center gap-2 transition-all duration-200">
+            <span>Masuk Petualangan ✨</span>
+          </button>
+          
+          <div class="text-center text-[10px] text-slate-400 font-black uppercase tracking-wider">Atau Baru Pertama Kali Mengaji?</div>
+          
+          <button id="btn-register-submit" onclick="app.submitAuth(false)" class="w-full py-3 bg-white hover:bg-purple-50 text-purple-600 font-bold rounded-2xl border-2 border-purple-200 hover:border-purple-300 hover:scale-[1.01] active:scale-[0.98] bouncy-btn text-xs transition-all duration-200">
+            Daftar Akun Baru 🚀
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. TATA LETAK APLIKASI UTAMA (SETELAH LOGIN) -->
+    <section id="pg-app" class="hidden min-h-screen flex flex-col justify-between">
+      
+      <!-- GRID UTAMA RESPONSIF DEKSTOP & MOBILE -->
+      <div class="max-w-6xl mx-auto w-full px-0 sm:px-6 lg:px-8 py-0 lg:py-8 flex-grow flex flex-col lg:flex-row gap-6">
+        
+        <!-- BAGIAN KIRI: SIDEBAR DEKSTOP / HEADER HERO MOBILE (Sticky di Mobile & Desktop!) -->
+        <aside class="sticky top-0 lg:top-8 z-30 w-full lg:w-[320px] flex-shrink-0 flex flex-col">
+          
+          <!-- PANEL HERO INFORMASI PROFIL & PROGRESS (ADAPTIF WARNA) -->
+          <div id="app-header" class="relative bg-gradient-to-br from-teal-400 to-emerald-400 text-white px-4 py-4 lg:px-5 lg:pt-6 lg:pb-6 rounded-b-3xl lg:rounded-[2rem] shadow-lg lg:shadow-xl transition-all duration-500">
+            <!-- Awan Estetis Belakang -->
+            <div class="absolute right-3 bottom-3 opacity-10 w-16 h-16 pointer-events-none">
+              <i data-lucide="cloud" class="w-full h-full text-white"></i>
+            </div>
+            
+            <div class="space-y-4 relative z-10">
+              <!-- Sapaan, Profil, Streaks, Logout -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-10 h-10 bg-white/20 rounded-full border border-white/40 flex items-center justify-center text-lg shadow-inner">
+                    👶
+                  </div>
+                  <div>
+                    <p class="text-[8px] uppercase font-bold tracking-widest text-white/80 leading-none">Assalamu'alaikum 👋</p>
+                    <h3 class="text-base font-black mt-1 leading-none tracking-wide truncate max-w-[120px]" id="hdr-name">Sahabat</h3>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  <!-- Streak Badge -->
+                  <div class="bg-white/20 border border-white/30 px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                    <span class="text-xs">🔥</span>
+                    <span class="text-xs font-black text-yellow-300" id="hdr-streak">0</span>
+                    <span class="text-[8px] font-bold text-white/90">hari</span>
+                  </div>
+                  
+                  <!-- Logout Button -->
+                  <button onclick="app.logout()" class="p-1.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white bouncy-btn" title="Keluar">
+                    <i data-lucide="log-out" class="w-3 h-3"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Progress Bar Hafalan -->
+              <div class="bg-black/10 rounded-xl p-2.5 border border-white/10 space-y-1.5">
+                <div class="flex justify-between items-center text-[10px] font-bold text-white/90">
+                  <span class="flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> Progres Juz 30</span>
+                  <span id="hdr-prog-val" class="bg-white/20 px-2 py-0.5 rounded-full font-black text-[8px]">0 / 564 Ayat</span>
+                </div>
+                <div class="w-full h-2 bg-white/25 rounded-full overflow-hidden shadow-inner">
+                  <div id="hdr-pbar" class="h-full bg-gradient-to-r from-yellow-300 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-md" style="width: 0%"></div>
+                </div>
               </div>
             </div>
-            <button class="bg-white/10 hover:bg-white/25 border border-white/20 text-white font-extrabold px-4 py-2 rounded-full text-xs transition active:scale-95 flex items-center gap-1" id="btn-logout">
-              <span>⎋</span> Keluar
+          </div>
+
+          <!-- SIDEBAR NAVIGASI DEKSTOP (HANYA MUNCUL DI DESKTOP) -->
+          <nav class="hidden lg:flex flex-col bg-white rounded-[2rem] p-4 border border-slate-100 shadow-md mt-4 space-y-1">
+            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-3 pb-2">Menu Petualangan</h4>
+            
+            <button onclick="app.switchTab('beranda')" id="sidebar-beranda" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
+              <i data-lucide="home" class="w-4 h-4"></i>
+              <span>Beranda Peta</span>
             </button>
-          </div>
-        </div>
+            <button onclick="app.switchTab('hafal')" id="sidebar-hafal" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
+              <i data-lucide="book-open" class="w-4 h-4"></i>
+              <span>Hafal Ayat</span>
+            </button>
+            <button onclick="app.switchTab('tebak')" id="sidebar-tebak" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Tebak Ayat</span>
+            </button>
+            <button onclick="app.switchTab('lanjut')" id="sidebar-lanjut" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
+              <i data-lucide="mic" class="w-4 h-4"></i>
+              <span>Lanjutkan</span>
+            </button>
+            <button onclick="app.switchTab('murojaah')" id="sidebar-murojaah" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              <span>Muroja'ah</span>
+            </button>
+          </nav>
+        </aside>
 
-        <!-- Baris 2: Progress bar -->
-        <div class="prog-wrap mb-4">
-          <div class="prog-row flex justify-between items-center mb-1.5">
-            <span class="text-xs font-extrabold text-white/90 tracking-wide">✦ Hafalan Juz 30</span>
-            <span class="text-xs font-extrabold text-white bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm" id="hdr-prog-val">0 / 564 ayat</span>
-          </div>
-          <div class="pbar h-3 bg-white/20 rounded-full overflow-hidden shadow-inner">
-            <div class="pbar-fill h-full rounded-full bg-gradient-to-r from-yellow-300 to-rose-400 transition-all duration-700 ease-out shadow-[0_0_12px_rgba(253,224,71,0.5)]" id="hdr-pbar" style="width:0%"></div>
-          </div>
-        </div>
+        <!-- PANEL KANAN: KONTEN UTAMA DAN BOTTOM BAR MOBILE -->
+        <div class="flex-grow flex flex-col min-w-0">
+          
+          <!-- TAB BAR BOTTOM NAVIGATION MOBILE (STICKY FIXED DI BAGIAN BAWAH LAYAR) -->
+          <nav class="lg:hidden fixed bottom-4 left-4 right-4 z-40">
+            <div class="bg-white/90 backdrop-blur-md border border-indigo-100/80 shadow-2xl rounded-2xl p-1.5 flex justify-between gap-0.5">
+              <button onclick="app.switchTab('beranda')" id="tab-beranda" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
+                <i data-lucide="home" class="w-4 h-4"></i>
+                <span class="text-[9px]">Beranda</span>
+              </button>
+              <button onclick="app.switchTab('hafal')" id="tab-hafal" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                <span class="text-[9px]">Hafal</span>
+              </button>
+              <button onclick="app.switchTab('tebak')" id="tab-tebak" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span class="text-[9px]">Tebak</span>
+              </button>
+              <button onclick="app.switchTab('lanjut')" id="tab-lanjut" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
+                <i data-lucide="mic" class="w-4 h-4"></i>
+                <span class="text-[9px]">Lanjut</span>
+              </button>
+              <button onclick="app.switchTab('murojaah')" id="tab-murojaah" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+                <span class="text-[9px]">Muroja'ah</span>
+              </button>
+            </div>
+          </nav>
 
-        <!-- Baris 3: Tab bar menyatu di dalam hero -->
-        <div class="tabs flex gap-1 bg-black/15 rounded-t-[20px] p-1 backdrop-blur-sm" id="tab-bar">
-          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="beranda">
-            <span class="tab-icon block text-lg mb-0.5">🏠</span>
-            <span class="text-[10px] font-black uppercase tracking-wider">Beranda</span>
-          </button>
-          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="hafal">
-            <span class="tab-icon block text-lg mb-0.5">📖</span>
-            <span class="text-[10px] font-black uppercase tracking-wider">Hafal</span>
-          </button>
-          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="tebak">
-            <span class="tab-icon block text-lg mb-0.5">🎵</span>
-            <span class="text-[10px] font-black uppercase tracking-wider">Tebak</span>
-          </button>
-          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="lanjut">
-            <span class="tab-icon block text-lg mb-0.5">🎤</span>
-            <span class="text-[10px] font-black uppercase tracking-wider">Lanjut</span>
-          </button>
-          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="murojaah">
-            <span class="tab-icon block text-lg mb-0.5">🔄</span>
-            <span class="text-[10px] font-black uppercase tracking-wider">Murojaah</span>
-          </button>
+          <!-- AREA UTAMA RENDERING KONTEN (Ditambahkan safe padding pb-28 di Mobile) -->
+          <main class="flex-grow p-4 md:p-6 lg:p-0 pb-28 lg:pb-0">
+            <div id="app-content" class="space-y-6">
+              <!-- Rendered dynamically by JavaScript -->
+            </div>
+          </main>
         </div>
 
       </div>
-    </div>
-
-    <!-- MAIN APP CONTENT AREA -->
-    <div class="app-content flex-1 p-5 overflow-y-auto" id="app-content"></div>
+    </section>
   </div>
-</div>
 
-<!-- ========================================== -->
-<!-- JAVASCRIPT & LOGIC                         -->
-<!-- ========================================== -->
-<script>
-// Intercept dialog alert standar dan gantikan dengan visual Toast
-function showToast(message) {
-  const container = $('toast-container');
-  if(!container) return;
-  const toast = document.createElement('div');
-  toast.className = 'toast-msg';
-  toast.innerHTML = `<span>✨</span><span>${message}</span>`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.style.animation = 'slideInDown 0.3s ease-out reverse forwards';
-    setTimeout(() => { toast.remove(); }, 300);
-  }, 3000);
-}
-// Override window.alert default secara aman tanpa merusak logika fungsi aslinya
-window.alert = function(msg) {
-  showToast(msg);
-};
+  <!-- MODAL PENILAIAN AI (MOCKUP/LIVE POP-UP) -->
+  <div id="modal-result" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div id="modal-container" class="bg-white rounded-[2rem] p-5 max-w-sm w-full border-4 border-yellow-200 shadow-2xl text-center space-y-4 transform scale-95 transition-all duration-300">
+      
+      <!-- SVG Maskot Penilaian Dinamis - Dibatasi ukurannya agar pas di layar HP -->
+      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto flex items-center justify-center" id="result-mascot-container"></div>
 
-// ==========================================
-// PENGATURAN API (NETLIFY -> GOOGLE SCRIPT)
-// ==========================================
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6t5frYANPwjzL_Nh0Cn1tdqeb_7KggMMBRJy7XZk99BchxQUTt5juIFYUuPhtRcE/exec";
+      <div class="space-y-0.5">
+        <h3 class="text-lg font-black text-indigo-600" id="result-title">Subhanallah! 🎉</h3>
+        <p class="text-[10px] text-slate-400 font-bold" id="result-score-tag">Skor Hafalan: 95/100</p>
+      </div>
 
-// ===== WARNA =====
-var COLORS = ['#FF3D00','#FF006E','#8338EC','#3A86FF','#06D6A0','#FFB700','#FB5607','#00B4D8','#FF006E','#3A86FF'];
-var SURAH_COLORS = {};
+      <!-- Pesan Feedback -->
+      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100 text-left space-y-1">
+        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Pesan Kak Marz:</p>
+        <p class="text-xs text-slate-600 leading-relaxed italic" id="result-message">
+          "Luar biasa! Bacaanmu lancar sekali."
+        </p>
+      </div>
 
-// ===== STATE =====
-var S = {
-  token: localStorage.getItem('mm_token'),
-  userId: localStorage.getItem('mm_uid'),
-  username: localStorage.getItem('mm_uname'),
-  surahList: [],
-  ayatList: [],
-  progressMap: {},
-  totalHafal: 0,
-  totalSedang: 0,
-  currentTab: 'beranda',
-  currentSurah: null,
-  audio: null,
-  autoPlay: false,
-  ayatIndex: 0,
-  soalSet: [],
-  soalIndex: 0,
-  mediaRecorder: null,
-  recording: false,
-  audioChunks: [],
-  recSoalIndex: 0,
-  recSoalSet: []
-};
+      <!-- Tips Tajwid -->
+      <div id="result-tajwid-container" class="hidden bg-amber-50 text-amber-800 border border-amber-200 rounded-xl p-2.5 text-left flex gap-1.5 items-start">
+        <span class="text-sm">💡</span>
+        <div class="text-[10px]">
+          <p class="font-extrabold">Tips Pelafalan & Tajwid:</p>
+          <p id="result-tajwid-text" class="mt-0.5 leading-normal"></p>
+        </div>
+      </div>
 
-function $(id){ return document.getElementById(id); }
-function show(id){ $(id).classList.remove('hidden'); }
-function hide(id){ $(id).classList.add('hidden'); }
-function showPg(id){
-  ['pg-login','pg-reg','pg-app'].forEach(function(x){ $(x).classList.add('hidden'); });
-  $(id).classList.remove('hidden');
-}
-function loading(txt){ 
-  $('app-content').innerHTML = `
-    <div class="flex flex-col items-center justify-center py-20">
-      <div class="spinner w-12 h-12 border-4 border-slate-200 border-t-primary rounded-full animate-spin mb-4"></div>
-      <p class="text-slate-500 font-extrabold text-sm">${txt || 'Memuat...'}</p>
+      <!-- Tombol Aksi Lanjut -->
+      <button id="modal-action-btn" class="w-full py-3 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-2xl border-b-4 border-purple-700 bouncy-btn shadow-md text-xs">
+        Alhamdulillah, Lanjut! 🚀
+      </button>
     </div>
-  `; 
-}
-function msg(id,t,m){ 
-  var alertClass = t === 'err' ? 'bg-rose-50 text-rose-600 border-rose-100' : t === 'ok' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-blue-50 text-blue-600 border-blue-100';
-  $(id).innerHTML = `<div class="p-4 rounded-xl border text-sm font-bold mb-4 ${alertClass}">${m}</div>`; 
-}
+  </div>
 
-function post(body){
-  body.token = S.token;
-  return fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain'
-    },
-    body: JSON.stringify(body)
-  })
-  .then(function(response){ 
-    return response.json(); 
-  })
-  .catch(function(e){ 
-    console.error("API Error:", e);
-    return {success: false, message: "Gagal terhubung ke server: " + e.message}; 
-  });
-}
+  <!-- FOOTER RESPONSIVE -->
+  <footer class="bg-white border-t border-slate-100 py-3 pb-24 lg:pb-3 text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider relative z-10">
+    Dibuat dengan ❤️ untuk Marzia • Google Apps Script + Gemini AI
+  </footer>
 
-// ===== AUDIO =====
-function stopAudio(){
-  if(S.audio){ S.audio.pause(); S.audio=null; }
-}
-function playAudio(url, onEnd){
-  stopAudio();
-  if(!url) return;
-  S.audio = new Audio(url);
-  S.audio.play().catch(function(){});
-  if(onEnd) S.audio.onended = onEnd;
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  $('go-reg').onclick = function(){ showPg('pg-reg'); };
-  $('go-login').onclick = function(){ showPg('pg-login'); };
-  $('do-login').onclick = doLogin;
-  $('do-reg').onclick = doReg;
-  $('in-pass').onkeydown = function(e){ if(e.key==='Enter') doLogin(); };
-  $('in-rp').onkeydown = function(e){ if(e.key==='Enter') doReg(); };
-
-  document.querySelectorAll('.tab').forEach(function(t){
-    t.onclick = function(){
-      stopAudio();
-      switchTab(t.dataset.tab);
+  <!-- SCRIPTS UTAMA -->
+  <script>
+    // Konfigurasi Web App URL Google Apps Script Anda (AKTIF & TERKONEKSI SEUTUHNYA)
+    const CONFIG = {
+      API_ENDPOINT: 'https://script.google.com/macros/s/AKfycby6t5frYANPwjzL_Nh0Cn1tdqeb_7KggMMBRJy7XZk99BchxQUTt5juIFYUuPhtRcE/exec'
     };
-  });
 
-  if(S.token){ initApp(); } else { showPg('pg-login'); }
-});
+    // State Internal Aplikasi (Mengikuti format terstruktur dari data backend GAS)
+    const S = {
+      token: localStorage.getItem('mm_token') || null,
+      userId: localStorage.getItem('mm_uid') || null,
+      username: localStorage.getItem('mm_uname') || null,
+      streak: parseInt(localStorage.getItem('mm_streak') || '0'),
+      surahList: [],   // Diisi secara dinamis dari API 'getInitialData'
+      ayatList: [],    // Diisi secara dinamis dari API 'getInitialData'
+      progressMap: {}, // Diisi secara dinamis dari API 'getInitialData'
+      totalHafal: 0,
+      totalSedang: 0,
+      currentTab: 'beranda',
+      activeAudio: null,
+      activeAudioUrl: null,
+      autoPlayNext: false,
+      currentPlayingIndex: -1,
+      quizSet: [],
+      quizIndex: 0,
+      quizSelected: null,
+      recSet: [],
+      recIndex: 0,
+      mediaRecorder: null,
+      recordingChunks: [],
+      isRecording: false,
+      recSeconds: 0,
+      recTimer: null,
+      murojaahSchedule: []
+    };
 
-// ===== AUTH =====
-async function doLogin(){
-  var u=$('in-user').value.trim(), p=$('in-pass').value;
-  if(!u||!p){ msg('msg-login','err','Username dan password wajib diisi.'); return; }
-  msg('msg-login','info','Memproses...');
-  var d = await post({action:'login',username:u,password:p});
-  if(d.success){
-    S.token=d.token; S.userId=d.userId; S.username=d.username;
-    localStorage.setItem('mm_token',d.token);
-    localStorage.setItem('mm_uid',d.userId);
-    localStorage.setItem('mm_uname',d.username);
-    initApp();
-  } else { msg('msg-login','err',d.message); }
-}
+    // --- HELPER NAVIGASI & NOTIFIKASI TOAST ---
+    function showToast(message, type = 'info') {
+      const colors = {
+        success: 'bg-emerald-500 text-white',
+        error: 'bg-rose-500 text-white',
+        info: 'bg-indigo-500 text-white'
+      };
+      const toast = document.createElement('div');
+      toast.className = `${colors[type] || colors.info} px-4 py-2.5 rounded-2xl shadow-xl font-bold text-xs text-center border-2 border-white/20 transition-all duration-300 transform translate-y-2 opacity-0 flex items-center justify-center gap-2 pointer-events-auto`;
+      toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+      
+      const container = document.getElementById('toast-container');
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
 
-async function doReg(){
-  var u=$('in-ru').value.trim(), p=$('in-rp').value;
-  if(!u||!p){ msg('msg-reg','err','Username dan password wajib diisi.'); return; }
-  msg('msg-reg','info','Memproses...');
-  var d = await post({action:'register',username:u,password:p});
-  if(d.success){
-    msg('msg-reg','ok','Berhasil! Silakan login.');
-    setTimeout(function(){ showPg('pg-login'); },1500);
-  } else { msg('msg-reg','err',d.message); }
-}
-
-function doLogout(){
-  post({action:'logout'}).catch(function(){});
-  localStorage.clear();
-  S.token=null; S.userId=null; S.username=null;
-  S.surahList=[]; S.ayatList=[]; S.progressMap={};
-  stopAudio();
-  showPg('pg-login');
-}
-
-// ===== APP INIT =====
-async function initApp(){
-  showPg('pg-app');
-  loading('Memuat data...');
-  $('btn-logout').onclick = doLogout;
-
-  var r = await post({action:'getInitialData'});
-  if(!r.success){
-    if(r.message && (r.message.indexOf('Sesi') !== -1 || r.message.indexOf('valid') !== -1 || r.message.indexOf('berakhir') !== -1)){
-      localStorage.clear();
-      S.token=null;
-      showPg('pg-login');
-      return;
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
-    $('app-content').innerHTML='<div class="flex flex-col items-center justify-center text-center p-12"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold">Gagal memuat: '+r.message+'</p></div>';
-    return;
-  }
 
-  S.surahList = r.data.surahList;
-  S.ayatList = r.data.ayatList;
-  S.progressMap = r.data.progressMap;
-  S.totalHafal = r.data.totalHafal;
-  S.totalSedang = r.data.totalSedang;
+    // Generator Maskot SVG Dinamis berdasarkan ekspresi
+    function getMascotSVG(expression) {
+      let mouth = '<path d="M43 58 Q50 64 57 58" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" />';
+      let eyes = '<circle cx="40" cy="48" r="4.5" fill="#1E293B" /><circle cx="60" cy="48" r="4.5" fill="#1E293B" />';
+      let sparkles = '';
+      let crown = '';
+      let motionClass = '';
 
-  S.surahList.forEach(function(s,i){ SURAH_COLORS[s.surah_number] = COLORS[i%COLORS.length]; });
-
-  $('hdr-name').textContent = r.data.username || 'Sahabat';
-  updateHeader();
-  updateStreak();
-  switchTab('beranda');
-}
-
-function updateHeader(){
-  var pct = Math.round(S.totalHafal/564*100);
-  $('hdr-prog-val').textContent = S.totalHafal+' / 564 ayat';
-  $('hdr-pbar').style.width = pct+'%';
-}
-
-function updateStreak(){
-  var today = new Date().toDateString();
-  var last = localStorage.getItem('mm_streak_date');
-  var streak = parseInt(localStorage.getItem('mm_streak')||'0');
-  if(last!==today){
-    streak++;
-    localStorage.setItem('mm_streak',streak);
-    localStorage.setItem('mm_streak_date',today);
-  }
-  $('hdr-streak').textContent = streak;
-}
-
-function switchTab(tab){
-  S.currentTab = tab;
-  stopAudio();
-
-  var tabColors = {beranda:'#FF3D00',hafal:'#8338EC',tebak:'#FF006E',lanjut:'#00B4D8',murojaah:'#06D6A0'};
-  var heroBg = {
-    beranda:'linear-gradient(135deg,#FF3D00,#FF006E)',
-    hafal:'linear-gradient(135deg,#8338EC,#3A86FF)',
-    tebak:'linear-gradient(135deg,#FF006E,#8338EC)',
-    lanjut:'linear-gradient(135deg,#00B4D8,#3A86FF)',
-    murojaah:'linear-gradient(135deg,#06D6A0,#00B4D8)'
-  };
-
-  $('header-hero').style.background = heroBg[tab]||heroBg.beranda;
-
-  document.querySelectorAll('.tab').forEach(function(t){
-    if(t.dataset.tab===tab){
-      t.classList.remove('off'); t.classList.add('on');
-      t.style.color = tabColors[tab]||'#333';
-      t.style.fontWeight = '900';
-    } else {
-      t.classList.remove('on'); t.classList.add('off');
-      t.style.color = '';
-      t.style.fontWeight = '';
-    }
-  });
-
-  if(tab==='beranda') renderBeranda();
-  else if(tab==='hafal') renderHafalList();
-  else if(tab==='tebak') renderTebakAyat();
-  else if(tab==='lanjut') renderLanjutkanAyat();
-  else if(tab==='murojaah') renderMurojaah();
-}
-
-// ===== BERANDA =====
-function renderBeranda(){
-  var pct = Math.round(S.totalHafal/564*100);
-  var surahHtml = S.surahList.slice().reverse().map(function(s,i){
-    var c = SURAH_COLORS[s.surah_number]||COLORS[0];
-    var badge = s.status==='hafal'
-      ? '<span class="surah-badge" style="background:'+c+';color:#fff;">✓ Hafal</span>'
-      : s.status==='sedang'
-      ? '<span class="surah-badge" style="border-color:'+c+';color:'+c+';">Sedang</span>'
-      : '<span class="surah-badge" style="border-color:#E8E8F0;color:#bbb;">Belum</span>';
-    return '<div class="surah-item" onclick="bukaHafal('+s.surah_number+')" style="border-color:'+(s.status!=='belum'?c:'#E8E8F0')+'">'+
-      '<div class="surah-bubble" style="background:'+c+';">'+s.surah_number+'</div>'+
-      '<div class="surah-info">'+
-        '<div class="surah-name">'+s.nama_latin+'</div>'+
-        '<div class="surah-meta">'+s.jumlah_ayat+' ayat • '+s.terjemahan_nama+'</div>'+
-        '<div class="surah-bar"><div class="surah-fill" style="width:'+s.pct+'%;background:'+c+';"></div></div>'+
-      '</div>'+
-      badge+
-    '</div>';
-  }).join('');
-
-  $('app-content').innerHTML =
-    '<div class="stats-grid">'+
-      '<div class="stat-card" style="background:#FFF0E5;border-color:#FF3D00;">'+
-        '<div class="stat-icon">⭐</div>'+
-        '<div class="stat-num" style="color:#FF3D00;">'+Math.floor(S.totalHafal/10)+'</div>'+
-        '<div class="stat-lbl" style="color:#FF3D00;">Bintang</div>'+
-      '</div>'+
-      '<div class="stat-card" style="background:#E8FFF5;border-color:#06D6A0;">'+
-        '<div class="stat-icon">✅</div>'+
-        '<div class="stat-num" style="color:#06D6A0;">'+S.totalHafal+'</div>'+
-        '<div class="stat-lbl" style="color:#06D6A0;">Ayat Hafal</div>'+
-      '</div>'+
-      '<div class="stat-card" style="background:#FFF5E0;border-color:#FFB700;">'+
-        '<div class="stat-icon">🔥</div>'+
-        '<div class="stat-num" style="color:#FFB700;">'+pct+'%</div>'+
-        '<div class="stat-lbl" style="color:#FFB700;">Progress</div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="text-slate-600 text-xs font-black uppercase tracking-widest mb-4">Daftar Surah Juz 30</div>'+
-    '<div>'+surahHtml+'</div>';
-}
-
-// ===== HAFAL AYAT =====
-function renderHafalList(){
-  var surahHtml = S.surahList.slice().reverse().map(function(s){
-    var c = SURAH_COLORS[s.surah_number]||COLORS[0];
-    return '<div class="surah-item" onclick="bukaHafal('+s.surah_number+')" style="border-color:'+(s.status!=='belum'?c:'#E8E8F0')+'">'+
-      '<div class="surah-bubble" style="background:'+c+';">'+s.surah_number+'</div>'+
-      '<div class="surah-info">'+
-        '<div class="surah-name">'+s.nama_latin+'</div>'+
-        '<div class="surah-meta">'+s.hafal+'/'+s.jumlah_ayat+' ayat dihafal</div>'+
-        '<div class="surah-bar"><div class="surah-fill" style="width:'+s.pct+'%;background:'+c+';"></div></div>'+
-      '</div>'+
-      '<span class="text-xl leading-none flex items-center">'+(s.status==='hafal'?'✅':s.status==='sedang'?'📝':'📖')+'</span>'+
-    '</div>';
-  }).join('');
-
-  $('app-content').innerHTML = '<div class="text-slate-500 text-xs font-black uppercase tracking-widest mb-4">Pilih Surah untuk dihafal</div>'+surahHtml;
-}
-
-async function bukaHafal(surahNum){
-  stopAudio();
-  loading('Memuat surah...');
-
-  var surah = S.surahList.find(function(s){ return s.surah_number===surahNum; });
-  var ayatList = S.ayatList.filter(function(a){ return a.surah_number===surahNum; });
-  if(!surah||!ayatList.length){ $('app-content').innerHTML='<div class="flex flex-col items-center justify-center p-10"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold">Data tidak ditemukan.</p></div>'; return; }
-
-  S.currentSurah = { surah:surah, ayat:ayatList };
-  S.ayatIndex = 0;
-
-  var c = SURAH_COLORS[surahNum]||COLORS[0];
-  renderSurahDetail(surah, ayatList, c);
-}
-
-function renderSurahDetail(surah, ayatList, c){
-  var ayatHtml = ayatList.map(function(a){
-    var key = a.surah_number+'_'+a.ayat_number;
-    var st = S.progressMap[key]||'belum';
-    return '<div class="ayat-card '+st+'" id="ayat-'+a.ayat_number+'">'+
-      '<div class="flex justify-between items-center mb-4">'+
-        '<span class="text-xs font-extrabold px-3 py-1 bg-slate-100 rounded-full" style="color:'+c+';">Ayat '+a.ayat_number+(st==='hafal'?' ✓':'')+'</span>'+
-        '<button class="flex items-center gap-1 text-xs font-extrabold px-4 py-2 rounded-full text-white shadow-md hover:opacity-90 active:scale-95 transition" style="background:'+c+';" onclick="playAudio(\''+a.audio_url+'\')">▶ Dengar</button>'+
-      '</div>'+
-      '<div class="arab">'+a.teks_arab+'</div>'+
-      '<div class="text-sm text-slate-500 leading-relaxed font-semibold mb-5">'+a.terjemahan_id+'</div>'+
-      '<div class="flex flex-wrap gap-2">'+
-        '<button class="text-xs font-extrabold px-4 py-2 bg-emerald-500 text-white rounded-xl shadow-sm hover:bg-emerald-600 transition active:scale-95" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'hafal\')">✓ Hafal</button>'+
-        '<button class="text-xs font-extrabold px-4 py-2 bg-yellow-500 text-white rounded-xl shadow-sm hover:bg-yellow-600 transition active:scale-95" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'sedang\')">⏳ Sedang</button>'+
-        '<button class="text-xs font-extrabold px-4 py-2 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition active:scale-95" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'belum\')">✕ Belum</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-
-  $('app-content').innerHTML =
-    '<button onclick="renderHafalList()" class="flex items-center gap-1.5 text-xs font-black text-violet-600 mb-4 hover:underline select-none">← Kembali ke Daftar Surah</button>'+
-    
-    // Player bar widget styling
-    '<div class="bg-white rounded-3xl p-6 mb-6 shadow-md border-2" style="border-color:'+c+'20">'+
-      '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">🎵 Mishary Rashid Al-Afasy</div>'+
-      '<div class="flex items-center gap-4 mb-4">'+
-        '<button class="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-black shadow-lg transition active:scale-95 hover:opacity-95" id="btn-play-all" style="background:'+c+';" onclick="togglePlayAll()">▶</button>'+
-        '<div class="flex-1 min-w-0">'+
-          '<div class="text-sm font-extrabold text-slate-800" id="player-ayat-lbl">Ayat 1 dari '+ayatList.length+'</div>'+
-          '<div class="text-xs font-bold text-slate-400 truncate">'+surah.nama_latin+' • Tap untuk putar semua</div>'+
-        '</div>'+
-      '</div>'+
-      '<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden mb-4">'+
-        '<div class="h-full rounded-full transition-all duration-300" id="player-track" style="width:0%;background:'+c+';"></div>'+
-      '</div>'+
-      '<div class="flex items-center gap-3">'+
-        '<div class="toggle w-12 h-6 rounded-full cursor-pointer relative transition-colors duration-200 flex-shrink-0 off" id="auto-toggle" onclick="toggleAuto()" style="background:#E2E8F0">'+
-          '<div class="toggle-dot w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-md transition-all duration-200"></div>'+
-        '</div>'+
-        '<span class="text-xs font-bold text-slate-600">Putar otomatis ayat berikutnya</span>'+
-      '</div>'+
-    '</div>'+
-    
-    '<div class="text-slate-500 text-xs font-black uppercase tracking-widest mb-3">'+surah.nama_latin+' • '+surah.jumlah_ayat+' Ayat</div>'+
-    ayatHtml;
-}
-
-function togglePlayAll(){
-  var ayat = S.currentSurah.ayat[S.ayatIndex];
-  if(S.audio&&!S.audio.paused){ stopAudio(); $('btn-play-all').textContent='▶'; return; }
-  if(ayat) playAudioAyat(S.ayatIndex);
-}
-
-function playAudioAyat(idx){
-  var ayatList = S.currentSurah.ayat;
-  if(idx>=ayatList.length){ $('btn-play-all').textContent='▶'; return; }
-  S.ayatIndex = idx;
-  var ayat = ayatList[idx];
-  var pct = Math.round((idx+1)/ayatList.length*100);
-  $('player-ayat-lbl').textContent = 'Ayat '+(idx+1)+' dari '+ayatList.length;
-  $('player-track').style.width = pct+'%';
-  $('btn-play-all').textContent = '⏸';
-  document.querySelectorAll('.ayat-card').forEach(function(el){ el.classList.remove('active'); });
-  var el = $('ayat-'+ayat.ayat_number);
-  if(el){ el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'center'}); }
-  playAudio(ayat.audio_url, function(){
-    if(S.autoPlay) playAudioAyat(idx+1);
-    else $('btn-play-all').textContent='▶';
-  });
-}
-
-function toggleAuto(){
-  S.autoPlay = !S.autoPlay;
-  var t = $('auto-toggle');
-  t.classList.toggle('on',S.autoPlay);
-  t.classList.toggle('off',!S.autoPlay);
-  t.style.background = S.autoPlay?'#8338EC':'#E2E8F0';
-}
-
-async function setStatus(surahNum, ayatNum, status){
-  var key = surahNum+'_'+ayatNum;
-  var old = S.progressMap[key]||'belum';
-  S.progressMap[key] = status;
-
-  if(old==='hafal') S.totalHafal--;
-  else if(old==='sedang') S.totalSedang--;
-  if(status==='hafal') S.totalHafal++;
-  else if(status==='sedang') S.totalSedang++;
-
-  updateHeader();
-
-  var surah = S.surahList.find(function(s){ return s.surah_number===surahNum; });
-  if(surah){
-    var ayatList = S.ayatList.filter(function(a){ return a.surah_number===surahNum; });
-    var hafal=0, sedang=0;
-    ayatList.forEach(function(a){
-      var k=surahNum+'_'+a.ayat_number, st=S.progressMap[k]||'belum';
-      if(st==='hafal') hafal++; else if(st==='sedang') sedang++;
-    });
-    surah.hafal=hafal; surah.sedang=sedang;
-    surah.pct=Math.round(hafal/surah.jumlah_ayat*100);
-    surah.status=hafal===surah.jumlah_ayat?'hafal':hafal>0||sedang>0?'sedang':'belum';
-  }
-
-  var el = $('ayat-'+ayatNum);
-  if(el){
-    el.className = 'ayat-card '+(status||'belum');
-    var numEl = el.querySelector('.ayat-num');
-    if(numEl) numEl.textContent = 'Ayat '+ayatNum+(status==='hafal'?' ✓':'');
-  }
-
-  await post({action:'updateProgress',surah_number:surahNum,ayat_number:ayatNum,status:status});
-  updateStreak();
-}
-
-// ===== TEBAK AYAT =====
-function renderTebakAyat(){
-  var lastGen = parseInt(localStorage.getItem('mm_tebak_time')||'0');
-  var now = Date.now();
-  var sixHours = 6*60*60*1000;
-
-  if(now-lastGen > sixHours || !S.soalSet.length){
-    generateSoalSet();
-  } else {
-    S.soalIndex = 0;
-    tampilSoal();
-  }
-}
-
-function generateSoalSet(){
-  var surahDenganHafalan = S.surahList.filter(function(s){ return s.status==='hafal'||s.status==='sedang'; });
-
-  if(surahDenganHafalan.length===0){
-    $('app-content').innerHTML =
-      '<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">📖</div>'+
-      '<p class="text-slate-500 font-extrabold max-w-xs">Belum ada hafalan! Tandai beberapa ayat sebagai "Hafal" atau "Sedang" terlebih dahulu.</p></div>';
-    return;
-  }
-
-  var soalList = [];
-
-  surahDenganHafalan.forEach(function(s){
-    var ayatSurah = S.ayatList.filter(function(a){ return a.surah_number===s.surah_number; });
-    for(var i=0; i<ayatSurah.length-1; i++){
-      var key = s.surah_number+'_'+ayatSurah[i].ayat_number;
-      var st = S.progressMap[key]||'belum';
-      if(st==='hafal'||st==='sedang'){
-        soalList.push({ surah:s, ayatSoal:ayatSurah[i], ayatJawaban:ayatSurah[i+1], allAyat:ayatSurah });
+      if (expression === 'listening') {
+        eyes = '<path d="M35 48 Q40 52 45 48" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" /><path d="M55 48 Q60 52 65 48" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />';
+        mouth = '<path d="M45 58 Q50 61 55 58" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />';
+        sparkles = `
+          <!-- Headphone -->
+          <path d="M25 50 A 25 25 0 0 1 75 50" fill="none" stroke="#EC4899" stroke-width="6" stroke-linecap="round"/>
+          <rect x="20" y="44" width="8" height="12" rx="3" fill="#EC4899" />
+          <rect x="72" y="44" width="8" height="12" rx="3" fill="#EC4899" />
+        `;
+      } else if (expression === 'thinking') {
+        eyes = '<circle cx="40" cy="48" r="4.5" fill="#1E293B" /><line x1="56" y1="48" x2="64" y2="48" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" />';
+        mouth = '<circle cx="50" cy="58" r="3.5" fill="#1E293B" />';
+        motionClass = 'animate-bounce';
+      } else if (expression === 'success') {
+        eyes = `
+          <polygon points="40,40 43,45 48,45 44,48 46,53 40,50 34,53 36,48 32,45 37,45" fill="#FBBF24" />
+          <polygon points="60,40 63,45 68,45 64,48 66,53 60,50 54,53 56,48 52,45 57,45" fill="#FBBF24" />
+        `;
+        mouth = '<path d="M40 56 Q50 66 60 56" fill="none" stroke="#1E293B" stroke-width="4.5" stroke-linecap="round" />';
+        crown = '<polygon points="40,12 45,2 50,12 55,2 60,12" fill="#FBBF24" stroke="#D97706" stroke-width="1.5" />';
+        motionClass = 'animate-bounce';
+      } else if (expression === 'encouraging') {
+        eyes = '<path d="M34 48 L44 48" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/><circle cx="60" cy="48" r="4.5" fill="#1E293B" />';
+        mouth = '<path d="M43 57 Q50 62 57 57" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" />';
       }
+
+      return `
+        <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md ${motionClass}">
+          <polygon points="50,5 64,36 98,36 70,57 81,91 50,70 19,91 30,57 2,36 36,36" fill="#FCD34D" stroke="#D97706" stroke-width="3"/>
+          ${crown}
+          ${eyes}
+          <circle cx="34" cy="54" r="4" fill="#FCA5A5" />
+          <circle cx="66" cy="54" r="4" fill="#FCA5A5" />
+          ${mouth}
+          ${sparkles}
+        </svg>
+      `;
     }
-  });
 
-  if(soalList.length===0){
-    $('app-content').innerHTML =
-      '<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">🤔</div>'+
-      '<p class="text-slate-500 font-extrabold max-w-xs">Tidak ada soal tersedia. Pastikan surah yang dihafal memiliki lebih dari 1 ayat.</p></div>';
-    return;
-  }
-
-  soalList.sort(function(){ return Math.random()-0.5; });
-  S.soalSet = soalList.slice(0,3).map(function(item){
-    var pengecoh = item.allAyat
-      .filter(function(a){
-        return a.ayat_number!==item.ayatSoal.ayat_number &&
-               a.ayat_number!==item.ayatJawaban.ayat_number;
-      })
-      .sort(function(){ return Math.random()-0.5; })
-      .slice(0,2);
-
-    var pilihanRaw = [item.ayatJawaban].concat(pengecoh);
-    pilihanRaw.sort(function(){ return Math.random()-0.5; });
-
-    return {
-      surah: item.surah,
-      ayatSoal: item.ayatSoal,
-      ayatJawaban: item.ayatJawaban,
-      pilihan: pilihanRaw,
-      jawabanIndex: pilihanRaw.findIndex(function(p){ return p.ayat_number===item.ayatJawaban.ayat_number; })
-    };
-  });
-
-  localStorage.setItem('mm_tebak_time', Date.now().toString());
-  S.soalIndex = 0;
-  tampilSoal();
-}
-
-function tampilSoal(){
-  if(S.soalIndex>=S.soalSet.length){
-    tampilHasilAkhir();
-    return;
-  }
-
-  var soal = S.soalSet[S.soalIndex];
-  var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[0];
-  
-  var progDots = S.soalSet.map(function(_,i){
-    var stateClass = i<S.soalIndex ? 'bg-emerald-500' : i===S.soalIndex ? 'bg-amber-400 scale-110' : 'bg-slate-200';
-    return '<div class="h-2 rounded-full flex-1 transition-all duration-300 '+stateClass+'"></div>';
-  }).join('');
-
-  var pilihanHtml = soal.pilihan.map(function(p,i){
-    var btnColors = ['#8338EC','#FF006E','#FF3D00'];
-    return '<div class="choice" id="choice-'+i+'" onclick="pilihJawaban('+i+',this)">'+
-      '<button class="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs shadow-md transition active:scale-90 flex-shrink-0" style="background:'+btnColors[i%btnColors.length]+';" onclick="event.stopPropagation();playAudio(\''+p.audio_url+'\')">▶</button>'+
-      '<div class="c-arab text-right text-lg leading-relaxed flex-1" style="font-family: var(--arabic)">'+p.teks_arab+'</div>'+
-    '</div>';
-  }).join('');
-
-  $('app-content').innerHTML =
-    '<div class="flex gap-2 mb-6">'+progDots+'</div>'+
-    '<div class="bg-white rounded-[32px] p-6 border-2 shadow-lg mb-6" style="border-color:'+c+'30">'+
-      '<div class="inline-flex items-center gap-2 text-xs font-black px-4 py-2 text-white rounded-full mb-4" style="background:'+c+'">🎵 Tebak Ayat • '+soal.surah.nama_latin+'</div>'+
-      '<button class="w-full py-4 rounded-2xl font-black text-white shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 mb-4" style="background:'+c+'" onclick="playAudio(\''+soal.ayatSoal.audio_url+'\')">▶ &nbsp;Dengarkan Soal</button>'+
-      '<div class="rounded-2xl p-5 mb-4 text-center border-2 border-dashed" style="background:'+c+'10; border-color:'+c+'50">'+
-        '<div class="arab text-center" style="text-align: center; direction: rtl;">'+soal.ayatSoal.teks_arab+'</div>'+
-      '</div>'+
-      '<div class="text-xs text-center text-slate-400 font-extrabold uppercase tracking-widest mb-4">👇 Pilih ayat selanjutnya</div>'+
-      '<div class="flex flex-col gap-3 mb-6">'+pilihanHtml+'</div>'+
-      '<button class="w-full py-4 text-white font-black rounded-2xl shadow-lg active:scale-95 transition" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="kirimTebak('+soal.jawabanIndex+')">Kirim Jawaban ✓</button>'+
-    '</div>';
-
-  S.pilihanDipilih = null;
-}
-
-var pilihanDipilih = null;
-function pilihJawaban(idx, el){
-  document.querySelectorAll('.choice').forEach(function(c){ c.classList.remove('sel'); });
-  el.classList.add('sel');
-  pilihanDipilih = idx;
-}
-
-async function kirimTebak(jawabanIdx){
-  if(pilihanDipilih===null){ alert('Pilih jawaban dulu! 👆'); return; }
-  var soal = S.soalSet[S.soalIndex];
-  var benar = pilihanDipilih===jawabanIdx;
-
-  document.querySelectorAll('.choice').forEach(function(el,i){
-    if(i===jawabanIdx) el.classList.add('ok');
-    else if(i===pilihanDipilih) el.classList.add('no');
-    el.onclick = null;
-  });
-
-  await post({
-    action:'saveLog',
-    surah_number:soal.surah.surah_number,
-    ayat_number:soal.ayatSoal.ayat_number,
-    fitur:'tebak_ayat',
-    hasil:benar?'benar':'salah',
-    skor:benar?100:0,
-    catatan:''
-  });
-
-  setTimeout(function(){
-    var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[0];
-    var stars = benar?'⭐⭐⭐':'';
-    var fbHtml =
-      '<div class="feedback-card rounded-[32px] p-8 text-center border-4" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
-        '<div class="text-6xl mb-4">'+(benar?'🎉':'💪')+'</div>'+
-        '<div class="text-2xl font-extrabold mb-1" style="color:'+(benar?'#06D6A0':'#FF3D00')+'">'+(benar?'Benar! Keren!':'Yuk coba lagi!')+'</div>'+
-        '<div class="text-sm font-bold text-slate-500 mb-4">'+(benar?'MasyaAllah, hafalanmu bagus!':'Jangan menyerah, semangat!')+'</div>'+
-        (stars?'<div class="flex justify-center gap-1.5 text-3xl mb-4">'+stars+'</div>':'')+
-        '<div class="inline-block px-6 py-2.5 rounded-full text-base font-extrabold text-white mb-6" style="background:'+(benar?'#06D6A0':'#FF3D00')+';">'+
-          (benar?'Skor: 100/100':'Skor: 0/100')+
-        '</div>'+
-        '<button class="w-full py-4 text-white font-black rounded-2xl shadow-lg transition active:scale-95" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="lanjutSoal()">'+
-          (S.soalIndex<S.soalSet.length-1?'Soal Berikutnya ➡':'Lihat Hasil 🏆')+
-        '</button>'+
-      '</div>';
-
-    var prog = $('app-content').querySelector('.flex.gap-2.mb-6');
-    var progHtml = prog ? prog.outerHTML : '';
-    $('app-content').innerHTML = progHtml + fbHtml;
-  },800);
-
-  pilihanDipilih = null;
-}
-
-function lanjutSoal(){
-  S.soalIndex++;
-  tampilSoal();
-}
-
-function tampilHasilAkhir(){
-  $('app-content').innerHTML =
-    '<div class="feedback-card rounded-[32px] p-8 text-center border-4 border-[#8338EC] bg-gradient-to-br from-[#FFF0FF] to-[#E8F0FF] shadow-xl">'+
-      '<div class="text-6xl mb-4">🏆</div>'+
-      '<div class="text-2xl font-black text-[#8338EC] mb-2">Keren! Selesai!</div>'+
-      '<div class="text-sm font-bold text-slate-500 mb-6">Kamu sudah menyelesaikan semua soal hari ini. Terus semangat berlatih!</div>'+
-      '<div class="flex justify-center text-3xl mb-6">⭐⭐⭐</div>'+
-      '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#8338EC] to-[#3A86FF] shadow-lg mb-3 active:scale-95 transition" onclick="generateSoalSet()">Main Lagi 🔄</button>'+
-      '<button class="w-full py-3 text-violet-600 font-extrabold border-2 border-violet-200 rounded-2xl bg-white hover:bg-slate-50 transition active:scale-95" onclick="switchTab(\'hafal\')">Tambah Hafalan 📖</button>'+
-    '</div>';
-}
-
-// ===== LANJUTKAN AYAT =====
-function renderLanjutkanAyat(){
-  var surahDenganHafalan = S.surahList.filter(function(s){ return s.status==='hafal'||s.status==='sedang'; });
-  if(surahDenganHafalan.length===0){
-    $('app-content').innerHTML =
-      '<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">📖</div>'+
-      '<p class="text-slate-500 font-extrabold max-w-xs">Belum ada hafalan! Tandai ayat dulu di tab Hafal Ayat.</p></div>';
-    return;
-  }
-
-  var kandidat = [];
-  surahDenganHafalan.forEach(function(s){
-    var ayatSurah = S.ayatList.filter(function(a){ return a.surah_number===s.surah_number; });
-    for(var i=0;i<ayatSurah.length-1;i++){
-      var key=s.surah_number+'_'+ayatSurah[i].ayat_number;
-      var st=S.progressMap[key]||'belum';
-      if(st==='hafal'||st==='sedang'){
-        kandidat.push({ surah:s, ayatSoal:ayatSurah[i], ayatJawaban:ayatSurah[i+1] });
+    // --- MANAJEMEN AUTENTIKASI ---
+    const auth = {
+      init() {
+        if (S.token) {
+          document.getElementById('pg-auth').classList.add('hidden');
+          document.getElementById('pg-app').classList.remove('hidden');
+          app.start();
+        } else {
+          document.getElementById('pg-auth').classList.remove('hidden');
+          document.getElementById('pg-app').classList.add('hidden');
+        }
       }
-    }
-  });
-
-  if(kandidat.length===0){
-    $('app-content').innerHTML='<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">🤔</div><p class="text-slate-500 font-bold">Tidak ada soal tersedia.</p></div>';
-    return;
-  }
-
-  kandidat.sort(function(){ return Math.random()-0.5; });
-  S.recSoalSet = kandidat.slice(0,3);
-  S.recSoalIndex = 0;
-  tampilSoalRekam();
-}
-
-function tampilSoalRekam(){
-  if(S.recSoalIndex>=S.recSoalSet.length){
-    $('app-content').innerHTML =
-      '<div class="feedback-card rounded-[32px] p-8 text-center border-4 border-[#00B4D8] bg-gradient-to-br from-[#E8F4FF] to-[#F0FFFF] shadow-xl">'+
-        '<div class="text-6xl mb-4">🎤</div>'+
-        '<div class="text-2xl font-black text-[#00B4D8] mb-2">Sesi Selesai!</div>'+
-        '<div class="text-sm font-bold text-slate-500 mb-6">Bagus sekali! Kamu sudah berlatih membaca hari ini.</div>'+
-        '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#00B4D8] to-[#3A86FF] shadow-lg active:scale-95 transition" onclick="renderLanjutkanAyat()">Ulangi Lagi 🔄</button>'+
-      '</div>';
-    return;
-  }
-
-  var soal = S.recSoalSet[S.recSoalIndex];
-  var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[3];
-  
-  var progDots = S.recSoalSet.map(function(_,i){
-    var stateClass = i<S.recSoalIndex ? 'bg-emerald-500' : i===S.recSoalIndex ? 'bg-amber-400 scale-110' : 'bg-slate-200';
-    return '<div class="h-2 rounded-full flex-1 transition-all duration-300 '+stateClass+'"></div>';
-  }).join('');
-
-  $('app-content').innerHTML =
-    '<div class="flex gap-2 mb-6">'+progDots+'</div>'+
-    '<div class="bg-white rounded-[32px] p-6 border-2 shadow-lg mb-6" style="border-color:#00B4D850">'+
-      '<div class="inline-flex items-center gap-2 text-xs font-black px-4 py-2 text-white rounded-full mb-4" style="background:'+c+'">🎤 Lanjutkan Ayat • '+soal.surah.nama_latin+'</div>'+
-      
-      '<div class="border-2 rounded-2xl p-5 mb-4 bg-slate-50/50" style="border-color:'+c+'20">'+
-        '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Soal — '+soal.surah.nama_latin+' Ayat '+soal.ayatSoal.ayat_number+'</div>'+
-        '<div class="arab" style="text-align: right; direction: rtl;">'+soal.ayatSoal.teks_arab+'</div>'+
-        '<div class="text-xs text-slate-500 font-extrabold mt-1">Bacakan ayat selanjutnya...</div>'+
-      '</div>'+
-      
-      '<button class="w-full py-3.5 border-2 rounded-2xl text-xs font-black bg-sky-50 text-sky-600 hover:bg-sky-100 transition active:scale-95 flex items-center justify-center gap-2 mb-6" style="border-color:#3a86ff30" onclick="playAudio(\''+soal.ayatJawaban.audio_url+'\')">▶ Dengar contoh jawaban</button>'+
-      
-      '<div class="flex flex-col items-center gap-2 mb-6">'+
-        '<button class="w-20 h-20 rounded-full flex items-center justify-center text-3xl text-white shadow-xl hover:scale-105 active:scale-90 transition-all cursor-pointer relative" id="rec-btn" style="background:linear-gradient(135deg,#FF3D00,#FF006E);" onclick="toggleRekam('+soal.surah.surah_number+','+soal.ayatSoal.ayat_number+','+soal.ayatJawaban.ayat_number+')">🎤</button>'+
-        '<div class="text-xs font-black text-slate-400" id="rec-lbl">Tap untuk merekam</div>'+
-      '</div>'+
-      
-      '<div class="h-10 bg-slate-50 rounded-2xl flex items-center justify-center gap-1.5 px-4 overflow-hidden mb-6" id="wave-viz">'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:8px;"></div>'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:16px;"></div>'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:10px;"></div>'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:20px;"></div>'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:12px;"></div>'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:18px;"></div>'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:8px;"></div>'+
-        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:14px;"></div>'+
-      '</div>'+
-      '<div id="rec-result"></div>'+
-    '</div>';
-}
-
-var waveInterval = null;
-async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
-  if(S.recording){
-    S.recording = false;
-    if(S.mediaRecorder) S.mediaRecorder.stop();
-    clearInterval(waveInterval);
-    $('rec-btn').classList.remove('recording');
-    $('rec-btn').style.animation = 'none';
-    $('rec-btn').textContent = '🎤';
-    $('rec-lbl').textContent = 'Memproses...';
-    return;
-  }
-
-  try {
-    var stream = await navigator.mediaDevices.getUserMedia({audio:true});
-    S.recording = true;
-    S.audioChunks = [];
-    $('rec-btn').classList.add('recording');
-    $('rec-btn').textContent = '⏹';
-    $('rec-lbl').textContent = 'Sedang merekam... tap untuk berhenti';
-
-    var waveColors = ['#FF3D00','#FF006E','#8338EC','#3A86FF','#06D6A0','#FFB700','#00B4D8'];
-    waveInterval = setInterval(function(){
-      var bars = document.querySelectorAll('.wb');
-      bars.forEach(function(b, i){
-        b.style.height = (Math.random()*28+6)+'px';
-        b.style.background = waveColors[i % waveColors.length];
-      });
-    },150);
-
-    S.mediaRecorder = new MediaRecorder(stream);
-    S.mediaRecorder.ondataavailable = function(e){
-      if(e.data.size>0) S.audioChunks.push(e.data);
     };
-    S.mediaRecorder.onstop = async function(){
-      stream.getTracks().forEach(function(t){ t.stop(); });
-      clearInterval(waveInterval);
-      $('rec-lbl').textContent = 'Menilai bacaan...';
 
-      var blob = new Blob(S.audioChunks, {type:'audio/webm'});
-      var reader = new FileReader();
-      reader.onload = async function(){
-        var base64 = reader.result.split(',')[1];
-        var soal = S.recSoalSet[S.recSoalIndex];
-        var r = await post({
-          action:'nilaiRekaman',
-          surah_number:surahNum,
-          ayat_number:ayatSoalNum,
-          audio_base64:base64,
-          mime_type:'audio/webm'
+    // --- CORE ENGINE APLIKASI ---
+    const app = {
+      async start() {
+        document.getElementById('hdr-name').textContent = S.username || 'Sahabat';
+        
+        // Memuat streak
+        const streakDateStr = localStorage.getItem('mm_streak_date');
+        const todayStr = new Date().toDateString();
+        if (streakDateStr !== todayStr) {
+          S.streak = (streakDateStr === new Date(Date.now() - 86400000).toDateString()) ? S.streak + 1 : 1;
+          localStorage.setItem('mm_streak', S.streak);
+          localStorage.setItem('mm_streak_date', todayStr);
+        }
+        document.getElementById('hdr-streak').textContent = S.streak;
+
+        this.showLoading();
+        
+        // Memuat data awal dari backend Google Apps Script
+        await this.loadInitialData();
+      },
+
+      showLoading() {
+        document.getElementById('app-content').innerHTML = `
+          <div class="flex flex-col items-center justify-center py-16 space-y-4">
+            <div class="w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+            <p class="text-xs font-bold text-slate-400">Menyinkronkan data petualanganmu... ✨</p>
+          </div>
+        `;
+      },
+
+      async loadInitialData() {
+        try {
+          const response = await this.callAPI({ action: 'getInitialData' });
+          if (response.success && response.data) {
+            S.username = response.data.username;
+            S.surahList = response.data.surahList;
+            S.ayatList = response.data.ayatList;
+            S.progressMap = response.data.progressMap;
+            
+            // Rekalkulasi progress lokal sesuai data dari DB Google Sheets
+            this.recalculateStats();
+            this.switchTab('beranda');
+          } else {
+            // Jika token kedaluwarsa atau terjadi galat sesi
+            this.logout();
+            showToast('Sesi belajar berakhir. Silakan login kembali ya sayang!', 'error');
+          }
+        } catch(e) {
+          console.error(e);
+          document.getElementById('app-content').innerHTML = `
+            <div class="bg-white rounded-[2rem] p-8 shadow-md border-2 border-rose-100 text-center space-y-4 max-w-sm mx-auto">
+              <span class="text-5xl block">😢</span>
+              <h3 class="text-lg font-black text-slate-700">Gagal Memuat Data</h3>
+              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Pastikan koneksi internetmu lancar dan URL Web App Apps Script sudah terpasang dengan benar!</p>
+              <button onclick="app.start()" class="py-3 px-6 bg-indigo-500 hover:bg-indigo-600 text-white font-extrabold rounded-2xl bouncy-btn shadow-md text-xs">Coba Lagi 🔄</button>
+            </div>
+          `;
+        }
+      },
+
+      recalculateStats() {
+        S.totalHafal = 0;
+        S.totalSedang = 0;
+
+        // Atur urutan surah terbalik (descending dari surat nomor terbesar ke terkecil)
+        S.surahList.sort((a, b) => b.surah_number - a.surah_number);
+        
+        // Atur urutan ayat agar selalu berurutan normal (ascending)
+        S.ayatList.sort((a, b) => a.ayat_number - b.ayat_number);
+
+        S.surahList.forEach(s => {
+          // Cari ayat yang sesuai
+          const matchingAyat = S.ayatList.filter(a => a.surah_number === s.surah_number);
+          let countHafal = 0;
+          let countSedang = 0;
+
+          matchingAyat.forEach(a => {
+            const status = S.progressMap[`${s.surah_number}_${a.ayat_number}`] || 'belum';
+            if (status === 'hafal') countHafal++;
+            if (status === 'sedang') countSedang++;
+          });
+
+          s.hafal = countHafal;
+          s.sedang = countSedang;
+          s.pct = Math.round((countHafal / s.jumlah_ayat) * 100);
+          s.status = (countHafal === s.jumlah_ayat) ? 'hafal' : (countHafal > 0 || countSedang > 0) ? 'sedang' : 'belum';
+
+          S.totalHafal += countHafal;
+          S.totalSedang += countSedang;
         });
 
-        S.recording = false;
+        // Update progress bar global
+        const totalAyatJuz30 = 564; // Total ayat di Juz 30 (Al-Naba ke Al-Nas)
+        const visualPct = Math.round((S.totalHafal / totalAyatJuz30) * 100);
+        document.getElementById('hdr-prog-val').textContent = `${S.totalHafal} / ${totalAyatJuz30} Ayat`;
+        document.getElementById('hdr-pbar').style.width = `${Math.min(visualPct, 100)}%`;
+      },
 
-        if(!r.success){
-          $('rec-result').innerHTML='<div class="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl text-sm font-bold">Gagal menilai: '+r.message+'</div>';
+      switchTab(tab) {
+        S.currentTab = tab;
+        this.stopAudio();
+
+        // Skema Gradasi Warna Header Ceria Per Tab
+        const heroBackgrounds = {
+          beranda: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)', // Orange Mentari
+          hafal: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',   // Lavender Ungu
+          tebak: 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)',   // Pink Stroberi
+          lanjut: 'linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%)',  // Biru Langit
+          murojaah: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' // Hijau Mint
+        };
+        document.getElementById('app-header').style.background = heroBackgrounds[tab];
+
+        // Kelola CSS tombol tab aktif / tidak aktif (Mobile Nav)
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.classList.add('text-slate-400');
+          btn.classList.remove('text-purple-600', 'bg-purple-50/55', 'border-t-2', 'border-purple-500');
+        });
+        const activeBtn = document.getElementById(`tab-${tab}`);
+        if (activeBtn) {
+          activeBtn.classList.remove('text-slate-400');
+          activeBtn.classList.add('text-purple-600', 'bg-purple-50/55', 'border-t-2', 'border-purple-500');
+        }
+
+        // Kelola CSS tombol tab aktif / tidak aktif (Desktop Sidebar)
+        document.querySelectorAll('.tab-btn-desktop').forEach(btn => {
+          btn.className = "tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn";
+          btn.style.background = '';
+          btn.style.color = '';
+        });
+        const activeBtnDesktop = document.getElementById(`sidebar-${tab}`);
+        if (activeBtnDesktop) {
+          activeBtnDesktop.className = "tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-black transition-all text-white text-sm bouncy-btn shadow-md";
+          activeBtnDesktop.style.background = heroBackgrounds[tab];
+        }
+
+        // Render Modul Tab Terkait
+        if (tab === 'beranda') this.renderBeranda();
+        else if (tab === 'hafal') this.renderHafalList();
+        else if (tab === 'tebak') this.renderTebak();
+        else if (tab === 'lanjut') this.renderLanjutkan();
+        else if (tab === 'murojaah') this.renderMurojaah();
+      },
+
+      // --- TAB 1: BERANDA (Dashboard Peta) ---
+      renderBeranda() {
+        const container = document.getElementById('app-content');
+        
+        let surahListCards = S.surahList.map(s => {
+          const themeColors = {
+            hafal: { border: 'border-emerald-200 bg-emerald-50/30', badge: 'bg-emerald-500 text-white', icon: '👑 Hafal!' },
+            sedang: { border: 'border-amber-200 bg-amber-50/30', badge: 'bg-amber-500 text-white', icon: '📝 Diulang' },
+            belum: { border: 'border-slate-100 bg-white', badge: 'bg-slate-100 text-slate-400', icon: '📖 Belum' }
+          };
+          const style = themeColors[s.status] || themeColors.belum;
+
+          return `
+            <div onclick="app.openDetailHafal(${s.surah_number})" class="flex items-center justify-between p-4 rounded-3xl border-2 ${style.border} shadow-sm hover:shadow-md cursor-pointer bouncy-btn transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center font-black text-indigo-600 font-kids text-base">
+                  ${s.surah_number}
+                </div>
+                <div>
+                  <h4 class="font-extrabold text-slate-700 leading-tight">${s.nama_latin}</h4>
+                  <p class="text-[10px] text-slate-400 font-bold">${s.terjemahan_nama} • ${s.jumlah_ayat} Ayat</p>
+                  
+                  <!-- Mini Progress Bar -->
+                  <div class="w-24 h-1.5 bg-slate-100 rounded-full mt-1.5 overflow-hidden">
+                    <div class="h-full bg-indigo-500" style="width: ${s.pct}%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-[9px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full ${style.badge}">
+                  ${style.icon}
+                </span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <!-- Kartu Selamat Datang Maskot -->
+          <div class="bg-white rounded-[2rem] p-5 shadow-sm border-2 border-indigo-100 flex gap-4 items-center relative overflow-hidden">
+            <div class="w-20 h-20 flex-shrink-0">
+              ${getMascotSVG('encouraging')}
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-base font-black text-slate-700 leading-tight">Yuk, Kumpulkan Bintang! ⭐</h3>
+              <p class="text-[11px] text-slate-400 leading-relaxed font-semibold">Tandai setiap ayat yang sudah berhasil kamu hafal untuk mendapatkan bintang-bintang ceria dari Kak Marz!</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Pulau Petualangan Juz 30</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${surahListCards}</div>
+          </div>
+        `;
+        lucide.createIcons();
+      },
+
+      // --- TAB 2: HAFAL AYAT ---
+      renderHafalList() {
+        const container = document.getElementById('app-content');
+        let cardListHtml = S.surahList.map(s => {
+          return `
+            <div onclick="app.openDetailHafal(${s.surah_number})" class="bg-white p-4 rounded-2xl border-2 border-slate-100 flex items-center justify-between shadow-sm cursor-pointer hover:border-purple-300 bouncy-btn transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center font-black text-base font-kids">
+                  ${s.surah_number}
+                </div>
+                <div>
+                  <h4 class="font-black text-slate-700">${s.nama_latin}</h4>
+                  <p class="text-[10px] text-slate-400 font-bold">${s.hafal} / ${s.jumlah_ayat} Ayat Dihafal</p>
+                </div>
+              </div>
+              <div class="w-7 h-7 bg-purple-50 text-purple-500 rounded-full flex items-center justify-center">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <div class="space-y-3">
+            <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Pilih Surah Hafalan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${cardListHtml}</div>
+          </div>
+        `;
+        lucide.createIcons();
+      },
+
+      openDetailHafal(surahNum) {
+        this.stopAudio();
+        
+        const surah = S.surahList.find(s => s.surah_number === surahNum);
+        const listAyat = S.ayatList.filter(a => a.surah_number === surahNum);
+        
+        if (!surah || !listAyat.length) {
+          showToast('Data ayat surah tersebut tidak ditemukan.', 'error');
           return;
         }
 
-        var d=r.data;
-        var benar=d.hasil==='benar'||d.hasil==='hampir_benar';
-        $('rec-result').innerHTML =
-          '<div class="feedback-card rounded-3xl p-6 text-center border-4 mt-6" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
-            '<div class="text-5xl mb-3">'+(d.emoji||( benar?'🎉':'💪'))+'</div>'+
-            '<div class="text-xl font-black mb-1" style="color:'+(benar?'#06D6A0':'#FF3D00')+';">'+(benar?'MasyaAllah!':'Yuk coba lagi!')+'</div>'+
-            '<div class="text-sm font-bold text-slate-500 mb-4">'+d.feedback+'</div>'+
-            (d.catatan_tajwid?'<div class="bg-amber-50 text-amber-700 border border-amber-100 rounded-xl p-3 mb-4 text-xs font-black text-left">📝 '+d.catatan_tajwid+'</div>':'')+
-            '<div class="inline-block px-5 py-2 rounded-full text-sm font-black text-white mb-6" style="background:'+(benar?'#06D6A0':'#FF3D00')+';">Skor: '+d.skor+'/100</div>'+
-            '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#00B4D8] to-[#3A86FF] shadow-lg active:scale-95 transition" onclick="nextRekam()">'+
-              (S.recSoalIndex<S.recSoalSet.length-1?'Soal Berikutnya ➡':'Selesai 🏆')+
-            '</button>'+
-          '</div>';
-      };
-      reader.readAsDataURL(blob);
+        const container = document.getElementById('app-content');
+        
+        // Buat daftar kartu ayat
+        let listAyatHtml = listAyat.map(a => {
+          const key = `${a.surah_number}_${a.ayat_number}`;
+          const currentStatus = S.progressMap[key] || 'belum';
+          
+          let cardStyle = "border-slate-100 bg-white";
+          if (currentStatus === 'hafal') cardStyle = "border-emerald-300 bg-emerald-50/10";
+          if (currentStatus === 'sedang') cardStyle = "border-amber-300 bg-amber-50/10";
+
+          return `
+            <div id="ayat-card-${a.ayat_number}" class="border-2 rounded-3xl p-5 shadow-sm space-y-4 transition-all duration-300 ${cardStyle}">
+              <!-- Atas: Nomor Ayat & Play Audio Individu -->
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-black text-slate-400 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full">Ayat ${a.ayat_number}</span>
+                <button onclick="app.playSingleVerse('${a.audio_url}', ${a.ayat_number})" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white font-extrabold text-[10px] rounded-full bouncy-btn shadow-sm">
+                  <i data-lucide="play" class="w-3.5 h-3.5"></i> DENGAR
+                </button>
+              </div>
+
+              <!-- Tengah: Teks Arab Besar & Terjemahan -->
+              <div class="space-y-3 text-right">
+                <h2 class="arabic-text text-3xl font-bold leading-loose text-indigo-900" dir="rtl">${a.teks_arab}</h2>
+                <p class="text-xs text-slate-500 text-left leading-relaxed font-semibold italic">"${a.terjemahan_id}"</p>
+              </div>
+
+              <!-- Bawah: Penanda Status Cepat -->
+              <div class="flex items-center gap-2 pt-1">
+                <button onclick="app.setAyatStatus(${surah.surah_number}, ${a.ayat_number}, 'hafal')" class="flex-1 py-2 rounded-xl text-[10px] font-black border-2 border-emerald-500 hover:bg-emerald-50 ${currentStatus === 'hafal' ? 'bg-emerald-500 text-white hover:bg-emerald-500' : 'text-emerald-600 bg-white'} bouncy-btn transition-all">
+                  ✓ HAFAL
+                </button>
+                <button onclick="app.setAyatStatus(${surah.surah_number}, ${a.ayat_number}, 'sedang')" class="flex-1 py-2 rounded-xl text-[10px] font-black border-2 border-amber-500 hover:bg-amber-50 ${currentStatus === 'sedang' ? 'bg-amber-500 text-white hover:bg-amber-500' : 'text-amber-600 bg-white'} bouncy-btn transition-all">
+                  ⏳ ULANG
+                </button>
+                <button onclick="app.setAyatStatus(${surah.surah_number}, ${a.ayat_number}, 'belum')" class="py-2 px-3 rounded-xl text-[10px] font-black border-2 border-slate-200 text-slate-400 hover:bg-slate-50 bouncy-btn transition-all">
+                  ✕ RESET
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <!-- Navigasi Kembali -->
+          <div class="flex items-center justify-between">
+            <button onclick="app.renderHafalList()" class="flex items-center gap-1.5 text-purple-600 hover:text-purple-700 font-extrabold text-sm bouncy-btn">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Surah
+            </button>
+            <span class="text-xs font-black text-purple-500 uppercase tracking-widest bg-purple-100/50 px-3 py-1 rounded-full">
+              Surah ${surah.nama_latin}
+            </span>
+          </div>
+
+          <!-- AUDIO PLAYER BAR INTERAKTIF -->
+          <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-[2rem] p-5 border-2 border-indigo-100 shadow-sm space-y-4">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <span class="p-2 bg-indigo-100 rounded-2xl text-lg">🎧</span>
+                <div>
+                  <h4 class="text-xs font-black text-slate-700">Murattal Mishary Al-Afasy</h4>
+                  <p class="text-[9px] text-slate-400 font-bold" id="player-status-subtitle">Tekan tombol putar untuk memutar semua ayat</p>
+                </div>
+              </div>
+              
+              <!-- Auto Play Next Switch (iOS-Style Toggle) -->
+              <div class="flex items-center gap-2">
+                <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider" id="lbl-toggle-auto">PUTAR MANUAL</span>
+                <button onclick="app.toggleAutoPlayNext()" id="btn-toggle-auto" class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-300 transition-colors duration-200 ease-in-out focus:outline-none bouncy-btn">
+                  <span id="btn-toggle-auto-dot" class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <button onclick="app.togglePlayAllSurah(${surah.surah_number})" id="main-player-play-btn" class="w-12 h-12 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white flex items-center justify-center shadow-lg hover:shadow-indigo-200 bouncy-btn">
+                <i data-lucide="play" class="w-6 h-6"></i>
+              </button>
+              <div class="flex-grow space-y-1">
+                <div class="flex justify-between text-[10px] font-bold text-slate-400">
+                  <span id="player-progress-label">Ayat 1 dari ${surah.jumlah_ayat}</span>
+                  <span id="player-progress-pct">0%</span>
+                </div>
+                <!-- Track Progress -->
+                <div class="w-full h-2 bg-slate-200/50 rounded-full overflow-hidden">
+                  <div id="player-track-bar" class="h-full bg-indigo-500 transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            ${listAyatHtml}
+          </div>
+        `;
+        
+        // Atur posisi awal toggle jika putar otomatis aktif
+        setTimeout(() => {
+          const btn = document.getElementById('btn-toggle-auto');
+          const dot = document.getElementById('btn-toggle-auto-dot');
+          const lbl = document.getElementById('lbl-toggle-auto');
+          if (btn && dot && lbl) {
+            if (S.autoPlayNext) {
+              btn.classList.remove('bg-slate-300');
+              btn.classList.add('bg-indigo-500');
+              dot.classList.remove('translate-x-0');
+              dot.classList.add('translate-x-4');
+              lbl.textContent = "PUTAR OTOMATIS";
+            } else {
+              btn.classList.remove('bg-indigo-500');
+              btn.classList.add('bg-slate-300');
+              dot.classList.remove('translate-x-4');
+              dot.classList.add('translate-x-0');
+              lbl.textContent = "PUTAR MANUAL";
+            }
+          }
+        }, 50);
+
+        lucide.createIcons();
+      },
+
+      // --- AUDIO LOGICS ---
+      playSingleVerse(url, ayatNumber) {
+        this.stopAudio();
+        
+        S.activeAudio = new Audio(url);
+        S.activeAudio.play().catch(err => {
+          showToast('Klik kembali tombol dengar untuk memutar suara!', 'info');
+        });
+        
+        // Highlight visual pada ayat aktif
+        document.querySelectorAll('[id^="ayat-card-"]').forEach(c => c.classList.remove('border-indigo-500', 'bg-indigo-50/10'));
+        const activeCard = document.getElementById(`ayat-card-${ayatNumber}`);
+        if (activeCard) {
+          activeCard.classList.add('border-indigo-500', 'bg-indigo-50/10');
+          activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      },
+
+      toggleAutoPlayNext() {
+        S.autoPlayNext = !S.autoPlayNext;
+        const btn = document.getElementById('btn-toggle-auto');
+        const dot = document.getElementById('btn-toggle-auto-dot');
+        const lbl = document.getElementById('lbl-toggle-auto');
+        if (S.autoPlayNext) {
+          btn.classList.remove('bg-slate-300');
+          btn.classList.add('bg-indigo-500');
+          dot.classList.remove('translate-x-0');
+          dot.classList.add('translate-x-5');
+          lbl.textContent = "PUTAR OTOMATIS";
+          showToast('Putar otomatis ke ayat berikutnya diaktifkan!', 'success');
+        } else {
+          btn.classList.remove('bg-indigo-500');
+          btn.classList.add('bg-slate-300');
+          dot.classList.remove('translate-x-5');
+          dot.classList.add('translate-x-0');
+          lbl.textContent = "PUTAR MANUAL";
+          showToast('Putar otomatis dinonaktifkan.', 'info');
+        }
+      },
+
+      togglePlayAllSurah(surahNum) {
+        if (S.activeAudio && !S.activeAudio.paused) {
+          this.stopAudio();
+          this.updatePlayerButtonIcon(false);
+          return;
+        }
+
+        S.currentPlayingIndex = 0;
+        this.playSurahSequence(surahNum);
+      },
+
+      playSurahSequence(surahNum) {
+        const ayatList = S.ayatList.filter(a => a.surah_number === surahNum);
+        if (S.currentPlayingIndex >= ayatList.length) {
+          this.stopAudio();
+          this.updatePlayerButtonIcon(false);
+          showToast('Alhamdulillah, surah telah selesai diputar!', 'success');
+          return;
+        }
+
+        const activeAyat = ayatList[S.currentPlayingIndex];
+        const progressPct = Math.round(((S.currentPlayingIndex + 1) / ayatList.length) * 100);
+        
+        document.getElementById('player-progress-label').textContent = `Ayat ${S.currentPlayingIndex + 1} dari ${ayatList.length}`;
+        document.getElementById('player-progress-pct').textContent = `${progressPct}%`;
+        document.getElementById('player-track-bar').style.width = `${progressPct}%`;
+        document.getElementById('player-status-subtitle').textContent = `Sedang memutar ayat ke-${activeAyat.ayat_number}... 🌟`;
+        this.updatePlayerButtonIcon(true);
+
+        // Highlight visual
+        document.querySelectorAll('[id^="ayat-card-"]').forEach(c => {
+          c.classList.remove('border-indigo-400', 'bg-indigo-50/10');
+        });
+        const activeCard = document.getElementById(`ayat-card-${activeAyat.ayat_number}`);
+        if (activeCard) {
+          activeCard.classList.add('border-indigo-400', 'bg-indigo-50/10');
+          activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        S.activeAudio = new Audio(activeAyat.audio_url);
+        S.activeAudio.play().catch(() => {});
+        S.activeAudio.onended = () => {
+          if (S.autoPlayNext) {
+            S.currentPlayingIndex++;
+            this.playSurahSequence(surahNum);
+          } else {
+            this.updatePlayerButtonIcon(false);
+            document.getElementById('player-status-subtitle').textContent = 'Tekan tombol putar untuk memutar semua ayat';
+          }
+        };
+      },
+
+      updatePlayerButtonIcon(isPlaying) {
+        const btn = document.getElementById('main-player-play-btn');
+        if (btn) {
+          btn.innerHTML = isPlaying ? '<i data-lucide="pause" class="w-6 h-6"></i>' : '<i data-lucide="play" class="w-6 h-6"></i>';
+          lucide.createIcons();
+        }
+      },
+
+      stopAudio() {
+        if (S.activeAudio) {
+          S.activeAudio.pause();
+          S.activeAudio = null;
+        }
+      },
+
+      async setAyatStatus(surahNum, ayatNum, status) {
+        const key = `${surahNum}_${ayatNum}`;
+        S.progressMap[key] = status;
+        this.recalculateStats();
+
+        // Update UI Kartu Ayat
+        const card = document.getElementById(`ayat-card-${ayatNum}`);
+        if (card) {
+          card.classList.remove("border-slate-100", "bg-white", "border-emerald-300", "bg-emerald-50/10", "border-amber-300", "bg-amber-50/10");
+          if (status === 'hafal') card.classList.add("border-emerald-300", "bg-emerald-50/10");
+          else if (status === 'sedang') card.classList.add("border-amber-300", "bg-amber-50/10");
+          else card.classList.add("border-slate-100", "bg-white");
+        }
+
+        showToast('Progres hafalan berhasil disimpan!', 'success');
+
+        try {
+          await app.callAPI({
+            action: 'updateProgress',
+            surah_number: surahNum,
+            ayat_number: ayatNum,
+            status: status
+          });
+        } catch(e) {
+          console.error("Gagal sinkron status ke Apps Script:", e);
+        }
+      },
+
+      // --- TAB 3: TEBAK AYAT ---
+      renderTebak() {
+        const container = document.getElementById('app-content');
+        this.generateQuizSet();
+
+        if (!S.quizSet.length) {
+          container.innerHTML = `
+            <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-4 max-w-sm mx-auto">
+              <span class="text-5xl block animate-bounce">📖</span>
+              <h3 class="text-xl font-black text-slate-700">Pulau Tebak Masih Kosong</h3>
+              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Silakan tandai minimal 2 ayat sebagai "Hafal" atau "Sedang" terlebih dahulu di tab Hafal Ayat ya!</p>
+              <button onclick="app.switchTab('hafal')" class="py-3 px-6 bg-purple-500 hover:bg-purple-600 text-white font-extrabold rounded-2xl bouncy-btn shadow-md text-xs">Tandai Sekarang 🚀</button>
+            </div>
+          `;
+          return;
+        }
+
+        this.showQuizQuestion();
+      },
+
+      generateQuizSet() {
+        const learnedAyats = S.ayatList.filter(a => {
+          const status = S.progressMap[`${a.surah_number}_${a.ayat_number}`];
+          return status === 'hafal' || status === 'sedang';
+        });
+
+        const pool = (learnedAyats.length >= 2) ? learnedAyats : S.ayatList;
+        const shuffled = [...pool].sort(() => Math.random() - 0.5);
+        
+        S.quizSet = shuffled.slice(0, 3).map(item => {
+          const surahAyatList = S.ayatList.filter(a => a.surah_number === item.surah_number);
+          let correctNextAyat = surahAyatList.find(a => a.ayat_number === item.ayat_number + 1);
+          if (!correctNextAyat) {
+            correctNextAyat = surahAyatList[0];
+          }
+
+          const distractors = S.ayatList.filter(a => a.teks_arab !== item.teks_arab && a.teks_arab !== correctNextAyat.teks_arab)
+                                        .sort(() => Math.random() - 0.5)
+                                        .slice(0, 2);
+
+          const choices = [correctNextAyat, ...distractors].sort(() => Math.random() - 0.5);
+
+          return {
+            surahMeta: S.surahList.find(s => s.surah_number === item.surah_number),
+            soal: item,
+            jawabanBenar: correctNextAyat,
+            choices: choices
+          };
+        });
+
+        S.quizIndex = 0;
+      },
+
+      showQuizQuestion() {
+        const container = document.getElementById('app-content');
+        const item = S.quizSet[S.quizIndex];
+        
+        let dots = S.quizSet.map((_, i) => {
+          const color = (i < S.quizIndex) ? 'bg-emerald-500' : (i === S.quizIndex) ? 'bg-pink-500' : 'bg-slate-200';
+          return `<div class="h-2 rounded-full flex-1 ${color} transition-all duration-300"></div>`;
+        }).join('');
+
+        let choicesHtml = item.choices.map((c, idx) => {
+          return `
+            <div onclick="app.selectQuizChoice(${idx})" id="choice-box-${idx}" class="border-2 border-slate-100 bg-slate-50/50 p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-pink-300 bouncy-btn transition-all">
+              <div class="flex items-center gap-3 flex-grow">
+                <button onclick="event.stopPropagation(); app.playSingleVerse('${c.audio_url}', -1)" class="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center shadow-md flex-shrink-0 bouncy-btn">
+                  <i data-lucide="volume-2" class="w-4 h-4"></i>
+                </button>
+                <div class="arabic-text text-xl font-bold leading-relaxed text-right flex-grow mr-2" dir="rtl">${c.teks_arab}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <div class="flex gap-2 w-full">${dots}</div>
+
+          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-pink-100 space-y-6 relative overflow-hidden">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-black bg-pink-100 text-pink-600 px-3 py-1 rounded-full uppercase tracking-widest font-kids">Soal ${S.quizIndex + 1} • ${item.surahMeta.nama_latin}</span>
+              <button onclick="app.playSingleVerse('${item.soal.audio_url}', -1)" class="flex items-center gap-1.5 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-extrabold text-xs rounded-full shadow-lg hover:shadow-pink-200 bouncy-btn">
+                <i data-lucide="play" class="w-4 h-4"></i> DENGAR SOAL
+              </button>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 text-center space-y-2">
+              <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">Ayat Soal (${item.soal.ayat_number}):</p>
+              <h2 class="arabic-text text-2xl font-bold leading-loose text-pink-900" dir="rtl">${item.soal.teks_arab}</h2>
+            </div>
+
+            <div class="space-y-3">
+              <p class="text-xs font-black text-slate-400 uppercase tracking-widest text-center">👇 Pilih Ayat Kelanjutannya:</p>
+              <div class="grid grid-cols-1 gap-3">${choicesHtml}</div>
+            </div>
+
+            <button onclick="app.submitQuizAnswer()" class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl shadow-lg border-b-4 border-rose-700 bouncy-btn text-base tracking-wide flex justify-center items-center gap-2">
+              <span>Periksa Jawaban ✓</span>
+            </button>
+          </div>
+        `;
+        S.quizSelected = null;
+        lucide.createIcons();
+      },
+
+      selectQuizChoice(idx) {
+        S.quizSelected = idx;
+        document.querySelectorAll('[id^="choice-box-"]').forEach(box => {
+          box.className = "border-2 border-slate-100 bg-slate-50/50 p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-pink-300 bouncy-btn transition-all";
+        });
+        const activeBox = document.getElementById(`choice-box-${idx}`);
+        if (activeBox) {
+          activeBox.className = "border-2 border-pink-400 bg-pink-50/30 p-4 rounded-3xl flex items-center justify-between cursor-pointer bouncy-btn transition-all";
+        }
+      },
+
+      submitQuizAnswer() {
+        if (S.quizSelected === null) {
+          showToast('Pilih salah satu ayat kelanjutan dulu ya, sayang!', 'info');
+          return;
+        }
+
+        const item = S.quizSet[S.quizIndex];
+        const selectedAyat = item.choices[S.quizSelected];
+        const isCorrect = selectedAyat.teks_arab === item.jawabanBenar.teks_arab;
+
+        item.choices.forEach((c, idx) => {
+          const box = document.getElementById(`choice-box-${idx}`);
+          if (box) {
+            if (c.teks_arab === item.jawabanBenar.teks_arab) {
+              box.className = "border-2 border-emerald-400 bg-emerald-50/30 p-4 rounded-3xl flex items-center justify-between transition-all";
+            } else if (idx === S.quizSelected) {
+              box.className = "border-2 border-rose-400 bg-rose-50/30 p-4 rounded-3xl flex items-center justify-between transition-all";
+            }
+          }
+        });
+
+        if (!CONFIG.MOCK_MODE) {
+          app.callAPI({
+            action: 'saveLog',
+            surah_number: item.soal.surah_number,
+            ayat_number: item.soal.ayat_number,
+            fitur: 'tebak_ayat',
+            hasil: isCorrect ? 'benar' : 'salah',
+            skor: isCorrect ? 100 : 0
+          }).catch(() => {});
+        }
+
+        setTimeout(() => {
+          this.showMascotResultModal(isCorrect, isCorrect ? 100 : 0, isCorrect ? "MasyaAllah! Pilihanmu tepat sekali. Hebat, hafalanmu sangat lancar!" : "Sayang sekali belum tepat, ayo coba pelajari lagi ayat ini ya!", "Lanjut Ayat", () => {
+            S.quizIndex++;
+            if (S.quizIndex < S.quizSet.length) {
+              app.showQuizQuestion();
+            } else {
+              app.showQuizEnd();
+            }
+          });
+        }, 1200);
+      },
+
+      showQuizEnd() {
+        const container = document.getElementById('app-content');
+        container.innerHTML = `
+          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-6 max-w-sm mx-auto">
+            <div class="w-32 h-32 mx-auto">
+              ${getMascotSVG('success')}
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-2xl font-black text-indigo-600">Sesi Tebak Selesai!</h3>
+              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Maa syaa Allah, kamu berhasil menyelesaikan semua tantangan tebak ayat hari ini! Kumpulkan bintang prestasi yang melimpah.</p>
+            </div>
+            
+            <div class="bg-indigo-50 text-indigo-700 border border-indigo-100 p-4 rounded-2xl flex items-center justify-center gap-3 font-black text-base">
+              <span>⭐</span> Tambah +15 Bintang Prestasi!
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="app.renderTebak()" class="flex-1 py-4 bg-purple-500 hover:bg-purple-600 text-white font-extrabold rounded-2xl border-b-4 border-purple-700 bouncy-btn text-xs shadow-md">Main Lagi 🔄</button>
+              <button onclick="app.switchTab('hafal')" class="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-500 font-extrabold rounded-2xl bouncy-btn text-xs">Hafal Ayat 📖</button>
+            </div>
+          </div>
+        `;
+      },
+
+      // --- TAB 4: LANJUTKAN ---
+      renderLanjutkan() {
+        const container = document.getElementById('app-content');
+        this.generateRecSet();
+
+        if (!S.recSet.length) {
+          container.innerHTML = `
+            <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-4 max-w-sm mx-auto">
+              <span class="text-5xl block animate-bounce">📖</span>
+              <h3 class="text-xl font-black text-slate-700">Pulau Rekaman Masih Kosong</h3>
+              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Silakan tandai minimal 2 ayat sebagai "Hafal" atau "Sedang" terlebih dahulu di tab Hafal Ayat ya!</p>
+              <button onclick="app.switchTab('hafal')" class="py-3 px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-extrabold rounded-2xl bouncy-btn shadow-md text-xs">Tandai Sekarang 🚀</button>
+            </div>
+          `;
+          return;
+        }
+
+        this.showRecQuestion();
+      },
+
+      generateRecSet() {
+        const learnedAyats = S.ayatList.filter(a => {
+          const status = S.progressMap[`${a.surah_number}_${a.ayat_number}`];
+          return status === 'hafal' || status === 'sedang';
+        });
+
+        const pool = (learnedAyats.length >= 2) ? learnedAyats : S.ayatList;
+        const shuffled = [...pool].sort(() => Math.random() - 0.5);
+        
+        S.recSet = shuffled.slice(0, 3).map(item => {
+          const surahAyatList = S.ayatList.filter(a => a.surah_number === item.surah_number);
+          let correctNextAyat = surahAyatList.find(a => a.ayat_number === item.ayat_number + 1);
+          if (!correctNextAyat) {
+            correctNextAyat = surahAyatList[0];
+          }
+
+          return {
+            surahMeta: S.surahList.find(s => s.surah_number === item.surah_number),
+            soal: item,
+            jawabanBenar: correctNextAyat
+          };
+        });
+
+        S.recIndex = 0;
+      },
+
+      showRecQuestion() {
+        const container = document.getElementById('app-content');
+        const item = S.recSet[S.recIndex];
+        
+        let dots = S.recSet.map((_, i) => {
+          const color = (i < S.recIndex) ? 'bg-emerald-500' : (i === S.recIndex) ? 'bg-cyan-500' : 'bg-slate-200';
+          return `<div class="h-2 rounded-full flex-1 ${color} transition-all duration-300"></div>`;
+        }).join('');
+
+        container.innerHTML = `
+          <div class="flex gap-2 w-full">${dots}</div>
+
+          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-cyan-100 space-y-6 relative overflow-hidden">
+            <div class="w-24 h-24 mx-auto" id="recording-mascot">
+              ${getMascotSVG('normal')}
+            </div>
+
+            <div class="text-center space-y-1">
+              <span class="text-xs font-black bg-cyan-100 text-cyan-600 px-3 py-1 rounded-full uppercase tracking-widest font-kids">Sesi ${S.recIndex + 1} • ${item.surahMeta.nama_latin}</span>
+              <h3 class="text-base font-black text-slate-700 pt-2">Dengarkan ayat soal di bawah & lanjutkan pelafalannya!</h3>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 text-center space-y-2">
+              <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">Ayat Soal (${item.soal.ayat_number}):</p>
+              <h2 class="arabic-text text-2xl font-bold leading-loose text-cyan-900" dir="rtl">${item.soal.teks_arab}</h2>
+              <button onclick="app.playSingleVerse('${item.soal.audio_url}', -1)" class="mx-auto flex items-center gap-1 px-3 py-1 bg-white border border-slate-200 text-slate-500 font-extrabold text-[10px] rounded-full bouncy-btn shadow-sm mt-1">
+                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> PUTAR SOAL
+              </button>
+            </div>
+
+            <div class="flex flex-col items-center justify-center space-y-4 pt-2">
+              <div id="rec-wave" class="hidden flex items-center justify-center gap-1.5 h-10 w-full transition-all">
+                <span class="w-1.5 h-6 bg-cyan-400 rounded-full wave-bar"></span>
+                <span class="w-1.5 h-10 bg-cyan-500 rounded-full wave-bar"></span>
+                <span class="w-1.5 h-8 bg-cyan-400 rounded-full wave-bar"></span>
+                <span class="w-1.5 h-10 bg-purple-500 rounded-full wave-bar"></span>
+                <span class="w-1.5 h-6 bg-cyan-400 rounded-full wave-bar"></span>
+                <span class="w-1.5 h-8 bg-cyan-500 rounded-full wave-bar"></span>
+                <span class="w-1.5 h-5 bg-cyan-400 rounded-full wave-bar"></span>
+              </div>
+
+              <div id="rec-timer" class="hidden text-cyan-500 font-bold text-sm tracking-widest font-kids">
+                00:00
+              </div>
+
+              <div class="relative">
+                <div id="rec-glow-ring" class="hidden absolute inset-0 bg-cyan-400/30 rounded-full recording-pulse"></div>
+                <button id="btn-rec-control" onclick="app.toggleMicrophoneRecording()" class="relative z-10 w-24 h-24 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white flex items-center justify-center shadow-xl hover:shadow-cyan-200 bouncy-btn border-8 border-cyan-100">
+                  <i data-lucide="mic" class="w-10 h-10" id="rec-btn-icon"></i>
+                </button>
+              </div>
+
+              <p id="rec-instruction-lbl" class="text-xs text-slate-400 font-extrabold text-center max-w-xs leading-relaxed">
+                Sentuh mikrofon di atas untuk mulai merekam setoran hafalanmu
+              </p>
+            </div>
+
+          </div>
+        `;
+        lucide.createIcons();
+      },
+
+      async toggleMicrophoneRecording() {
+        if (S.isRecording) {
+          this.stopMicrophoneRecording();
+          return;
+        }
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          showToast('Maaf, browser Anda tidak mengizinkan akses ke mikrofon.', 'error');
+          return;
+        }
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          S.mediaRecorder = new MediaRecorder(stream);
+          S.recordingChunks = [];
+
+          S.mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) S.recordingChunks.push(e.data);
+          };
+
+          S.mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(S.recordingChunks, { type: 'audio/webm' });
+            
+            document.getElementById('recording-mascot').innerHTML = getMascotSVG('thinking');
+            document.getElementById('rec-instruction-lbl').textContent = "Kak Marz sedang mendengarkan setoranmu... 🌟";
+
+            const base64Audio = await this.convertBlobToBase64(audioBlob);
+            this.sendAudioToGeminiServer(base64Audio);
+          };
+
+          S.mediaRecorder.start();
+          S.isRecording = true;
+
+          document.getElementById('btn-rec-control').className = "relative z-10 w-24 h-24 rounded-full bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-xl bouncy-btn border-8 border-rose-100";
+          document.getElementById('rec-btn-icon').setAttribute('data-lucide', 'square');
+          document.getElementById('rec-instruction-lbl').textContent = "Mendengarkan suaramu... Sentuh tombol kotak merah jika sudah selesai";
+          document.getElementById('rec-wave').classList.remove('hidden');
+          document.getElementById('rec-timer').classList.remove('hidden');
+          document.getElementById('rec-glow-ring').classList.remove('hidden');
+          document.getElementById('recording-mascot').innerHTML = getMascotSVG('listening');
+          lucide.createIcons();
+
+          S.recSeconds = 0;
+          document.getElementById('rec-timer').textContent = "00:00";
+          S.recTimer = setInterval(() => {
+            S.recSeconds++;
+            const mm = String(Math.floor(S.recSeconds / 60)).padStart(2, '0');
+            const ss = String(S.recSeconds % 60).padStart(2, '0');
+            document.getElementById('rec-timer').textContent = `${mm}:${ss}`;
+            
+            if (S.recSeconds >= 15) {
+              app.stopMicrophoneRecording();
+            }
+          }, 1000);
+
+        } catch(e) {
+          console.error(e);
+          showToast('Izin mikrofon ditolak. Periksa pengaturan browser Anda!', 'error');
+        }
+      },
+
+      stopMicrophoneRecording() {
+        if (S.mediaRecorder && S.isRecording) {
+          S.mediaRecorder.stop();
+          S.isRecording = false;
+          clearInterval(S.recTimer);
+
+          S.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+
+          document.getElementById('btn-rec-control').className = "relative z-10 w-24 h-24 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white flex items-center justify-center shadow-xl bouncy-btn border-8 border-cyan-100";
+          document.getElementById('rec-btn-icon').setAttribute('data-lucide', 'mic');
+          document.getElementById('rec-wave').classList.add('hidden');
+          document.getElementById('rec-timer').classList.add('hidden');
+          document.getElementById('rec-glow-ring').classList.add('hidden');
+          lucide.createIcons();
+        }
+      },
+
+      convertBlobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      },
+
+      async sendAudioToGeminiServer(base64Audio) {
+        const item = S.recSet[S.recIndex];
+        try {
+          const response = await app.callAPI({
+            action: 'nilaiRekaman',
+            surah_number: item.soal.surah_number,
+            ayat_number: item.soal.ayat_number,
+            audio_base64: base64Audio,
+            mime_type: 'audio/webm'
+          });
+
+          if (response.success && response.data) {
+            this.showEvaluationResult(response.data);
+          } else {
+            showToast('Evaluasi gagal: ' + response.message, 'error');
+            document.getElementById('recording-mascot').innerHTML = getMascotSVG('normal');
+            document.getElementById('rec-instruction-lbl').textContent = "Sentuh mikrofon di atas untuk mulai merekam setoran hafalanmu";
+          }
+        } catch(e) {
+          console.error(e);
+          document.getElementById('recording-mascot').innerHTML = getMascotSVG('normal');
+          document.getElementById('rec-instruction-lbl').textContent = "Sentuh mikrofon di atas untuk mulai merekam setoran hafalanmu";
+        }
+      },
+
+      showEvaluationResult(evalData) {
+        const isSuccess = evalData.skor >= 80;
+        
+        this.showMascotResultModal(
+          isSuccess,
+          evalData.skor,
+          evalData.feedback,
+          evalData.catatan_tajwid,
+          isSuccess ? "Lanjut Ayat" : "Ulangi Ayat",
+          () => {
+            if (isSuccess) {
+              S.recIndex++;
+              if (S.recIndex < S.recSet.length) {
+                app.showRecQuestion();
+              } else {
+                app.showRecEnd();
+              }
+            } else {
+              app.showRecQuestion();
+            }
+          }
+        );
+      },
+
+      showRecEnd() {
+        const container = document.getElementById('app-content');
+        container.innerHTML = `
+          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-6 max-w-sm mx-auto">
+            <div class="w-32 h-32 mx-auto">
+              ${getMascotSVG('success')}
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-2xl font-black text-indigo-600">Petualangan Selesai!</h3>
+              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Subhanallah, semua tantangan lanjutan ayat berhasil kamu setorkan ke Kak Marz hari ini! Hebat dan lancar.</p>
+            </div>
+            
+            <div class="bg-indigo-50 text-indigo-700 border border-indigo-100 p-4 rounded-2xl flex items-center justify-center gap-3 font-black text-base">
+              <span>👑</span> Tambah +20 Bintang Prestasi!
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="app.renderLanjutkan()" class="flex-1 py-4 bg-purple-500 hover:bg-purple-600 text-white font-extrabold rounded-2xl border-b-4 border-purple-700 bouncy-btn text-xs shadow-md">Setor Lagi 🔄</button>
+              <button onclick="app.switchTab('beranda')" class="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-500 font-extrabold rounded-2xl bouncy-btn text-xs">Peta Hafalan 🗺️</button>
+            </div>
+          </div>
+        `;
+      },
+
+      // --- TAB 5: MUROJA'AH ---
+      async renderMurojaah() {
+        const container = document.getElementById('app-content');
+        this.showLoading();
+
+        try {
+          const r = await app.callAPI({ action: 'getMurojaahSchedule' });
+          if (!r.success) {
+            container.innerHTML = `
+              <div class="empty text-center py-12"><div class="text-5xl mb-2">😢</div><p class="text-sm font-bold text-slate-400">Gagal memuat jadwal muroja'ah.</p></div>
+              <button class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl bouncy-btn" onclick="app.rebuildScheduleByAI()">Buat Jadwal Otomatis ✨</button>
+            `;
+            return;
+          }
+
+          S.murojaahSchedule = r.data;
+          const todayStr = new Date().toISOString().split('T')[0];
+          
+          const todayTasks = S.murojaahSchedule.filter(j => j.tanggal_jadwal === todayStr && j.status === 'terjadwal');
+          const upcomingTasks = S.murojaahSchedule.filter(j => j.tanggal_jadwal > todayStr && j.status === 'terjadwal').slice(0, 3);
+
+          let todayHtml = todayTasks.map(j => {
+            const surahAyatList = S.ayatList.filter(a => a.surah_number === j.surah_number);
+            const firstAyatAudio = surahAyatList.length ? surahAyatList[0].audio_url : '';
+
+            return `
+              <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-[2rem] p-5 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] font-black bg-emerald-500 text-white px-3 py-1 rounded-full uppercase tracking-wider font-kids">📅 JADWAL HARI INI</span>
+                  <button onclick="app.playSingleVerse('${firstAyatAudio}', -1)" class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-[10px] rounded-full shadow-sm bouncy-btn">
+                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> PUTAR SURAH
+                  </button>
+                </div>
+
+                <div>
+                  <h3 class="text-xl font-black text-slate-700">${j.nama_surah || 'Surah ' + j.surah_number}</h3>
+                  <p class="text-xs text-slate-400 font-bold leading-tight mt-1">Ayat ${j.ayat_awal}–${j.ayat_akhir} • ${j.catatan || 'Fokus kelancaran makhraj.'}</p>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                  <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest text-center">👇 Bagaimana Kelancaran Muroja'ahmu?</p>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button onclick="app.setMurojaahResult('${j.schedule_id}', ${j.surah_number}, 'lancar')" class="bg-emerald-500 text-white hover:bg-emerald-600 p-3 rounded-2xl flex flex-col items-center gap-1 bouncy-btn border-b-4 border-emerald-700 font-black text-[10px]">
+                      <span class="text-2xl">😄</span> LANCAR
+                    </button>
+                    <button onclick="app.setMurojaahResult('${j.schedule_id}', ${j.surah_number}, 'agak_lupa')" class="bg-amber-500 text-white hover:bg-amber-600 p-3 rounded-2xl flex flex-col items-center gap-1 bouncy-btn border-b-4 border-amber-700 font-black text-[10px]">
+                      <span class="text-2xl">🤔</span> AGAK LUPA
+                    </button>
+                    <button onclick="app.setMurojaahResult('${j.schedule_id}', ${j.surah_number}, 'perlu_diulang')" class="bg-rose-500 text-white hover:bg-rose-600 p-3 rounded-2xl flex flex-col items-center gap-1 bouncy-btn border-b-4 border-rose-700 font-black text-[10px]">
+                      <span class="text-2xl">😅</span> DIULANG
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          if (!todayTasks.length) {
+            todayHtml = `
+              <div class="bg-white rounded-3xl p-6 shadow-sm border-2 border-slate-100 text-center space-y-2 max-w-sm mx-auto">
+                <span class="text-4xl block animate-bounce">🎉</span>
+                <h3 class="text-base font-black text-slate-700">Muroja'ah Hari Ini Selesai</h3>
+                <p class="text-xs text-slate-400 font-semibold leading-relaxed">Semua jadwal muroja'ah hari ini telah kamu selesaikan dengan gemilang!</p>
+              </div>
+            `;
+          }
+
+          let upcomingHtml = upcomingTasks.map(j => {
+            const surah = S.surahList.find(s => s.surah_number === j.surah_number);
+            const nama = surah ? surah.nama_latin : 'Surah ' + j.surah_number;
+            return `
+              <div class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">📅</span>
+                  <div>
+                    <h4 class="font-extrabold text-slate-700">${nama}</h4>
+                    <p class="text-[9px] text-slate-400 font-bold">Ayat ${j.ayat_awal}–${j.ayat_akhir}</p>
+                  </div>
+                </div>
+                <span class="text-[9px] font-black tracking-wider uppercase bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-full">${j.tanggal_jadwal}</span>
+              </div>
+            `;
+          }).join('');
+
+          container.innerHTML = `
+            <div class="space-y-4">
+              ${todayHtml}
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex justify-between items-center px-1">
+                <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">Jadwal Muroja'ah Mendatang</h4>
+                <button onclick="app.rebuildScheduleByAI()" class="text-[10px] font-black text-emerald-600 hover:underline">🔄 Susun Ulang Jadwal</button>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                ${upcomingTasks.length ? upcomingHtml : `<p class="text-xs text-slate-400 text-center font-bold col-span-2 py-4">Belum ada jadwal esok hari.</p>`}
+              </div>
+            </div>
+          `;
+          lucide.createIcons();
+
+        } catch(e) {
+          console.error(e);
+          container.innerHTML = `
+            <div class="text-center py-12"><p class="text-xs font-bold text-slate-400">Jadwal muroja'ah kosong / Belum memiliki setoran.</p></div>
+            <button onclick="app.rebuildScheduleByAI()" class="w-full py-4 bg-emerald-500 text-white font-extrabold rounded-2xl bouncy-btn">Buat Jadwal Otomatis ✨</button>
+          `;
+        }
+      },
+
+      async setMurojaahResult(scheduleId, surahNum, resultValue) {
+        this.showLoading();
+        try {
+          const r = await app.callAPI({
+            action: 'selesaiMurojaah',
+            schedule_id: scheduleId,
+            surah_number: surahNum,
+            penilaian: resultValue
+          });
+
+          if (r.success && r.data) {
+            this.showMascotResultModal(
+              true,
+              100,
+              r.data.pesan,
+              `Ayo murattal kembali surah ini dalam ${r.data.ulang_dalam_hari} hari mendatang ya!`,
+              "Alhamdulillah, Selesai",
+              () => {
+                app.renderMurojaah();
+              }
+            );
+          } else {
+            app.renderMurojaah();
+          }
+        } catch(e) {
+          console.error(e);
+          app.renderMurojaah();
+        }
+      },
+
+      async rebuildScheduleByAI() {
+        this.showLoading();
+        try {
+          const r = await app.callAPI({ action: 'generateJadwal' });
+          if (r.success) {
+            showToast('Jadwal muroja\'ah barumu berhasil dibuat!', 'success');
+          } else {
+            showToast('Gagal menyusun jadwal: ' + r.message, 'error');
+          }
+          app.renderMurojaah();
+        } catch(e) {
+          console.error(e);
+          app.renderMurojaah();
+        }
+      },
+
+      async submitAuth(isLogin) {
+        const usernameInput = document.getElementById('auth-username').value.trim();
+        const passwordInput = document.getElementById('auth-password').value.trim();
+
+        if (!usernameInput || !passwordInput) {
+          showToast('Silakan isi nama pengguna dan kata sandi terlebih dahulu!', 'error');
+          return;
+        }
+
+        const btn = document.getElementById(isLogin ? 'btn-login-submit' : 'btn-register-submit');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<span class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>`;
+        btn.disabled = true;
+
+        try {
+          const response = await this.callAPI({
+            action: isLogin ? 'login' : 'register',
+            username: usernameInput,
+            password: passwordInput
+          });
+
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+
+          if (response.success) {
+            if (isLogin) {
+              S.token = response.token;
+              S.userId = response.userId;
+              S.username = response.username;
+
+              localStorage.setItem('mm_token', S.token);
+              localStorage.setItem('mm_uid', S.userId);
+              localStorage.setItem('mm_uname', S.username);
+
+              showToast(`Selamat datang, ${usernameInput}! ✨`, 'success');
+              auth.init();
+            } else {
+              showToast('Pendaftaran berhasil! Silakan langsung login ya.', 'success');
+            }
+          } else {
+            showToast(response.message || 'Terjadi kesalahan sistem.', 'error');
+          }
+        } catch(e) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          showToast('Gagal berkomunikasi dengan server.', 'error');
+        }
+      },
+
+      logout() {
+        this.stopAudio();
+        
+        // Kirim request logout ke backend secara asynchronous
+        app.callAPI({ action: 'logout' }).catch(() => {});
+
+        S.token = null;
+        S.userId = null;
+        S.username = null;
+        
+        localStorage.removeItem('mm_token');
+        localStorage.removeItem('mm_uid');
+        localStorage.removeItem('mm_uname');
+
+        showToast('Sampai jumpa lagi di petualangan berikutnya! 👋', 'info');
+        auth.init();
+      },
+
+      async callAPI(payload) {
+        // Sematkan token sesi saat ini ke semua request API
+        payload.token = S.token;
+        try {
+          const response = await fetch(CONFIG.API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(payload)
+          });
+          return await response.json();
+        } catch(e) {
+          console.error("Gagal terhubung ke GAS:", e);
+          throw e;
+        }
+      },
+
+      // --- POPUP MODAL DIALOG MASKOT ---
+      showMascotResultModal(isSuccess, score, message, tajwidText, actionLabel, onConfirm) {
+        const modal = document.getElementById('modal-result');
+        const container = document.getElementById('modal-container');
+        const mascotContainer = document.getElementById('result-mascot-container');
+        const titleEl = document.getElementById('result-title');
+        const scoreEl = document.getElementById('result-score-tag');
+        const messageEl = document.getElementById('result-message');
+        const tajwidContainer = document.getElementById('result-tajwid-container');
+        const tajwidTextEl = document.getElementById('result-tajwid-text');
+        const actionBtn = document.getElementById('modal-action-btn');
+
+        mascotContainer.innerHTML = getMascotSVG(isSuccess ? 'success' : 'encouraging');
+
+        if (isSuccess) {
+          titleEl.textContent = "Subhanallah! 🎉";
+          titleEl.className = "text-2xl font-bold text-emerald-500";
+          container.className = "bg-white rounded-[2rem] p-5 max-w-sm w-full border-4 border-emerald-200 shadow-2xl text-center space-y-4 transform scale-100 transition-all duration-300";
+        } else {
+          titleEl.textContent = "Ayo Semangat! 💪";
+          titleEl.className = "text-2xl font-bold text-amber-500";
+          container.className = "bg-white rounded-[2rem] p-5 max-w-sm w-full border-4 border-amber-200 shadow-2xl text-center space-y-4 transform scale-100 transition-all duration-300";
+        }
+
+        scoreEl.textContent = `Skor Hafalan: ${score}/100`;
+        messageEl.textContent = `"${message}"`;
+
+        if (tajwidText) {
+          tajwidContainer.classList.remove('hidden');
+          tajwidTextEl.textContent = tajwidText;
+        } else {
+          tajwidContainer.classList.add('hidden');
+        }
+
+        actionBtn.textContent = actionLabel;
+        actionBtn.onclick = () => {
+          modal.classList.add('hidden');
+          if (onConfirm) onConfirm();
+        };
+
+        modal.classList.remove('hidden');
+      }
     };
 
-    S.mediaRecorder.start();
-
-    setTimeout(function(){
-      if(S.recording&&S.mediaRecorder&&S.mediaRecorder.state==='recording'){
-        S.mediaRecorder.stop();
-        S.recording=false;
-      }
-    },15000);
-
-  } catch(err){
-    $('rec-lbl').textContent = 'Tap untuk merekam';
-    $('rec-result').innerHTML='<div class="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl text-sm font-bold">Tidak dapat mengakses mikrofon. Pastikan izin mikrofon diberikan.</div>';
-    S.recording = false;
-  }
-}
-
-function nextRekam(){
-  S.recSoalIndex++;
-  tampilSoalRekam();
-}
-
-// ===== MUROJAAH =====
-async function renderMurojaah(){
-  loading('Memuat jadwal...');
-  var r = await post({action:'getMurojaahSchedule'});
-  if(!r.success){
-    $('app-content').innerHTML='<div class="flex flex-col items-center justify-center p-10"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold">Gagal memuat jadwal.</p></div>';
-    return;
-  }
-
-  var jadwal = r.data.filter(function(j){ return j.status==='terjadwal'; });
-  var today = new Date().toISOString().split('T')[0];
-  var todayList = jadwal.filter(function(j){ return j.tanggal_jadwal===today; });
-  var upcoming = jadwal.filter(function(j){ return j.tanggal_jadwal>today; }).slice(0,5);
-  var dotColors = ['#8338EC','#00B4D8','#FF006E','#FFB700','#06D6A0'];
-
-  if(jadwal.length===0){
-    $('app-content').innerHTML=
-      '<div class="flex flex-col items-center justify-center text-center p-10 mb-6"><div class="text-6xl mb-4">📅</div><p class="text-slate-500 font-bold mb-4">Belum ada jadwal muroja\'ah.</p></div>'+
-      '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#06D6A0] to-[#00B4D8] shadow-lg active:scale-95 transition" onclick="doGenJadwal()">Buat Jadwal Otomatis ✨</button>';
-    return;
-  }
-
-  var todayHtml = todayList.map(function(j){
-    var surah = S.surahList.find(function(s){ return s.surah_number===j.surah_number; });
-    var nama = surah?surah.nama_latin:'Surah '+j.surah_number;
-    var c = SURAH_COLORS[j.surah_number]||COLORS[0];
-    var audioUrl = '';
-    var ayatFirst = S.ayatList.find(function(a){ return a.surah_number===j.surah_number&&a.ayat_number===j.ayat_awal; });
-    if(ayatFirst) audioUrl = ayatFirst.audio_url||'';
-    return '<div class="bg-emerald-50/50 rounded-3xl p-6 border-2 border-emerald-100 shadow-md mb-6">'+
-      '<span class="inline-block bg-emerald-500 text-white text-[10px] font-black px-3.5 py-1 rounded-full mb-3 shadow-sm">📅 Hari Ini</span>'+
-      '<div class="text-xl font-black text-slate-800 mb-1">'+nama+'</div>'+
-      '<div class="text-sm font-semibold text-slate-500 mb-4">Ayat '+j.ayat_awal+'–'+j.ayat_akhir+' • '+j.catatan+'</div>'+
-      '<button class="w-full py-3.5 rounded-2xl text-xs font-black bg-white text-emerald-600 border border-emerald-200 hover:bg-emerald-50 transition active:scale-95 flex items-center justify-center gap-2 mb-4 shadow-sm" onclick="playAudio(\''+audioUrl+'\')">▶ Dengarkan dulu</button>'+
-      '<div class="grid grid-columns-3 grid-flow-col gap-2.5">'+
-        '<button class="py-3 px-2 rounded-2xl bg-teal-500 hover:bg-teal-600 border-b-4 border-teal-700 text-white font-extrabold text-[10px] flex flex-col items-center justify-center gap-1.5 transition active:scale-95 shadow-sm" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'lancar\')">'+
-          '<span class="text-xl">😄</span>Lancar'+
-        '</button>'+
-        '<button class="py-3 px-2 rounded-2xl bg-amber-400 hover:bg-amber-500 border-b-4 border-amber-600 text-amber-900 font-extrabold text-[10px] flex flex-col items-center justify-center gap-1.5 transition active:scale-95 shadow-sm" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'agak_lupa\')">'+
-          '<span class="text-xl">🤔</span>Agak Lupa'+
-        '</button>'+
-        '<button class="py-3 px-2 rounded-2xl bg-rose-500 hover:bg-rose-600 border-b-4 border-rose-700 text-white font-extrabold text-[10px] flex flex-col items-center justify-center gap-1.5 transition active:scale-95 shadow-sm" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'perlu_diulang\')">'+
-          '<span class="text-xl">😅</span>Diulang'+
-        '</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-
-  var upcomingHtml = upcoming.length>0
-    ? '<div class="bg-violet-50/50 rounded-3xl p-6 border border-violet-100 shadow-inner mt-4 mb-6">'+
-        '<div class="text-xs font-black text-violet-600 uppercase tracking-widest mb-4">Jadwal Berikutnya</div>'+
-        upcoming.map(function(j,i){
-          var surah=S.surahList.find(function(s){ return s.surah_number===j.surah_number; });
-          var nama=surah?surah.nama_latin:'Surah '+j.surah_number;
-          return '<div class="flex items-center gap-3 mb-3.5 last:mb-0">'+
-            '<div class="w-3.5 h-3.5 rounded-full flex-shrink-0" style="background:'+dotColors[i%dotColors.length]+';"></div>'+
-            '<div class="text-sm font-extrabold text-slate-700">'+nama+' <span class="text-slate-400 font-semibold">— ${j.tanggal_jadwal}</span></div>'+
-          '</div>';
-        }).join('')+
-      '</div>'
-    : '';
-
-  $('app-content').innerHTML=
-    (todayList.length>0?todayHtml:'<div class="flex flex-col items-center justify-center text-center p-12 bg-white rounded-3xl border shadow-sm mb-4"><div class="text-5xl mb-3">✅</div><p class="text-slate-400 font-extrabold">Tidak ada jadwal muroja\'ah hari ini.</p></div>')+
-    upcomingHtml+
-    '<button class="w-full py-3.5 text-emerald-600 font-black border-2 border-emerald-200 rounded-2xl bg-white hover:bg-slate-50 transition active:scale-95" onclick="doGenJadwal()">↻ Perbarui Jadwal</button>';
-}
-
-async function doGenJadwal(){
-  loading('Menyusun jadwal muroja\'ah...');
-  var r = await post({action:'generateJadwal'});
-  if(r.success){ renderMurojaah(); }
-  else {
-    $('app-content').innerHTML=
-      '<div class="flex flex-col items-center justify-center text-center p-10 mb-6"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold mb-4">'+r.message+'</p></div>'+
-      '<button class="w-full py-4 text-white font-black rounded-2xl bg-violet-600 active:scale-95 transition" onclick="doGenJadwal()">Coba Lagi</button>';
-  }
-}
-
-async function nilaiMurojaah(scheduleId, surahNum, namaSurah, penilaian){
-  loading('Memproses...');
-  var r = await post({action:'selesaiMurojaah',schedule_id:scheduleId,surah_number:surahNum,penilaian:penilaian});
-  if(r.success){
-    var d=r.data;
-    $('app-content').innerHTML=
-      '<div class="feedback-card rounded-[32px] p-8 text-center border-4 border-emerald-400 bg-gradient-to-br from-[#E8FFF5] to-[#E8F4FF] shadow-xl">'+
-        '<div class="text-6xl mb-4">'+(d.emoji||'🌟')+'</div>'+
-        '<div class="text-2xl font-black text-emerald-600 mb-1">Muroja\'ah Selesai!</div>'+
-        '<div class="text-sm font-bold text-slate-500 mb-6">'+d.pesan+'</div>'+
-        '<div class="inline-block px-6 py-2.5 rounded-full text-base font-extrabold text-white bg-emerald-500 mb-6">Ulangi dalam '+d.ulang_dalam_hari+' hari</div>'+
-        '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-emerald-500 to-sky-500 shadow-lg active:scale-95 transition" onclick="renderMurojaah()">Lihat Jadwal 📅</button>'+
-      '</div>';
-  } else { renderMurojaah(); }
-}
-</script>
+    window.onload = () => {
+      auth.init();
+    };
+  </script>
 </body>
 </html>
