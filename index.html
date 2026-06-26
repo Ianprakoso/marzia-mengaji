@@ -1160,11 +1160,13 @@ function tampilSoalRekam(){
     '</div>';
 }
 
-var waveInterval = null;
-async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
+function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
+  // Kalau sedang merekam, stop
   if(S.recording){
     S.recording = false;
-    if(S.mediaRecorder) S.mediaRecorder.stop();
+    if(S.mediaRecorder && S.mediaRecorder.state === 'recording'){
+      S.mediaRecorder.stop();
+    }
     clearInterval(waveInterval);
     $('rec-btn').classList.remove('recording');
     $('rec-btn').textContent = '🎤';
@@ -1172,81 +1174,106 @@ async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
     return;
   }
 
-  try {
-    var stream = await navigator.mediaDevices.getUserMedia({audio:true});
-    S.recording = true;
-    S.audioChunks = [];
-    $('rec-btn').classList.add('recording');
-    $('rec-btn').textContent = '⏹';
-    $('rec-lbl').textContent = 'Sedang merekam... tap untuk berhenti';
-
-    waveInterval = setInterval(function(){
-      var bars = document.querySelectorAll('.wb');
-      bars.forEach(function(b){
-        b.style.height = (Math.random()*28+6)+'px';
-      });
-    },150);
-
-    S.mediaRecorder = new MediaRecorder(stream);
-    S.mediaRecorder.ondataavailable = function(e){
-      if(e.data.size>0) S.audioChunks.push(e.data);
-    };
-    S.mediaRecorder.onstop = async function(){
-      stream.getTracks().forEach(function(t){ t.stop(); });
-      clearInterval(waveInterval);
-      $('rec-lbl').textContent = 'Menilai bacaan...';
-
-      var blob = new Blob(S.audioChunks, {type:'audio/webm'});
-      var reader = new FileReader();
-      reader.onload = async function(){
-        var base64 = reader.result.split(',')[1];
-        var soal = S.recSoalSet[S.recSoalIndex];
-        var r = await post({
-          action:'nilaiRekaman',
-          surah_number:surahNum,
-          ayat_number:ayatSoalNum,
-          audio_base64:base64,
-          mime_type:'audio/webm'
-        });
-
-        S.recording = false;
-
-        if(!r.success){
-          $('rec-result').innerHTML='<div class="msg msg-err">Gagal menilai: '+r.message+'</div>';
-          return;
-        }
-
-        var d=r.data;
-        var benar=d.hasil==='benar'||d.hasil==='hampir_benar';
-        $('rec-result').innerHTML =
-          '<div class="feedback-card" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
-            '<div class="fb-emoji">'+(d.emoji||( benar?'🎉':'💪'))+'</div>'+
-            '<div class="fb-title" style="color:'+(benar?'#06D6A0':'#FF3D00')+';">'+(benar?'MasyaAllah!':'Yuk coba lagi!')+'</div>'+
-            '<div class="fb-msg">'+d.feedback+'</div>'+
-            (d.catatan_tajwid?'<div style="background:#FFF5E0;border-radius:12px;padding:10px;margin-bottom:14px;font-size:12px;font-weight:700;color:#7A5800;">📝 '+d.catatan_tajwid+'</div>':'')+
-            '<div class="fb-skor" style="background:'+(benar?'#06D6A0':'#FF3D00')+';color:#fff;">Skor: '+d.skor+'/100</div>'+
-            '<button class="btn-lanjut" style="background:linear-gradient(135deg,#00B4D8,#3A86FF);margin-top:14px;" onclick="nextRekam()">'+
-              (S.recSoalIndex<S.recSoalSet.length-1?'Soal Berikutnya ➡':'Selesai 🏆')+
-            '</button>'+
-          '</div>';
-      };
-      reader.readAsDataURL(blob);
-    };
-
-    S.mediaRecorder.start();
-
-    setTimeout(function(){
-      if(S.recording&&S.mediaRecorder&&S.mediaRecorder.state==='recording'){
-        S.mediaRecorder.stop();
-        S.recording=false;
-      }
-    },15000);
-
-  } catch(err){
-    $('rec-lbl').textContent = 'Tap untuk merekam';
-    $('rec-result').innerHTML='<div class="msg msg-err">Tidak dapat mengakses mikrofon. Pastikan izin mikrofon diberikan.</div>';
-    S.recording = false;
+  // Deteksi format yang didukung
+  var mimeType = 'audio/webm';
+  if(typeof MediaRecorder !== 'undefined'){
+    if(MediaRecorder.isTypeSupported('audio/mp4')){ mimeType = 'audio/mp4'; }
+    else if(MediaRecorder.isTypeSupported('audio/webm')){ mimeType = 'audio/webm'; }
+    else if(MediaRecorder.isTypeSupported('audio/ogg')){ mimeType = 'audio/ogg'; }
   }
+
+  // PENTING: getUserMedia dipanggil LANGSUNG tanpa async sebelumnya
+  // agar iOS Safari mengenali ini sebagai user gesture
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then(function(stream){
+      S.recording = true;
+      S.audioChunks = [];
+
+      $('rec-btn').classList.add('recording');
+      $('rec-btn').textContent = '⏹';
+      $('rec-lbl').textContent = 'Sedang merekam... tap untuk berhenti';
+
+      // Animasi gelombang
+      waveInterval = setInterval(function(){
+        var bars = document.querySelectorAll('.wb');
+        bars.forEach(function(b){
+          b.style.height = (Math.random() * 28 + 6) + 'px';
+        });
+      }, 150);
+
+      // Buat MediaRecorder dengan format yang didukung
+      var options = {};
+      try { options = { mimeType: mimeType }; S.mediaRecorder = new MediaRecorder(stream, options); }
+      catch(e) { S.mediaRecorder = new MediaRecorder(stream); mimeType = 'audio/webm'; }
+
+      S.mediaRecorder.ondataavailable = function(e){
+        if(e.data && e.data.size > 0) S.audioChunks.push(e.data);
+      };
+
+      S.mediaRecorder.onstop = function(){
+        stream.getTracks().forEach(function(t){ t.stop(); });
+        clearInterval(waveInterval);
+        $('rec-lbl').textContent = 'Menilai bacaan...';
+
+        var blob = new Blob(S.audioChunks, { type: mimeType });
+        var reader = new FileReader();
+
+        reader.onload = function(){
+          var base64 = reader.result.split(',')[1];
+
+          post({
+            action: 'nilaiRekaman',
+            surah_number: surahNum,
+            ayat_number: ayatSoalNum,
+            audio_base64: base64,
+            mime_type: mimeType
+          }).then(function(r){
+            S.recording = false;
+
+            if(!r.success){
+              $('rec-result').innerHTML = '<div class="msg msg-err">Gagal menilai: ' + r.message + '</div>';
+              return;
+            }
+
+            var d = r.data;
+            var benar = d.hasil === 'benar' || d.hasil === 'hampir_benar';
+            $('rec-result').innerHTML =
+              '<div class="feedback-card" style="background:' + (benar?'#E8FFF5':'#FFF0E5') + ';border-color:' + (benar?'#06D6A0':'#FF3D00') + ';">'+
+                '<div class="fb-emoji">' + (d.emoji || (benar?'🎉':'💪')) + '</div>'+
+                '<div class="fb-title" style="color:' + (benar?'#06D6A0':'#FF3D00') + ';">' + (benar?'MasyaAllah!':'Yuk coba lagi!') + '</div>'+
+                '<div class="fb-msg">' + d.feedback + '</div>'+
+                (d.catatan_tajwid ? '<div style="background:#FFF5E0;border-radius:12px;padding:10px;margin-bottom:14px;font-size:12px;font-weight:700;color:#7A5800;">📝 ' + d.catatan_tajwid + '</div>' : '')+
+                '<div class="fb-skor" style="background:' + (benar?'#06D6A0':'#FF3D00') + ';color:#fff;">Skor: ' + d.skor + '/100</div>'+
+                '<button class="btn-lanjut" style="background:linear-gradient(135deg,#00B4D8,#3A86FF);margin-top:14px;" onclick="nextRekam()">' +
+                  (S.recSoalIndex < S.recSoalSet.length - 1 ? 'Soal Berikutnya ➡' : 'Selesai 🏆') +
+                '</button>'+
+              '</div>';
+          });
+        };
+
+        reader.readAsDataURL(blob);
+      };
+
+      S.mediaRecorder.start(100); // timeslice 100ms agar data terkumpul bertahap
+
+      // Auto stop setelah 15 detik
+      setTimeout(function(){
+        if(S.recording && S.mediaRecorder && S.mediaRecorder.state === 'recording'){
+          S.mediaRecorder.stop();
+          S.recording = false;
+        }
+      }, 15000);
+
+    })
+    .catch(function(err){
+      S.recording = false;
+      $('rec-lbl').textContent = 'Tap untuk merekam';
+      var pesanError = 'Tidak dapat mengakses mikrofon.';
+      if(err.name === 'NotAllowedError'){ pesanError = 'Izin mikrofon ditolak. Buka pengaturan browser dan izinkan akses mikrofon untuk halaman ini.'; }
+      else if(err.name === 'NotFoundError'){ pesanError = 'Mikrofon tidak ditemukan di perangkat ini.'; }
+      else if(err.name === 'NotSupportedError'){ pesanError = 'Browser ini tidak mendukung perekaman audio.'; }
+      $('rec-result').innerHTML = '<div class="msg msg-err">⚠️ ' + pesanError + '</div>';
+    });
 }
 
 function nextRekam(){
