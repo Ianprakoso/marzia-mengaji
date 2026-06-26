@@ -413,6 +413,7 @@ body {
 <!-- JAVASCRIPT & LOGIC                         -->
 <!-- ========================================== -->
 <script>
+// Intercept dialog alert standar dan gantikan dengan visual Toast
 function showToast(message) {
   const container = $('toast-container');
   if(!container) return;
