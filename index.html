@@ -60,55 +60,62 @@ body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:1
 
 /* ===== HEADER ===== */
 .app-header{flex-shrink:0;position:sticky;top:0;z-index:200;}
-.header-hero{padding:16px 20px 0;color:#fff;}
-.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
-.header-greeting{font-size:12px;font-weight:800;opacity:0.9;}
-.header-name{font-size:22px;font-weight:900;line-height:1.1;}
-.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.header-hero{padding:10px 16px 0;color:#fff;}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.header-left{flex:1;min-width:0;}
+.header-greeting{font-size:11px;font-weight:800;opacity:0.85;}
+.header-name{font-size:18px;font-weight:900;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .streak-badge{
-  background:rgba(255,255,255,0.25);border-radius:12px;
-  padding:6px 12px;display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.25);border-radius:10px;
+  padding:5px 10px;display:flex;align-items:center;gap:5px;
 }
-.streak-num{font-size:14px;font-weight:900;color:#fff;}
+.streak-num{font-size:13px;font-weight:900;color:#fff;}
 .streak-lbl{font-size:9px;color:rgba(255,255,255,0.85);font-weight:800;}
 .btn-keluar{
-  background:rgba(255,255,255,0.2);border:none;color:#fff;
-  padding:5px 12px;border-radius:8px;font-size:11px;
-  font-weight:800;cursor:pointer;font-family:var(--font);
+  background:rgba(0,0,0,0.25);border:2px solid rgba(255,255,255,0.4);color:#fff;
+  padding:5px 10px;border-radius:8px;font-size:11px;
+  font-weight:900;cursor:pointer;font-family:var(--font);
+  white-space:nowrap;
 }
+.btn-keluar:active{background:rgba(0,0,0,0.4);}
 .prog-wrap{
-  background:rgba(255,255,255,0.2);border-radius:14px;
-  padding:10px 14px;margin-bottom:12px;
+  background:rgba(255,255,255,0.2);border-radius:12px;
+  padding:7px 12px;margin-bottom:8px;
 }
-.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.prog-lbl{font-size:10px;font-weight:900;color:rgba(255,255,255,0.9);}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.prog-lbl{font-size:11px;font-weight:900;color:rgba(255,255,255,0.95);}
 .prog-val{font-size:12px;font-weight:900;color:#fff;}
-.pbar{height:8px;background:rgba(255,255,255,0.25);border-radius:99px;overflow:hidden;}
+.pbar{height:7px;background:rgba(255,255,255,0.25);border-radius:99px;overflow:hidden;}
 .pbar-fill{height:100%;border-radius:99px;background:#FFB700;transition:width 0.5s;}
 
 /* ===== TABS ===== */
-.tabs{display:flex;gap:3px;padding:0 6px;}
+.tabs{display:flex;gap:3px;padding:0 4px;}
 .tab{
-  flex:1;padding:9px 4px;text-align:center;
-  font-size:9px;font-weight:900;
-  border-radius:12px 12px 0 0;cursor:pointer;
+  flex:1;padding:8px 3px;text-align:center;
+  font-size:10px;font-weight:900;
+  border-radius:10px 10px 0 0;cursor:pointer;
   border:none;font-family:var(--font);
   transition:all 0.15s;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;
+  /* Tab tidak aktif: background gelap transparan, font putih tebal */
+  background:rgba(0,0,0,0.2);
+  color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,0.3);
 }
-.tab.on{background:#fff;color:inherit;}
-.tab.off{background:rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);}
+.tab.on{background:#fff;text-shadow:none;}
+.tab.off{background:rgba(0,0,0,0.2);color:#fff!important;}
 
 /* ===== CONTENT ===== */
-.app-content{flex:1;padding:16px;overflow-y:auto;}
+.app-content{flex:1;padding:10px;overflow-y:auto;}
 
 /* Responsive */
 @media(min-width:768px){
-  .app-content{max-width:860px;margin:0 auto;padding:24px 32px;}
-  .header-hero{max-width:860px;margin:0 auto;}
+  .app-content{max-width:860px;margin:0 auto;padding:20px 28px;}
+  .header-hero{max-width:860px;margin:0 auto;padding:12px 20px 0;}
   .tabs{max-width:860px;margin:0 auto;padding:0;}
-  .tab{font-size:11px;padding:10px 8px;}
-  .header-name{font-size:26px;}
+  .tab{font-size:12px;padding:10px 8px;}
+  .header-name{font-size:22px;}
 }
 
 /* ===== CARDS ===== */
@@ -126,8 +133,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:1
   border:3px solid transparent;
 }
 .stat-icon{font-size:24px;margin-bottom:4px;}
-.stat-num{font-size:22px;font-weight:900;}
-.stat-lbl{font-size:9px;font-weight:900;opacity:0.8;text-transform:uppercase;letter-spacing:0.3px;}
+.stat-num{font-size:24px;font-weight:900;}
+.stat-lbl{font-size:11px;font-weight:900;opacity:0.85;text-transform:uppercase;letter-spacing:0.3px;}
 
 /* ===== SURAH LIST ===== */
 .surah-item{
@@ -143,8 +150,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:1
   font-size:13px;font-weight:900;color:#fff;flex-shrink:0;
 }
 .surah-info{flex:1;min-width:0;}
-.surah-name{font-size:14px;font-weight:900;color:var(--dark);}
-.surah-meta{font-size:11px;color:#888;margin-top:1px;}
+.surah-name{font-size:15px;font-weight:900;color:var(--dark);}
+.surah-meta{font-size:12px;color:#666;margin-top:2px;}
 .surah-bar{height:5px;background:#E8E8F0;border-radius:99px;margin-top:5px;overflow:hidden;}
 .surah-fill{height:100%;border-radius:99px;}
 .surah-badge{font-size:10px;font-weight:900;padding:4px 10px;border-radius:99px;flex-shrink:0;border:2.5px solid transparent;}
@@ -198,10 +205,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:1
 }
 .ayat-audio-btn:active{transform:scale(0.95);}
 .arab{
-  font-family:var(--arabic);font-size:26px;text-align:right;
-  direction:rtl;line-height:1.9;color:var(--dark);margin-bottom:6px;
+  font-family:var(--arabic);font-size:28px;text-align:right;
+  direction:rtl;line-height:1.9;color:var(--dark);margin-bottom:8px;
 }
-.trans{font-size:12px;color:#666;line-height:1.5;margin-bottom:10px;}
+.trans{font-size:13px;color:#555;line-height:1.6;margin-bottom:12px;}
 .status-row{display:flex;gap:6px;flex-wrap:wrap;}
 .st-btn{
   padding:6px 14px;border:2.5px solid transparent;
@@ -349,7 +356,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:1
   display:flex;align-items:center;justify-content:center;
   gap:3px;margin-bottom:14px;padding:0 12px;overflow:hidden;
 }
-.wb{width:4px;border-radius:99px;background:var(--c4);transition:height 0.1s;}
+.wb{width:4px;border-radius:99px;transition:height 0.1s;}
 
 /* ===== MUROJAAH ===== */
 .sched-card{
@@ -472,16 +479,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:1
     <div class="app-header" id="app-header">
       <div class="header-hero" id="header-hero">
         <div class="header-top">
-          <div>
+          <div class="header-left">
             <div class="header-greeting">Assalamu'alaikum 👋</div>
             <div class="header-name" id="hdr-name">Marzia</div>
           </div>
           <div class="header-right">
             <div class="streak-badge">
-              <span style="font-size:18px;">🔥</span>
+              <span style="font-size:16px;">🔥</span>
               <div>
                 <div class="streak-num" id="hdr-streak">0</div>
-                <div class="streak-lbl">Hari Streak</div>
+                <div class="streak-lbl">Streak</div>
               </div>
             </div>
             <button class="btn-keluar" id="btn-logout">Keluar</button>
@@ -629,9 +636,11 @@ async function doReg(){
 }
 
 function doLogout(){
-  post({action:'logout'});
+  post({action:'logout'}).catch(function(){});
   localStorage.clear();
-  S.token=null; stopAudio();
+  S.token=null; S.userId=null; S.username=null;
+  S.surahList=[]; S.ayatList=[]; S.progressMap={};
+  stopAudio();
   showPg('pg-login');
 }
 
@@ -643,6 +652,13 @@ async function initApp(){
 
   var r = await post({action:'getInitialData'});
   if(!r.success){
+    // Kalau sesi tidak valid, langsung logout ke halaman login
+    if(r.message && (r.message.indexOf('Sesi') !== -1 || r.message.indexOf('valid') !== -1 || r.message.indexOf('berakhir') !== -1)){
+      localStorage.clear();
+      S.token=null;
+      showPg('pg-login');
+      return;
+    }
     $('app-content').innerHTML='<div class="empty"><div class="empty-icon">😢</div><p>Gagal memuat: '+r.message+'</p></div>';
     return;
   }
@@ -754,7 +770,7 @@ function renderBeranda(){
         '<div class="stat-lbl" style="color:#FFB700;">Progress</div>'+
       '</div>'+
     '</div>'+
-    '<div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Surah Juz 30</div>'+
+    '<div style="font-size:13px;font-weight:900;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Surah Juz 30</div>'+
     '<div>'+surahHtml+'</div>';
 }
 
@@ -766,7 +782,7 @@ function renderHafalList(){
       '<div class="surah-bubble" style="background:'+c+';">'+s.surah_number+'</div>'+
       '<div class="surah-info">'+
         '<div class="surah-name">'+s.nama_latin+'</div>'+
-        '<div class="surah-meta">'+S.hafal+'/'+s.jumlah_ayat+' ayat dihafal</div>'+
+        '<div class="surah-meta">'+s.hafal+'/'+s.jumlah_ayat+' ayat dihafal</div>'+
         '<div class="surah-bar"><div class="surah-fill" style="width:'+s.pct+'%;background:'+c+';"></div></div>'+
       '</div>'+
       '<span style="font-size:18px;">'+(s.status==='hafal'?'✅':s.status==='sedang'?'📝':'📖')+'</span>'+
@@ -812,6 +828,7 @@ function renderSurahDetail(surah, ayatList, c){
   }).join('');
 
   $('app-content').innerHTML =
+    '<button onclick="renderHafalList()" style="display:flex;align-items:center;gap:6px;background:none;border:none;font-size:13px;font-weight:900;color:#8338EC;cursor:pointer;margin-bottom:12px;padding:4px 0;">← Kembali ke Daftar Surah</button>'+
     '<div class="player-bar">'+
       '<div style="font-size:10px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🎵 Mishary Rashid Al-Afasy</div>'+
       '<div class="player-top">'+
@@ -1180,10 +1197,12 @@ async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
     $('rec-btn').textContent = '⏹';
     $('rec-lbl').textContent = 'Sedang merekam... tap untuk berhenti';
 
+    var waveColors = ['#FF3D00','#FF006E','#8338EC','#3A86FF','#06D6A0','#FFB700','#00B4D8'];
     waveInterval = setInterval(function(){
       var bars = document.querySelectorAll('.wb');
-      bars.forEach(function(b){
+      bars.forEach(function(b, i){
         b.style.height = (Math.random()*28+6)+'px';
+        b.style.background = waveColors[i % waveColors.length];
       });
     },150);
 
