@@ -4,615 +4,435 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marzia Mengaji</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Amiri&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          nunito: ['Nunito', 'sans-serif'],
+          arabic: ['Amiri', 'serif'],
+        },
+        colors: {
+          primary: '#8338EC',
+          secondary: '#FF006E',
+          accent: '#FF3D00',
+        }
+      }
+    }
+  }
+</script>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --c1:#FF3D00;--c2:#FF006E;--c3:#8338EC;--c4:#3A86FF;
-  --c5:#06D6A0;--c6:#FFB700;--c7:#FB5607;--c8:#00B4D8;
-  --bg:#F0F4FF;--white:#FFFFFF;--dark:#1A1A2E;
-  --font:'Nunito',sans-serif;--arabic:'Amiri',serif;
-}
-body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:100vh;}
-.hidden{display:none!important;}
-
-/* ===== AUTH ===== */
-.auth-wrap{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#FF006E 0%,#8338EC 50%,#3A86FF 100%);
-  padding:24px;
-}
-.auth-box{
-  background:#fff;border-radius:28px;padding:36px 32px;
-  width:100%;max-width:400px;
-  box-shadow:0 24px 64px rgba(131,56,236,0.35);
-}
-.auth-logo{text-align:center;margin-bottom:28px;}
-.auth-icon{font-size:56px;display:block;margin-bottom:8px;}
-.auth-title{font-size:26px;font-weight:900;background:linear-gradient(135deg,#FF006E,#8338EC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.auth-sub{font-size:13px;color:#888;margin-top:4px;}
-.field{margin-bottom:16px;}
-.field label{display:block;font-size:12px;font-weight:900;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
-.field input{
-  width:100%;padding:14px 16px;
-  border:2.5px solid #E8E8F0;border-radius:14px;
-  font-size:15px;font-family:var(--font);outline:none;
-  transition:border-color 0.2s;background:#FAFAFF;
-}
-.field input:focus{border-color:#8338EC;}
-.btn-auth{
-  width:100%;padding:15px;border:none;border-radius:14px;
-  font-size:16px;font-weight:900;font-family:var(--font);cursor:pointer;
-  background:linear-gradient(135deg,#FF006E,#8338EC);color:#fff;
-  box-shadow:0 8px 24px rgba(131,56,236,0.4);
-  transition:transform 0.15s,box-shadow 0.15s;
-}
-.btn-auth:active{transform:scale(0.97);}
-.auth-link{text-align:center;font-size:13px;color:#888;margin-top:18px;}
-.auth-link a{color:#8338EC;font-weight:900;cursor:pointer;}
-.msg{padding:12px 16px;border-radius:12px;font-size:13px;font-weight:700;margin-bottom:14px;}
-.msg-err{background:#FFE0E8;color:#CC0055;}
-.msg-ok{background:#D0FFF0;color:#007A50;}
-.msg-info{background:#E0EEFF;color:#0055CC;}
-
-/* ===== APP LAYOUT ===== */
-.app-wrap{display:flex;flex-direction:column;min-height:100vh;}
-
-/* ===== HEADER — desain baru menyatu ===== */
-.app-header{flex-shrink:0;position:sticky;top:0;z-index:200;}
-
-/* Zona hero: gradient penuh, semua elemen di dalamnya */
-.header-hero{
-  padding:14px 16px 0;
-  color:#fff;
-  /* background di-set via JS per tab */
+:root {
+  --c1: #FF3D00; --c2: #FF006E; --c3: #8338EC; --c4: #3A86FF;
+  --c5: #06D6A0; --c6: #FFB700; --c7: #FB5607; --c8: #00B4D8;
+  --bg: #F8FAFC; --white: #FFFFFF; --dark: #0F172A;
+  --font: 'Nunito', sans-serif; --arabic: 'Amiri', serif;
 }
 
-/* Baris 1: greeting + nama + kontrol kanan */
-.header-top{
-  display:flex;justify-content:space-between;
-  align-items:center;margin-bottom:10px;
-}
-.header-left{flex:1;min-width:0;}
-.header-greeting{
-  font-size:11px;font-weight:800;
-  color:rgba(255,255,255,0.75);
-  letter-spacing:0.3px;margin-bottom:1px;
-}
-.header-name{
-  font-size:20px;font-weight:900;line-height:1.1;
-  color:#fff;
-  text-shadow:0 2px 8px rgba(0,0,0,0.15);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+body {
+  font-family: var(--font);
+  background: #0f172a; /* Dark background out of the frame */
+  color: var(--dark);
+  min-height: 100vh;
 }
 
-/* Kanan: streak + logout dalam satu pill */
-.header-right{
-  display:flex;align-items:center;gap:6px;flex-shrink:0;
-}
-.streak-badge{
-  display:flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,0.18);
-  border:1.5px solid rgba(255,255,255,0.3);
-  border-radius:99px;padding:5px 10px 5px 8px;
-}
-.streak-fire{font-size:15px;line-height:1;}
-.streak-num{
-  font-size:14px;font-weight:900;color:#FFD93D;
-  line-height:1;
-}
-.streak-lbl{
-  font-size:9px;font-weight:800;
-  color:rgba(255,255,255,0.8);line-height:1;
-}
-.btn-keluar{
-  background:rgba(255,255,255,0.15);
-  border:1.5px solid rgba(255,255,255,0.35);
-  color:rgba(255,255,255,0.9);
-  padding:6px 11px;border-radius:99px;
-  font-size:11px;font-weight:800;
-  cursor:pointer;font-family:var(--font);
-  letter-spacing:0.2px;transition:all 0.15s;
-}
-.btn-keluar:active{background:rgba(255,255,255,0.3);}
+.hidden { display: none !important; }
 
-/* Baris 2: progress bar */
-.prog-wrap{margin-bottom:12px;}
-.prog-row{
-  display:flex;justify-content:space-between;
-  align-items:center;margin-bottom:5px;
+/* Custom Scrollbar for modern touch */
+::-webkit-scrollbar {
+  width: 6px;
 }
-.prog-lbl{
-  font-size:11px;font-weight:800;
-  color:rgba(255,255,255,0.8);letter-spacing:0.2px;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-.prog-val{
-  font-size:12px;font-weight:900;color:#fff;
-  background:rgba(255,255,255,0.15);
-  padding:2px 8px;border-radius:99px;
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
 }
-.pbar{
-  height:8px;
-  background:rgba(255,255,255,0.2);
-  border-radius:99px;overflow:hidden;
-  box-shadow:inset 0 1px 3px rgba(0,0,0,0.15);
-}
-.pbar-fill{
-  height:100%;border-radius:99px;
-  background:linear-gradient(90deg,#FFD93D,#FF6B6B);
-  transition:width 0.6s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 0 8px rgba(255,217,61,0.6);
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
-/* ===== TAB BAR — pill mengambang di dalam header ===== */
-.tabs{
-  display:flex;gap:4px;
-  background:rgba(0,0,0,0.18);
-  border-radius:14px 14px 0 0;
-  padding:5px 5px 0;
-  backdrop-filter:blur(4px);
-}
-.tab{
-  flex:1;
-  padding:8px 2px 10px;
-  text-align:center;
-  line-height:1.2;
-  border-radius:10px 10px 0 0;
-  cursor:pointer;border:none;
-  font-family:var(--font);
-  transition:all 0.2s cubic-bezier(.4,0,.2,1);
-  overflow:hidden;
-  color:rgba(255,255,255,0.7);
-  background:transparent;
-}
-.tab .tab-icon{
-  display:block;font-size:18px;margin-bottom:3px;
-}
-.tab span{
-  display:block;font-size:9px;font-weight:900;
-  letter-spacing:0.2px;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;
-}
-.tab:hover{
-  color:rgba(255,255,255,0.95);
-  background:rgba(255,255,255,0.1);
-}
-.tab.on{
-  background:#fff;
-  box-shadow:0 -3px 14px rgba(0,0,0,0.14);
-}
-.tab.on span{
-  font-size:9.5px;
-}
-.tab.off{
-  color:rgba(255,255,255,0.75);
-  background:transparent;
+/* Glassmorphism Auth */
+.auth-glass {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ===== CONTENT ===== */
-.app-content{flex:1;padding:12px;overflow-y:auto;}
-
-/* Responsive */
-@media(min-width:768px){
-  .app-content{max-width:860px;margin:0 auto;padding:20px 28px;}
-  .header-hero{max-width:860px;margin:0 auto;}
-  .tabs{max-width:860px;margin:0 auto;}
-  .tab{padding:10px 8px 12px;}
-  .tab .tab-icon{font-size:20px;}
-  .tab span{font-size:11px;}
-  .tab.on span{font-size:11.5px;}
-  .header-name{font-size:24px;}
-  .prog-lbl{font-size:12px;}
+/* Dynamic State Styling */
+.tab.on {
+  background: #ffffff !important;
+  color: inherit !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-2px);
+  border-radius: 16px 16px 0 0;
+}
+.tab.off {
+  color: rgba(255, 255, 255, 0.7) !important;
+  opacity: 0.8;
 }
 
-/* ===== CARDS ===== */
-.card{
-  background:#fff;border-radius:20px;
-  padding:18px;margin-bottom:14px;
-  border:3px solid transparent;
+/* Beautiful custom style for Surah Items generated dynamically */
+.surah-item {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  border: 2px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.card-title{font-size:14px;font-weight:900;margin-bottom:14px;}
+.surah-item:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 20px -8px rgba(0,0,0,0.08);
+}
+.surah-item:active {
+  transform: translateY(0px) scale(0.99);
+}
+.surah-bubble {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.surah-info {
+  flex: 1;
+  min-width: 0;
+}
+.surah-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.surah-meta {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.surah-bar {
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.surah-fill {
+  height: 100%;
+  border-radius: 99px;
+}
+.surah-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 99px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
 
-/* ===== STATS ===== */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.stat-card{
-  border-radius:18px;padding:14px 10px;text-align:center;
-  border:3px solid transparent;
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
 }
-.stat-icon{font-size:24px;margin-bottom:4px;}
-.stat-num{font-size:24px;font-weight:900;}
-.stat-lbl{font-size:11px;font-weight:900;opacity:0.85;text-transform:uppercase;letter-spacing:0.3px;}
+.stat-card {
+  border-radius: 20px;
+  padding: 16px 10px;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+}
+.stat-icon {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+.stat-num {
+  font-size: 26px;
+  font-weight: 900;
+}
+.stat-lbl {
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
-/* ===== SURAH LIST ===== */
-.surah-item{
-  background:#fff;border-radius:18px;padding:14px;
-  margin-bottom:10px;display:flex;align-items:center;
-  gap:12px;cursor:pointer;border:3px solid #E8E8F0;
-  transition:all 0.15s;
+/* Ayat Cards inside Detail view */
+.ayat-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 22px;
+  margin-bottom: 16px;
+  border-left: 6px solid #e2e8f0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
 }
-.surah-item:active{transform:scale(0.98);}
-.surah-bubble{
-  width:46px;height:46px;border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:900;color:#fff;flex-shrink:0;
+.ayat-card.active {
+  border-left-color: var(--c3) !important;
+  background: #faf8ff;
+  box-shadow: 0 10px 20px -5px rgba(131, 56, 236, 0.08);
+  transform: translateY(-2px);
 }
-.surah-info{flex:1;min-width:0;}
-.surah-name{font-size:15px;font-weight:900;color:var(--dark);}
-.surah-meta{font-size:12px;color:#666;margin-top:2px;}
-.surah-bar{height:5px;background:#E8E8F0;border-radius:99px;margin-top:5px;overflow:hidden;}
-.surah-fill{height:100%;border-radius:99px;}
-.surah-badge{font-size:10px;font-weight:900;padding:4px 10px;border-radius:99px;flex-shrink:0;border:2.5px solid transparent;}
+.ayat-card.hafal { border-left-color: var(--c5) !important; }
+.ayat-card.sedang { border-left-color: var(--c6) !important; }
 
-/* ===== HAFAL AYAT ===== */
-.player-bar{
-  background:#fff;border-radius:20px;padding:14px;
-  margin-bottom:14px;border:3px solid var(--c3);
+/* Arabic Typography */
+.arab {
+  font-family: var(--arabic);
+  font-size: 30px;
+  text-align: right;
+  direction: rtl;
+  line-height: 2.2;
+  color: #0f172a;
+  margin-bottom: 12px;
 }
-.player-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.play-btn{
-  width:46px;height:46px;border-radius:50%;border:none;
-  cursor:pointer;display:flex;align-items:center;
-  justify-content:center;font-size:18px;color:#fff;flex-shrink:0;
-  box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.15s;
-}
-.play-btn:active{transform:scale(0.92);}
-.player-info{flex:1;}
-.player-ayat{font-size:13px;font-weight:900;color:var(--dark);}
-.player-sub{font-size:10px;color:#888;margin-top:2px;}
-.track{height:6px;background:#E8E8F0;border-radius:99px;overflow:hidden;margin-bottom:10px;}
-.track-fill{height:100%;border-radius:99px;transition:width 0.2s;}
-.auto-row{display:flex;align-items:center;gap:8px;}
-.toggle{
-  width:40px;height:22px;border-radius:99px;
-  cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;
-}
-.toggle-dot{
-  width:16px;height:16px;background:#fff;border-radius:50%;
-  position:absolute;top:3px;transition:left 0.2s;
-}
-.toggle.on .toggle-dot{left:21px;}
-.toggle.off .toggle-dot{left:3px;}
-.toggle-lbl{font-size:11px;font-weight:800;color:#555;}
 
-.ayat-card{
-  background:#fff;border-radius:18px;padding:14px;
-  margin-bottom:10px;border-left:5px solid #E8E8F0;
-  transition:border-color 0.2s;
+/* Choices inside Quiz */
+.choice {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
-.ayat-card.active{border-left-color:var(--c3);background:#F5F0FF;}
-.ayat-card.hafal{border-left-color:var(--c5);}
-.ayat-card.sedang{border-left-color:var(--c6);}
-.ayat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.ayat-num{font-size:11px;font-weight:900;}
-.ayat-audio-btn{
-  display:flex;align-items:center;gap:4px;
-  padding:4px 10px;border-radius:99px;border:none;
-  font-size:11px;font-weight:900;cursor:pointer;
-  font-family:var(--font);transition:transform 0.15s;
+.choice:hover {
+  border-color: var(--c2);
+  background: #fff8f9;
+  transform: translateY(-2px);
 }
-.ayat-audio-btn:active{transform:scale(0.95);}
-.arab{
-  font-family:var(--arabic);font-size:28px;text-align:right;
-  direction:rtl;line-height:1.9;color:var(--dark);margin-bottom:8px;
-}
-.trans{font-size:13px;color:#555;line-height:1.6;margin-bottom:12px;}
-.status-row{display:flex;gap:6px;flex-wrap:wrap;}
-.st-btn{
-  padding:6px 14px;border:2.5px solid transparent;
-  border-radius:99px;font-size:11px;font-weight:900;
-  cursor:pointer;font-family:var(--font);transition:transform 0.15s;
-}
-.st-btn:active{transform:scale(0.95);}
+.choice.sel { border-color: var(--c2); background: #fff0f5; box-shadow: 0 4px 12px rgba(255,0,110,0.1); }
+.choice.ok { border-color: var(--c5) !important; background: #ecfdf5 !important; }
+.choice.no { border-color: var(--c1) !important; background: #fef2f2 !important; }
 
-/* ===== TEBAK AYAT ===== */
-.soal-progress{display:flex;gap:8px;margin-bottom:16px;}
-.soal-dot{
-  height:8px;border-radius:99px;flex:1;background:#E8E8F0;
-  transition:background 0.3s;
+/* Custom beautiful input styling */
+.custom-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+  background: #f8fafc;
 }
-.soal-dot.done{background:var(--c5);}
-.soal-dot.active{background:var(--c6);}
+.custom-input:focus {
+  border-color: var(--c3);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(131, 56, 236, 0.1);
+}
 
-.soal-card{
-  background:#fff;border-radius:22px;padding:18px;
-  border:3px solid var(--c2);margin-bottom:14px;
+/* Toast Notification overlay */
+#toast-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: none;
 }
-.soal-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:11px;font-weight:900;padding:5px 14px;
-  border-radius:99px;margin-bottom:14px;color:#fff;
+.toast-msg {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 14px 24px;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideInDown 0.3s ease-out forwards;
 }
-.btn-dengar{
-  width:100%;padding:14px;border:none;border-radius:14px;
-  font-size:14px;font-weight:900;font-family:var(--font);
-  cursor:pointer;display:flex;align-items:center;
-  justify-content:center;gap:8px;color:#fff;
-  margin-bottom:14px;box-shadow:0 6px 20px rgba(0,0,0,0.2);
-  transition:transform 0.15s;
+@keyframes slideInDown {
+  from { transform: translateY(-40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
-.btn-dengar:active{transform:scale(0.97);}
-.soal-arab-box{
-  border-radius:14px;padding:14px;margin-bottom:12px;
-}
-.soal-arab{
-  font-family:var(--arabic);font-size:22px;text-align:right;
-  direction:rtl;line-height:1.9;color:var(--dark);
-}
-.soal-hint{
-  font-size:12px;font-weight:900;text-align:center;
-  color:#888;margin-bottom:12px;
-}
-.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.choice{
-  background:#FAFAFF;border:3px solid #E8E8F0;
-  border-radius:16px;padding:12px 14px;
-  display:flex;align-items:center;gap:10px;
-  cursor:pointer;transition:all 0.15s;
-}
-.choice:active{transform:scale(0.98);}
-.choice.sel{border-color:var(--c2);background:#FFF0F5;}
-.choice.ok{border-color:var(--c5);background:#E0FFF5;}
-.choice.no{border-color:var(--c1);background:#FFE8E5;}
-.c-play{
-  width:36px;height:36px;border-radius:50%;border:none;
-  cursor:pointer;display:flex;align-items:center;
-  justify-content:center;font-size:14px;color:#fff;
-  flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.2);
-  transition:transform 0.15s;
-}
-.c-play:active{transform:scale(0.9);}
-.c-arab{
-  font-family:var(--arabic);font-size:20px;
-  direction:rtl;flex:1;text-align:right;color:var(--dark);
-  line-height:1.7;
-}
-.btn-kirim{
-  width:100%;padding:14px;border:none;border-radius:14px;
-  font-size:15px;font-weight:900;font-family:var(--font);
-  cursor:pointer;color:#fff;
-  box-shadow:0 6px 20px rgba(0,0,0,0.2);
-  transition:transform 0.15s;
-}
-.btn-kirim:active{transform:scale(0.97);}
-
-/* ===== FEEDBACK CARD ===== */
-.feedback-card{
-  border-radius:24px;padding:28px;text-align:center;
-  border:4px solid transparent;margin-bottom:14px;
-}
-.fb-emoji{font-size:60px;margin-bottom:10px;}
-.fb-title{font-size:22px;font-weight:900;margin-bottom:6px;}
-.fb-msg{font-size:14px;font-weight:700;margin-bottom:14px;line-height:1.5;}
-.fb-stars{display:flex;justify-content:center;gap:6px;font-size:32px;margin-bottom:14px;}
-.fb-skor{
-  display:inline-block;padding:8px 20px;
-  border-radius:12px;font-size:16px;font-weight:900;
-  margin-bottom:18px;
-}
-.btn-lanjut{
-  width:100%;padding:14px;border:none;border-radius:14px;
-  font-size:15px;font-weight:900;font-family:var(--font);
-  cursor:pointer;color:#fff;
-  box-shadow:0 6px 20px rgba(0,0,0,0.2);
-  transition:transform 0.15s;
-}
-.btn-lanjut:active{transform:scale(0.97);}
-
-/* ===== LANJUTKAN AYAT ===== */
-.rec-soal-box{
-  border-radius:16px;padding:16px;margin-bottom:14px;
-  border:3px solid var(--c4);
-}
-.rec-label{font-size:11px;font-weight:900;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
-.rec-arab{
-  font-family:var(--arabic);font-size:22px;text-align:right;
-  direction:rtl;line-height:1.9;color:var(--dark);
-}
-.rec-hint{font-size:11px;color:#888;margin-top:4px;font-weight:700;}
-.btn-contoh{
-  width:100%;padding:12px;border:3px solid var(--c4);
-  border-radius:14px;font-size:13px;font-weight:900;
-  font-family:var(--font);cursor:pointer;
-  background:#E8F4FF;color:var(--c4);
-  margin-bottom:16px;display:flex;
-  align-items:center;justify-content:center;gap:6px;
-  transition:transform 0.15s;
-}
-.btn-contoh:active{transform:scale(0.97);}
-.rec-center{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px;}
-.rec-btn{
-  width:80px;height:80px;border-radius:50%;border:none;
-  cursor:pointer;display:flex;align-items:center;
-  justify-content:center;font-size:32px;color:#fff;
-  box-shadow:0 8px 28px rgba(255,61,0,0.45);
-  transition:transform 0.15s,box-shadow 0.15s;
-}
-.rec-btn:active{transform:scale(0.9);}
-.rec-btn.recording{
-  background:linear-gradient(135deg,var(--c1),var(--c2))!important;
-  animation:pulse 1s infinite;
-}
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(255,61,0,0.5);}
-  70%{box-shadow:0 0 0 20px rgba(255,61,0,0);}
-  100%{box-shadow:0 0 0 0 rgba(255,61,0,0);}
-}
-.rec-lbl{font-size:12px;font-weight:900;color:#888;}
-.wave{
-  height:40px;background:#F0F4FF;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  gap:3px;margin-bottom:14px;padding:0 12px;overflow:hidden;
-}
-.wb{width:4px;border-radius:99px;transition:height 0.1s;}
-
-/* ===== MUROJAAH ===== */
-.sched-card{
-  background:#fff;border-radius:20px;padding:16px;
-  margin-bottom:10px;border:3px solid #E8E8F0;
-}
-.sched-card.today{border-color:var(--c5);background:#F0FFFB;}
-.today-tag{
-  display:inline-block;background:var(--c5);color:#fff;
-  font-size:10px;font-weight:900;padding:4px 12px;
-  border-radius:99px;margin-bottom:8px;
-}
-.sched-title{font-size:16px;font-weight:900;color:var(--dark);}
-.sched-meta{font-size:11px;color:#888;margin-bottom:10px;}
-.btn-dengar-muroj{
-  width:100%;padding:12px;border:none;border-radius:12px;
-  font-size:13px;font-weight:900;font-family:var(--font);
-  cursor:pointer;color:#fff;background:var(--c5);
-  display:flex;align-items:center;justify-content:center;
-  gap:6px;margin-bottom:10px;
-  box-shadow:0 4px 14px rgba(6,214,160,0.4);
-  transition:transform 0.15s;
-}
-.btn-dengar-muroj:active{transform:scale(0.97);}
-.nilai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.nbtn{
-  padding:12px 6px;border-radius:14px;border:3px solid transparent;
-  font-size:10px;font-weight:900;cursor:pointer;
-  font-family:var(--font);display:flex;flex-direction:column;
-  align-items:center;gap:4px;transition:transform 0.15s;
-}
-.nbtn:active{transform:scale(0.95);}
-.nbtn-icon{font-size:24px;}
-.nl{background:#00F5C4;color:#006B54;border-color:#00D4A8;}
-.na{background:#FFD60A;color:#7A5800;border-color:#F5C400;}
-.np{background:#FF6B6B;color:#7A0000;border-color:#FF3D3D;}
-
-.next-section{background:#F0F4FF;border-radius:16px;padding:14px;margin-top:10px;}
-.next-lbl{font-size:10px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
-.next-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.next-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
-.next-text{font-size:13px;font-weight:800;color:var(--dark);}
-
-.btn-gen{
-  width:100%;padding:14px;border:none;border-radius:14px;
-  font-size:15px;font-weight:900;font-family:var(--font);
-  cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--c5),var(--c4));
-  box-shadow:0 6px 20px rgba(6,214,160,0.35);
-  transition:transform 0.15s;
-}
-.btn-gen:active{transform:scale(0.97);}
-.btn-gen-outline{
-  width:100%;padding:12px;border:3px solid var(--c5);
-  border-radius:14px;font-size:13px;font-weight:900;
-  font-family:var(--font);cursor:pointer;
-  background:#fff;color:var(--c5);margin-top:10px;
-  transition:transform 0.15s;
-}
-.btn-gen-outline:active{transform:scale(0.97);}
-
-/* ===== LOADING ===== */
-.loading{
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:60px 20px;
-}
-.spinner{
-  width:44px;height:44px;
-  border:4px solid #E8E8F0;
-  border-top-color:var(--c3);
-  border-radius:50%;
-  animation:spin 0.7s linear infinite;
-  margin-bottom:14px;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading p{font-size:14px;font-weight:800;color:#888;}
-
-.empty{text-align:center;padding:48px 20px;}
-.empty-icon{font-size:56px;margin-bottom:10px;}
-.empty p{font-size:14px;font-weight:800;color:#888;}
 </style>
 </head>
-<body>
+<body class="flex justify-center items-stretch font-nunito">
 
-<div id="pg-login">
-  <div class="auth-wrap">
-    <div class="auth-box">
-      <div class="auth-logo">
-        <span class="auth-icon">🌙</span>
-        <div class="auth-title">Marzia Mengaji</div>
-        <div class="auth-sub">Belajar Juz 30 dengan menyenangkan!</div>
+<div id="toast-container"></div>
+
+<!-- Container Utama: Desktop centered app view, mobile full screen -->
+<div class="w-full max-w-xl bg-slate-50 min-h-screen flex flex-col shadow-2xl relative">
+
+  <!-- ========================================== -->
+  <!-- PAGE: LOGIN                                -->
+  <!-- ========================================== -->
+  <div id="pg-login" class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-[#FF006E] via-[#8338EC] to-[#3A86FF]">
+    <div class="auth-glass w-full max-w-md rounded-[32px] p-8 md:p-10 shadow-2xl transition-all duration-300">
+      <div class="auth-logo text-center mb-8">
+        <span class="text-6xl block mb-4 animate-bounce">🌙</span>
+        <div class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#FF006E] to-[#8338EC] -webkit-background-clip-text -webkit-text-fill-color:transparent bg-clip-text text-transparent">Marzia Mengaji</div>
+        <div class="text-sm text-slate-500 font-semibold mt-2">Belajar Juz 30 dengan menyenangkan!</div>
       </div>
-      <div id="msg-login"></div>
-      <div class="field"><label>Username</label><input type="text" id="in-user" placeholder="Masukkan username"></div>
-      <div class="field"><label>Password</label><input type="password" id="in-pass" placeholder="Masukkan password"></div>
-      <button class="btn-auth" id="do-login">Masuk ✨</button>
-      <div class="auth-link">Belum punya akun? <a id="go-reg">Daftar dulu</a></div>
+      <div id="msg-login" class="mb-4"></div>
+      
+      <div class="field mb-4">
+        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Username</label>
+        <input type="text" id="in-user" class="custom-input" placeholder="Masukkan username">
+      </div>
+      
+      <div class="field mb-6">
+        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Password</label>
+        <input type="password" id="in-pass" class="custom-input" placeholder="Masukkan password">
+      </div>
+      
+      <button class="w-full py-4 bg-gradient-to-r from-[#FF006E] to-[#8338EC] text-white rounded-2xl font-extrabold hover:opacity-95 transition-all shadow-lg active:scale-95" id="do-login">Masuk ✨</button>
+      <div class="text-center text-sm font-semibold text-slate-500 mt-6">Belum punya akun? <a id="go-reg" class="text-[#8338EC] font-extrabold cursor-pointer hover:underline">Daftar dulu</a></div>
     </div>
   </div>
-</div>
 
-<div id="pg-reg" class="hidden">
-  <div class="auth-wrap">
-    <div class="auth-box">
-      <div class="auth-logo">
-        <span class="auth-icon">⭐</span>
-        <div class="auth-title">Daftar Baru</div>
-        <div class="auth-sub">Yuk mulai perjalanan mengajimu!</div>
+  <!-- ========================================== -->
+  <!-- PAGE: REGISTER                             -->
+  <!-- ========================================== -->
+  <div id="pg-reg" class="hidden flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-[#FF006E] via-[#8338EC] to-[#3A86FF]">
+    <div class="auth-glass w-full max-w-md rounded-[32px] p-8 md:p-10 shadow-2xl transition-all duration-300">
+      <div class="auth-logo text-center mb-8">
+        <span class="text-6xl block mb-4">⭐</span>
+        <div class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#FF006E] to-[#8338EC] -webkit-background-clip-text -webkit-text-fill-color:transparent bg-clip-text text-transparent">Daftar Baru</div>
+        <div class="text-sm text-slate-500 font-semibold mt-2">Yuk mulai perjalanan mengajimu!</div>
       </div>
-      <div id="msg-reg"></div>
-      <div class="field"><label>Username</label><input type="text" id="in-ru" placeholder="Pilih username"></div>
-      <div class="field"><label>Password</label><input type="password" id="in-rp" placeholder="Buat password"></div>
-      <button class="btn-auth" id="do-reg">Daftar Sekarang 🚀</button>
-      <div class="auth-link">Sudah punya akun? <a id="go-login">Masuk di sini</a></div>
+      <div id="msg-reg" class="mb-4"></div>
+      
+      <div class="field mb-4">
+        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Username</label>
+        <input type="text" id="in-ru" class="custom-input" placeholder="Pilih username">
+      </div>
+      
+      <div class="field mb-6">
+        <label class="block text-xs font-extrabold text-slate-600 mb-2 uppercase tracking-wider">Password</label>
+        <input type="password" id="in-rp" class="custom-input" placeholder="Buat password">
+      </div>
+      
+      <button class="w-full py-4 bg-gradient-to-r from-[#FF006E] to-[#8338EC] text-white rounded-2xl font-extrabold hover:opacity-95 transition-all shadow-lg active:scale-95" id="do-reg">Daftar Sekarang 🚀</button>
+      <div class="text-center text-sm font-semibold text-slate-500 mt-6">Sudah punya akun? <a id="go-login" class="text-[#8338EC] font-extrabold cursor-pointer hover:underline">Masuk di sini</a></div>
     </div>
   </div>
-</div>
 
-<div id="pg-app" class="hidden">
-  <div class="app-wrap">
-    <div class="app-header" id="app-header">
-      <div class="header-hero" id="header-hero">
+  <!-- ========================================== -->
+  <!-- PAGE: MAIN APP                             -->
+  <!-- ========================================== -->
+  <div id="pg-app" class="hidden flex-1 flex flex-col min-h-screen">
+    
+    <div class="app-header sticky top-0 z-[200] shadow-md transition-all duration-300" id="app-header">
+      <div class="header-hero rounded-b-[32px] p-5 pb-0 text-white transition-all duration-500" id="header-hero">
 
         <!-- Baris 1: Nama + Kontrol -->
-        <div class="header-top">
+        <div class="header-top flex justify-between items-center mb-4">
           <div class="header-left">
-            <div class="header-greeting">Assalamu'alaikum 👋</div>
-            <div class="header-name" id="hdr-name">Marzia</div>
+            <div class="text-xs font-extrabold text-white/80 tracking-wider">Assalamu'alaikum 👋</div>
+            <div class="text-2xl font-extrabold leading-tight text-white drop-shadow" id="hdr-name">Marzia</div>
           </div>
-          <div class="header-right">
-            <div class="streak-badge">
-              <span class="streak-fire">🔥</span>
-              <div>
-                <div class="streak-num" id="hdr-streak">0</div>
-                <div class="streak-lbl">hari</div>
+          <div class="header-right flex items-center gap-3">
+            <div class="streak-badge flex items-center gap-1.5 bg-white/20 border border-white/20 rounded-full px-4 py-1.5 backdrop-blur-md">
+              <span class="text-lg">🔥</span>
+              <div class="flex items-baseline gap-1">
+                <div class="text-base font-extrabold text-yellow-300 leading-none" id="hdr-streak">0</div>
+                <div class="text-[10px] font-bold text-white/95">hari</div>
               </div>
             </div>
-            <button class="btn-keluar" id="btn-logout">⎋ Keluar</button>
+            <button class="bg-white/10 hover:bg-white/25 border border-white/20 text-white font-extrabold px-4 py-2 rounded-full text-xs transition active:scale-95 flex items-center gap-1" id="btn-logout">
+              <span>⎋</span> Keluar
+            </button>
           </div>
         </div>
 
         <!-- Baris 2: Progress bar -->
-        <div class="prog-wrap">
-          <div class="prog-row">
-            <span class="prog-lbl">✦ Hafalan Juz 30</span>
-            <span class="prog-val" id="hdr-prog-val">0 / 564 ayat</span>
+        <div class="prog-wrap mb-4">
+          <div class="prog-row flex justify-between items-center mb-1.5">
+            <span class="text-xs font-extrabold text-white/90 tracking-wide">✦ Hafalan Juz 30</span>
+            <span class="text-xs font-extrabold text-white bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm" id="hdr-prog-val">0 / 564 ayat</span>
           </div>
-          <div class="pbar"><div class="pbar-fill" id="hdr-pbar" style="width:0%"></div></div>
+          <div class="pbar h-3 bg-white/20 rounded-full overflow-hidden shadow-inner">
+            <div class="pbar-fill h-full rounded-full bg-gradient-to-r from-yellow-300 to-rose-400 transition-all duration-700 ease-out shadow-[0_0_12px_rgba(253,224,71,0.5)]" id="hdr-pbar" style="width:0%"></div>
+          </div>
         </div>
 
         <!-- Baris 3: Tab bar menyatu di dalam hero -->
-        <div class="tabs" id="tab-bar">
-          <button class="tab on" data-tab="beranda" style="color:#FF3D00;">🏠<br><span>Beranda</span></button>
-          <button class="tab off" data-tab="hafal">📖<br><span>Hafal Ayat</span></button>
-          <button class="tab off" data-tab="tebak">🎵<br><span>Tebak Ayat</span></button>
-          <button class="tab off" data-tab="lanjut">🎤<br><span>Lanjutkan</span></button>
-          <button class="tab off" data-tab="murojaah">🔄<br><span>Muroja'ah</span></button>
+        <div class="tabs flex gap-1 bg-black/15 rounded-t-[20px] p-1 backdrop-blur-sm" id="tab-bar">
+          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="beranda">
+            <span class="tab-icon block text-lg mb-0.5">🏠</span>
+            <span class="text-[10px] font-black uppercase tracking-wider">Beranda</span>
+          </button>
+          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="hafal">
+            <span class="tab-icon block text-lg mb-0.5">📖</span>
+            <span class="text-[10px] font-black uppercase tracking-wider">Hafal</span>
+          </button>
+          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="tebak">
+            <span class="tab-icon block text-lg mb-0.5">🎵</span>
+            <span class="text-[10px] font-black uppercase tracking-wider">Tebak</span>
+          </button>
+          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="lanjut">
+            <span class="tab-icon block text-lg mb-0.5">🎤</span>
+            <span class="text-[10px] font-black uppercase tracking-wider">Lanjut</span>
+          </button>
+          <button class="tab flex-1 py-3 text-center transition-all duration-300 outline-none" data-tab="murojaah">
+            <span class="tab-icon block text-lg mb-0.5">🔄</span>
+            <span class="text-[10px] font-black uppercase tracking-wider">Murojaah</span>
+          </button>
         </div>
 
       </div>
     </div>
-    <div class="app-content" id="app-content"></div>
+
+    <!-- MAIN APP CONTENT AREA -->
+    <div class="app-content flex-1 p-5 overflow-y-auto" id="app-content"></div>
   </div>
 </div>
 
+<!-- ========================================== -->
+<!-- JAVASCRIPT & LOGIC                         -->
+<!-- ========================================== -->
 <script>
+function showToast(message) {
+  const container = $('toast-container');
+  if(!container) return;
+  const toast = document.createElement('div');
+  toast.className = 'toast-msg';
+  toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'slideInDown 0.3s ease-out reverse forwards';
+    setTimeout(() => { toast.remove(); }, 300);
+  }, 3000);
+}
+// Override window.alert default secara aman tanpa merusak logika fungsi aslinya
+window.alert = function(msg) {
+  showToast(msg);
+};
+
 // ==========================================
 // PENGATURAN API (NETLIFY -> GOOGLE SCRIPT)
 // ==========================================
-// MASUKKAN URL DEPLOYMENT GOOGLE APPS SCRIPT (/exec) KAMU DI SINI NANTI
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6t5frYANPwjzL_Nh0Cn1tdqeb_7KggMMBRJy7XZk99BchxQUTt5juIFYUuPhtRcE/exec";
 
 // ===== WARNA =====
@@ -650,16 +470,25 @@ function showPg(id){
   ['pg-login','pg-reg','pg-app'].forEach(function(x){ $(x).classList.add('hidden'); });
   $(id).classList.remove('hidden');
 }
-function loading(txt){ $('app-content').innerHTML='<div class="loading"><div class="spinner"></div><p>'+(txt||'Memuat...')+'</p></div>'; }
-function msg(id,t,m){ $(id).innerHTML='<div class="msg msg-'+t+'">'+m+'</div>'; }
+function loading(txt){ 
+  $('app-content').innerHTML = `
+    <div class="flex flex-col items-center justify-center py-20">
+      <div class="spinner w-12 h-12 border-4 border-slate-200 border-t-primary rounded-full animate-spin mb-4"></div>
+      <p class="text-slate-500 font-extrabold text-sm">${txt || 'Memuat...'}</p>
+    </div>
+  `; 
+}
+function msg(id,t,m){ 
+  var alertClass = t === 'err' ? 'bg-rose-50 text-rose-600 border-rose-100' : t === 'ok' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-blue-50 text-blue-600 border-blue-100';
+  $(id).innerHTML = `<div class="p-4 rounded-xl border text-sm font-bold mb-4 ${alertClass}">${m}</div>`; 
+}
 
-// BARU: Menggunakan Fetch API ke Server Google Apps Script secara langsung
 function post(body){
   body.token = S.token;
   return fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     headers: {
-      'Content-Type': 'text/plain' // Sengaja menggunakan text/plain agar tidak memicu pemblokiran CORS Preflight (OPTIONS) oleh Apps Script
+      'Content-Type': 'text/plain'
     },
     body: JSON.stringify(body)
   })
@@ -684,7 +513,6 @@ function playAudio(url, onEnd){
   if(onEnd) S.audio.onended = onEnd;
 }
 
-// ===== INIT =====
 document.addEventListener('DOMContentLoaded', function(){
   $('go-reg').onclick = function(){ showPg('pg-reg'); };
   $('go-login').onclick = function(){ showPg('pg-login'); };
@@ -746,14 +574,13 @@ async function initApp(){
 
   var r = await post({action:'getInitialData'});
   if(!r.success){
-    // Kalau sesi tidak valid, langsung logout ke halaman login
     if(r.message && (r.message.indexOf('Sesi') !== -1 || r.message.indexOf('valid') !== -1 || r.message.indexOf('berakhir') !== -1)){
       localStorage.clear();
       S.token=null;
       showPg('pg-login');
       return;
     }
-    $('app-content').innerHTML='<div class="empty"><div class="empty-icon">😢</div><p>Gagal memuat: '+r.message+'</p></div>';
+    $('app-content').innerHTML='<div class="flex flex-col items-center justify-center text-center p-12"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold">Gagal memuat: '+r.message+'</p></div>';
     return;
   }
 
@@ -763,10 +590,8 @@ async function initApp(){
   S.totalHafal = r.data.totalHafal;
   S.totalSedang = r.data.totalSedang;
 
-  // Assign warna per surah
   S.surahList.forEach(function(s,i){ SURAH_COLORS[s.surah_number] = COLORS[i%COLORS.length]; });
 
-  // Update header
   $('hdr-name').textContent = r.data.username || 'Sahabat';
   updateHeader();
   updateStreak();
@@ -791,12 +616,10 @@ function updateStreak(){
   $('hdr-streak').textContent = streak;
 }
 
-// ===== TAB SWITCH =====
 function switchTab(tab){
   S.currentTab = tab;
   stopAudio();
 
-  // Update tab colors
   var tabColors = {beranda:'#FF3D00',hafal:'#8338EC',tebak:'#FF006E',lanjut:'#00B4D8',murojaah:'#06D6A0'};
   var heroBg = {
     beranda:'linear-gradient(135deg,#FF3D00,#FF006E)',
@@ -866,7 +689,7 @@ function renderBeranda(){
         '<div class="stat-lbl" style="color:#FFB700;">Progress</div>'+
       '</div>'+
     '</div>'+
-    '<div style="font-size:13px;font-weight:900;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Surah Juz 30</div>'+
+    '<div class="text-slate-600 text-xs font-black uppercase tracking-widest mb-4">Daftar Surah Juz 30</div>'+
     '<div>'+surahHtml+'</div>';
 }
 
@@ -881,11 +704,11 @@ function renderHafalList(){
         '<div class="surah-meta">'+s.hafal+'/'+s.jumlah_ayat+' ayat dihafal</div>'+
         '<div class="surah-bar"><div class="surah-fill" style="width:'+s.pct+'%;background:'+c+';"></div></div>'+
       '</div>'+
-      '<span style="font-size:18px;">'+(s.status==='hafal'?'✅':s.status==='sedang'?'📝':'📖')+'</span>'+
+      '<span class="text-xl leading-none flex items-center">'+(s.status==='hafal'?'✅':s.status==='sedang'?'📝':'📖')+'</span>'+
     '</div>';
   }).join('');
 
-  $('app-content').innerHTML = '<div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Pilih Surah</div>'+surahHtml;
+  $('app-content').innerHTML = '<div class="text-slate-500 text-xs font-black uppercase tracking-widest mb-4">Pilih Surah untuk dihafal</div>'+surahHtml;
 }
 
 async function bukaHafal(surahNum){
@@ -894,7 +717,7 @@ async function bukaHafal(surahNum){
 
   var surah = S.surahList.find(function(s){ return s.surah_number===surahNum; });
   var ayatList = S.ayatList.filter(function(a){ return a.surah_number===surahNum; });
-  if(!surah||!ayatList.length){ $('app-content').innerHTML='<div class="empty"><div class="empty-icon">😢</div><p>Data tidak ditemukan.</p></div>'; return; }
+  if(!surah||!ayatList.length){ $('app-content').innerHTML='<div class="flex flex-col items-center justify-center p-10"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold">Data tidak ditemukan.</p></div>'; return; }
 
   S.currentSurah = { surah:surah, ayat:ayatList };
   S.ayatIndex = 0;
@@ -907,42 +730,46 @@ function renderSurahDetail(surah, ayatList, c){
   var ayatHtml = ayatList.map(function(a){
     var key = a.surah_number+'_'+a.ayat_number;
     var st = S.progressMap[key]||'belum';
-    var leftColor = st==='hafal'?'#06D6A0':st==='sedang'?'#FFB700':'#E8E8F0';
     return '<div class="ayat-card '+st+'" id="ayat-'+a.ayat_number+'">'+
-      '<div class="ayat-top">'+
-        '<span class="ayat-num" style="color:'+c+';">Ayat '+a.ayat_number+(st==='hafal'?' ✓':'')+'</span>'+
-        '<button class="ayat-audio-btn" style="background:'+c+';color:#fff;" onclick="playAudio(\''+a.audio_url+'\')">▶ Dengar</button>'+
+      '<div class="flex justify-between items-center mb-4">'+
+        '<span class="text-xs font-extrabold px-3 py-1 bg-slate-100 rounded-full" style="color:'+c+';">Ayat '+a.ayat_number+(st==='hafal'?' ✓':'')+'</span>'+
+        '<button class="flex items-center gap-1 text-xs font-extrabold px-4 py-2 rounded-full text-white shadow-md hover:opacity-90 active:scale-95 transition" style="background:'+c+';" onclick="playAudio(\''+a.audio_url+'\')">▶ Dengar</button>'+
       '</div>'+
       '<div class="arab">'+a.teks_arab+'</div>'+
-      '<div class="trans">'+a.terjemahan_id+'</div>'+
-      '<div class="status-row">'+
-        '<button class="st-btn" style="background:#06D6A0;color:#fff;border-color:#06D6A0;" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'hafal\')">✓ Hafal</button>'+
-        '<button class="st-btn" style="background:#FFB700;color:#fff;border-color:#FFB700;" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'sedang\')">⏳ Sedang</button>'+
-        '<button class="st-btn" style="background:#E8E8F0;color:#888;border-color:#E8E8F0;" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'belum\')">✕ Belum</button>'+
+      '<div class="text-sm text-slate-500 leading-relaxed font-semibold mb-5">'+a.terjemahan_id+'</div>'+
+      '<div class="flex flex-wrap gap-2">'+
+        '<button class="text-xs font-extrabold px-4 py-2 bg-emerald-500 text-white rounded-xl shadow-sm hover:bg-emerald-600 transition active:scale-95" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'hafal\')">✓ Hafal</button>'+
+        '<button class="text-xs font-extrabold px-4 py-2 bg-yellow-500 text-white rounded-xl shadow-sm hover:bg-yellow-600 transition active:scale-95" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'sedang\')">⏳ Sedang</button>'+
+        '<button class="text-xs font-extrabold px-4 py-2 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition active:scale-95" onclick="setStatus('+a.surah_number+','+a.ayat_number+',\'belum\')">✕ Belum</button>'+
       '</div>'+
     '</div>';
   }).join('');
 
   $('app-content').innerHTML =
-    '<button onclick="renderHafalList()" style="display:flex;align-items:center;gap:6px;background:none;border:none;font-size:13px;font-weight:900;color:#8338EC;cursor:pointer;margin-bottom:12px;padding:4px 0;">← Kembali ke Daftar Surah</button>'+
-    '<div class="player-bar">'+
-      '<div style="font-size:10px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🎵 Mishary Rashid Al-Afasy</div>'+
-      '<div class="player-top">'+
-        '<button class="play-btn" id="btn-play-all" style="background:'+c+';" onclick="togglePlayAll()">▶</button>'+
-        '<div class="player-info">'+
-          '<div class="player-ayat" id="player-ayat-lbl">Ayat 1 dari '+ayatList.length+'</div>'+
-          '<div class="player-sub">'+surah.nama_latin+' • Tap untuk putar semua</div>'+
+    '<button onclick="renderHafalList()" class="flex items-center gap-1.5 text-xs font-black text-violet-600 mb-4 hover:underline select-none">← Kembali ke Daftar Surah</button>'+
+    
+    // Player bar widget styling
+    '<div class="bg-white rounded-3xl p-6 mb-6 shadow-md border-2" style="border-color:'+c+'20">'+
+      '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">🎵 Mishary Rashid Al-Afasy</div>'+
+      '<div class="flex items-center gap-4 mb-4">'+
+        '<button class="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-black shadow-lg transition active:scale-95 hover:opacity-95" id="btn-play-all" style="background:'+c+';" onclick="togglePlayAll()">▶</button>'+
+        '<div class="flex-1 min-w-0">'+
+          '<div class="text-sm font-extrabold text-slate-800" id="player-ayat-lbl">Ayat 1 dari '+ayatList.length+'</div>'+
+          '<div class="text-xs font-bold text-slate-400 truncate">'+surah.nama_latin+' • Tap untuk putar semua</div>'+
         '</div>'+
       '</div>'+
-      '<div class="track"><div class="track-fill" id="player-track" style="width:0%;background:'+c+';"></div></div>'+
-      '<div class="auto-row">'+
-        '<div class="toggle off" id="auto-toggle" onclick="toggleAuto()" style="background:#E8E8F0;">'+
-          '<div class="toggle-dot"></div>'+
+      '<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden mb-4">'+
+        '<div class="h-full rounded-full transition-all duration-300" id="player-track" style="width:0%;background:'+c+';"></div>'+
+      '</div>'+
+      '<div class="flex items-center gap-3">'+
+        '<div class="toggle w-12 h-6 rounded-full cursor-pointer relative transition-colors duration-200 flex-shrink-0 off" id="auto-toggle" onclick="toggleAuto()" style="background:#E2E8F0">'+
+          '<div class="toggle-dot w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-md transition-all duration-200"></div>'+
         '</div>'+
-        '<span class="toggle-lbl">Putar otomatis ayat berikutnya</span>'+
+        '<span class="text-xs font-bold text-slate-600">Putar otomatis ayat berikutnya</span>'+
       '</div>'+
     '</div>'+
-    '<div style="font-size:11px;font-weight:900;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">'+surah.nama_latin+' • '+surah.jumlah_ayat+' Ayat</div>'+
+    
+    '<div class="text-slate-500 text-xs font-black uppercase tracking-widest mb-3">'+surah.nama_latin+' • '+surah.jumlah_ayat+' Ayat</div>'+
     ayatHtml;
 }
 
@@ -975,7 +802,7 @@ function toggleAuto(){
   var t = $('auto-toggle');
   t.classList.toggle('on',S.autoPlay);
   t.classList.toggle('off',!S.autoPlay);
-  t.style.background = S.autoPlay?'#8338EC':'#E8E8F0';
+  t.style.background = S.autoPlay?'#8338EC':'#E2E8F0';
 }
 
 async function setStatus(surahNum, ayatNum, status){
@@ -983,7 +810,6 @@ async function setStatus(surahNum, ayatNum, status){
   var old = S.progressMap[key]||'belum';
   S.progressMap[key] = status;
 
-  // Update count
   if(old==='hafal') S.totalHafal--;
   else if(old==='sedang') S.totalSedang--;
   if(status==='hafal') S.totalHafal++;
@@ -991,7 +817,6 @@ async function setStatus(surahNum, ayatNum, status){
 
   updateHeader();
 
-  // Update surah stats
   var surah = S.surahList.find(function(s){ return s.surah_number===surahNum; });
   if(surah){
     var ayatList = S.ayatList.filter(function(a){ return a.surah_number===surahNum; });
@@ -1005,7 +830,6 @@ async function setStatus(surahNum, ayatNum, status){
     surah.status=hafal===surah.jumlah_ayat?'hafal':hafal>0||sedang>0?'sedang':'belum';
   }
 
-  // Re-render ayat card
   var el = $('ayat-'+ayatNum);
   if(el){
     el.className = 'ayat-card '+(status||'belum');
@@ -1036,8 +860,8 @@ function generateSoalSet(){
 
   if(surahDenganHafalan.length===0){
     $('app-content').innerHTML =
-      '<div class="empty"><div class="empty-icon">📖</div>'+
-      '<p>Belum ada hafalan! Tandai ayat sebagai Hafal atau Sedang dulu di tab Hafal Ayat.</p></div>';
+      '<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">📖</div>'+
+      '<p class="text-slate-500 font-extrabold max-w-xs">Belum ada hafalan! Tandai beberapa ayat sebagai "Hafal" atau "Sedang" terlebih dahulu.</p></div>';
     return;
   }
 
@@ -1056,8 +880,8 @@ function generateSoalSet(){
 
   if(soalList.length===0){
     $('app-content').innerHTML =
-      '<div class="empty"><div class="empty-icon">🤔</div>'+
-      '<p>Tidak ada soal yang tersedia. Pastikan surah yang dihafal memiliki lebih dari 1 ayat.</p></div>';
+      '<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">🤔</div>'+
+      '<p class="text-slate-500 font-extrabold max-w-xs">Tidak ada soal tersedia. Pastikan surah yang dihafal memiliki lebih dari 1 ayat.</p></div>';
     return;
   }
 
@@ -1096,29 +920,31 @@ function tampilSoal(){
 
   var soal = S.soalSet[S.soalIndex];
   var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[0];
+  
   var progDots = S.soalSet.map(function(_,i){
-    return '<div class="soal-dot '+(i<S.soalIndex?'done':i===S.soalIndex?'active':'')+'"></div>';
+    var stateClass = i<S.soalIndex ? 'bg-emerald-500' : i===S.soalIndex ? 'bg-amber-400 scale-110' : 'bg-slate-200';
+    return '<div class="h-2 rounded-full flex-1 transition-all duration-300 '+stateClass+'"></div>';
   }).join('');
 
   var pilihanHtml = soal.pilihan.map(function(p,i){
     var btnColors = ['#8338EC','#FF006E','#FF3D00'];
     return '<div class="choice" id="choice-'+i+'" onclick="pilihJawaban('+i+',this)">'+
-      '<button class="c-play" style="background:'+btnColors[i%btnColors.length]+';" onclick="event.stopPropagation();playAudio(\''+p.audio_url+'\')">▶</button>'+
-      '<div class="c-arab">'+p.teks_arab+'</div>'+
+      '<button class="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs shadow-md transition active:scale-90 flex-shrink-0" style="background:'+btnColors[i%btnColors.length]+';" onclick="event.stopPropagation();playAudio(\''+p.audio_url+'\')">▶</button>'+
+      '<div class="c-arab text-right text-lg leading-relaxed flex-1" style="font-family: var(--arabic)">'+p.teks_arab+'</div>'+
     '</div>';
   }).join('');
 
   $('app-content').innerHTML =
-    '<div class="soal-progress">'+progDots+'</div>'+
-    '<div class="soal-card">'+
-      '<div class="soal-badge" style="background:'+c+';">🎵 Tebak Ayat • '+soal.surah.nama_latin+'</div>'+
-      '<button class="btn-dengar" style="background:'+c+';" onclick="playAudio(\''+soal.ayatSoal.audio_url+'\')">▶ &nbsp;Dengarkan Soal</button>'+
-      '<div class="soal-arab-box" style="background:'+c+'20;border:2.5px solid '+c+';">'+
-        '<div class="soal-arab">'+soal.ayatSoal.teks_arab+'</div>'+
+    '<div class="flex gap-2 mb-6">'+progDots+'</div>'+
+    '<div class="bg-white rounded-[32px] p-6 border-2 shadow-lg mb-6" style="border-color:'+c+'30">'+
+      '<div class="inline-flex items-center gap-2 text-xs font-black px-4 py-2 text-white rounded-full mb-4" style="background:'+c+'">🎵 Tebak Ayat • '+soal.surah.nama_latin+'</div>'+
+      '<button class="w-full py-4 rounded-2xl font-black text-white shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 mb-4" style="background:'+c+'" onclick="playAudio(\''+soal.ayatSoal.audio_url+'\')">▶ &nbsp;Dengarkan Soal</button>'+
+      '<div class="rounded-2xl p-5 mb-4 text-center border-2 border-dashed" style="background:'+c+'10; border-color:'+c+'50">'+
+        '<div class="arab text-center" style="text-align: center; direction: rtl;">'+soal.ayatSoal.teks_arab+'</div>'+
       '</div>'+
-      '<div class="soal-hint">👇 Pilih ayat selanjutnya</div>'+
-      '<div class="choices">'+pilihanHtml+'</div>'+
-      '<button class="btn-kirim" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="kirimTebak('+soal.jawabanIndex+')">Kirim Jawaban ✓</button>'+
+      '<div class="text-xs text-center text-slate-400 font-extrabold uppercase tracking-widest mb-4">👇 Pilih ayat selanjutnya</div>'+
+      '<div class="flex flex-col gap-3 mb-6">'+pilihanHtml+'</div>'+
+      '<button class="w-full py-4 text-white font-black rounded-2xl shadow-lg active:scale-95 transition" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="kirimTebak('+soal.jawabanIndex+')">Kirim Jawaban ✓</button>'+
     '</div>';
 
   S.pilihanDipilih = null;
@@ -1156,20 +982,20 @@ async function kirimTebak(jawabanIdx){
     var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[0];
     var stars = benar?'⭐⭐⭐':'';
     var fbHtml =
-      '<div class="feedback-card" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
-        '<div class="fb-emoji">'+(benar?'🎉':'💪')+'</div>'+
-        '<div class="fb-title" style="color:'+(benar?'#06D6A0':'#FF3D00')+'">'+(benar?'Benar! Keren!':'Yuk coba lagi!')+'</div>'+
-        '<div class="fb-msg">'+(benar?'MasyaAllah, hafalanmu bagus!':'Jangan menyerah, semangat!')+'</div>'+
-        (stars?'<div class="fb-stars">'+stars+'</div>':'')+
-        '<div class="fb-skor" style="background:'+(benar?'#06D6A0':'#FF3D00')+';color:#fff;">'+
+      '<div class="feedback-card rounded-[32px] p-8 text-center border-4" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
+        '<div class="text-6xl mb-4">'+(benar?'🎉':'💪')+'</div>'+
+        '<div class="text-2xl font-extrabold mb-1" style="color:'+(benar?'#06D6A0':'#FF3D00')+'">'+(benar?'Benar! Keren!':'Yuk coba lagi!')+'</div>'+
+        '<div class="text-sm font-bold text-slate-500 mb-4">'+(benar?'MasyaAllah, hafalanmu bagus!':'Jangan menyerah, semangat!')+'</div>'+
+        (stars?'<div class="flex justify-center gap-1.5 text-3xl mb-4">'+stars+'</div>':'')+
+        '<div class="inline-block px-6 py-2.5 rounded-full text-base font-extrabold text-white mb-6" style="background:'+(benar?'#06D6A0':'#FF3D00')+';">'+
           (benar?'Skor: 100/100':'Skor: 0/100')+
         '</div>'+
-        '<button class="btn-lanjut" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="lanjutSoal()">'+
+        '<button class="w-full py-4 text-white font-black rounded-2xl shadow-lg transition active:scale-95" style="background:linear-gradient(135deg,'+c+',#8338EC);" onclick="lanjutSoal()">'+
           (S.soalIndex<S.soalSet.length-1?'Soal Berikutnya ➡':'Lihat Hasil 🏆')+
         '</button>'+
       '</div>';
 
-    var prog = $('app-content').querySelector('.soal-progress');
+    var prog = $('app-content').querySelector('.flex.gap-2.mb-6');
     var progHtml = prog ? prog.outerHTML : '';
     $('app-content').innerHTML = progHtml + fbHtml;
   },800);
@@ -1184,13 +1010,13 @@ function lanjutSoal(){
 
 function tampilHasilAkhir(){
   $('app-content').innerHTML =
-    '<div class="feedback-card" style="background:linear-gradient(135deg,#FFF0FF,#E8F0FF);border-color:#8338EC;">'+
-      '<div class="fb-emoji">🏆</div>'+
-      '<div class="fb-title" style="color:#8338EC;">Keren! Selesai!</div>'+
-      '<div class="fb-msg">Kamu sudah menyelesaikan semua soal hari ini. Terus semangat berlatih!</div>'+
-      '<div class="fb-stars">⭐⭐⭐</div>'+
-      '<button class="btn-lanjut" style="background:linear-gradient(135deg,#8338EC,#3A86FF);margin-bottom:8px;" onclick="generateSoalSet()">Main Lagi 🔄</button>'+
-      '<button class="btn-gen-outline" onclick="switchTab(\'hafal\')">Tambah Hafalan 📖</button>'+
+    '<div class="feedback-card rounded-[32px] p-8 text-center border-4 border-[#8338EC] bg-gradient-to-br from-[#FFF0FF] to-[#E8F0FF] shadow-xl">'+
+      '<div class="text-6xl mb-4">🏆</div>'+
+      '<div class="text-2xl font-black text-[#8338EC] mb-2">Keren! Selesai!</div>'+
+      '<div class="text-sm font-bold text-slate-500 mb-6">Kamu sudah menyelesaikan semua soal hari ini. Terus semangat berlatih!</div>'+
+      '<div class="flex justify-center text-3xl mb-6">⭐⭐⭐</div>'+
+      '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#8338EC] to-[#3A86FF] shadow-lg mb-3 active:scale-95 transition" onclick="generateSoalSet()">Main Lagi 🔄</button>'+
+      '<button class="w-full py-3 text-violet-600 font-extrabold border-2 border-violet-200 rounded-2xl bg-white hover:bg-slate-50 transition active:scale-95" onclick="switchTab(\'hafal\')">Tambah Hafalan 📖</button>'+
     '</div>';
 }
 
@@ -1199,8 +1025,8 @@ function renderLanjutkanAyat(){
   var surahDenganHafalan = S.surahList.filter(function(s){ return s.status==='hafal'||s.status==='sedang'; });
   if(surahDenganHafalan.length===0){
     $('app-content').innerHTML =
-      '<div class="empty"><div class="empty-icon">📖</div>'+
-      '<p>Belum ada hafalan! Tandai ayat dulu di tab Hafal Ayat.</p></div>';
+      '<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">📖</div>'+
+      '<p class="text-slate-500 font-extrabold max-w-xs">Belum ada hafalan! Tandai ayat dulu di tab Hafal Ayat.</p></div>';
     return;
   }
 
@@ -1217,7 +1043,7 @@ function renderLanjutkanAyat(){
   });
 
   if(kandidat.length===0){
-    $('app-content').innerHTML='<div class="empty"><div class="empty-icon">🤔</div><p>Tidak ada soal tersedia.</p></div>';
+    $('app-content').innerHTML='<div class="flex flex-col items-center justify-center text-center p-10"><div class="text-6xl mb-4">🤔</div><p class="text-slate-500 font-bold">Tidak ada soal tersedia.</p></div>';
     return;
   }
 
@@ -1230,44 +1056,50 @@ function renderLanjutkanAyat(){
 function tampilSoalRekam(){
   if(S.recSoalIndex>=S.recSoalSet.length){
     $('app-content').innerHTML =
-      '<div class="feedback-card" style="background:linear-gradient(135deg,#E8F4FF,#F0FFFF);border-color:#00B4D8;">'+
-        '<div class="fb-emoji">🎤</div>'+
-        '<div class="fb-title" style="color:#00B4D8;">Sesi Selesai!</div>'+
-        '<div class="fb-msg">Bagus sekali! Kamu sudah berlatih membaca hari ini.</div>'+
-        '<button class="btn-lanjut" style="background:linear-gradient(135deg,#00B4D8,#3A86FF);" onclick="renderLanjutkanAyat()">Ulangi Lagi 🔄</button>'+
+      '<div class="feedback-card rounded-[32px] p-8 text-center border-4 border-[#00B4D8] bg-gradient-to-br from-[#E8F4FF] to-[#F0FFFF] shadow-xl">'+
+        '<div class="text-6xl mb-4">🎤</div>'+
+        '<div class="text-2xl font-black text-[#00B4D8] mb-2">Sesi Selesai!</div>'+
+        '<div class="text-sm font-bold text-slate-500 mb-6">Bagus sekali! Kamu sudah berlatih membaca hari ini.</div>'+
+        '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#00B4D8] to-[#3A86FF] shadow-lg active:scale-95 transition" onclick="renderLanjutkanAyat()">Ulangi Lagi 🔄</button>'+
       '</div>';
     return;
   }
 
   var soal = S.recSoalSet[S.recSoalIndex];
   var c = SURAH_COLORS[soal.surah.surah_number]||COLORS[3];
+  
   var progDots = S.recSoalSet.map(function(_,i){
-    return '<div class="soal-dot '+(i<S.recSoalIndex?'done':i===S.recSoalIndex?'active':'')+'"></div>';
+    var stateClass = i<S.recSoalIndex ? 'bg-emerald-500' : i===S.recSoalIndex ? 'bg-amber-400 scale-110' : 'bg-slate-200';
+    return '<div class="h-2 rounded-full flex-1 transition-all duration-300 '+stateClass+'"></div>';
   }).join('');
 
   $('app-content').innerHTML =
-    '<div class="soal-progress">'+progDots+'</div>'+
-    '<div class="card" style="border-color:#00B4D8;">'+
-      '<div class="soal-badge" style="background:'+c+';">🎤 Lanjutkan Ayat • '+soal.surah.nama_latin+'</div>'+
-      '<div class="rec-soal-box">'+
-        '<div class="rec-label">Soal — '+soal.surah.nama_latin+' Ayat '+soal.ayatSoal.ayat_number+'</div>'+
-        '<div class="rec-arab">'+soal.ayatSoal.teks_arab+'</div>'+
-        '<div class="rec-hint">Bacakan ayat selanjutnya...</div>'+
+    '<div class="flex gap-2 mb-6">'+progDots+'</div>'+
+    '<div class="bg-white rounded-[32px] p-6 border-2 shadow-lg mb-6" style="border-color:#00B4D850">'+
+      '<div class="inline-flex items-center gap-2 text-xs font-black px-4 py-2 text-white rounded-full mb-4" style="background:'+c+'">🎤 Lanjutkan Ayat • '+soal.surah.nama_latin+'</div>'+
+      
+      '<div class="border-2 rounded-2xl p-5 mb-4 bg-slate-50/50" style="border-color:'+c+'20">'+
+        '<div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Soal — '+soal.surah.nama_latin+' Ayat '+soal.ayatSoal.ayat_number+'</div>'+
+        '<div class="arab" style="text-align: right; direction: rtl;">'+soal.ayatSoal.teks_arab+'</div>'+
+        '<div class="text-xs text-slate-500 font-extrabold mt-1">Bacakan ayat selanjutnya...</div>'+
       '</div>'+
-      '<button class="btn-contoh" onclick="playAudio(\''+soal.ayatJawaban.audio_url+'\')">▶ Dengar contoh jawaban</button>'+
-      '<div class="rec-center">'+
-        '<button class="rec-btn" id="rec-btn" style="background:linear-gradient(135deg,#FF3D00,#FF006E);" onclick="toggleRekam('+soal.surah.surah_number+','+soal.ayatSoal.ayat_number+','+soal.ayatJawaban.ayat_number+')">🎤</button>'+
-        '<div class="rec-lbl" id="rec-lbl">Tap untuk merekam</div>'+
+      
+      '<button class="w-full py-3.5 border-2 rounded-2xl text-xs font-black bg-sky-50 text-sky-600 hover:bg-sky-100 transition active:scale-95 flex items-center justify-center gap-2 mb-6" style="border-color:#3a86ff30" onclick="playAudio(\''+soal.ayatJawaban.audio_url+'\')">▶ Dengar contoh jawaban</button>'+
+      
+      '<div class="flex flex-col items-center gap-2 mb-6">'+
+        '<button class="w-20 h-20 rounded-full flex items-center justify-center text-3xl text-white shadow-xl hover:scale-105 active:scale-90 transition-all cursor-pointer relative" id="rec-btn" style="background:linear-gradient(135deg,#FF3D00,#FF006E);" onclick="toggleRekam('+soal.surah.surah_number+','+soal.ayatSoal.ayat_number+','+soal.ayatJawaban.ayat_number+')">🎤</button>'+
+        '<div class="text-xs font-black text-slate-400" id="rec-lbl">Tap untuk merekam</div>'+
       '</div>'+
-      '<div class="wave" id="wave-viz">'+
-        '<div class="wb" style="height:8px;"></div>'+
-        '<div class="wb" style="height:16px;"></div>'+
-        '<div class="wb" style="height:10px;"></div>'+
-        '<div class="wb" style="height:20px;"></div>'+
-        '<div class="wb" style="height:12px;"></div>'+
-        '<div class="wb" style="height:18px;"></div>'+
-        '<div class="wb" style="height:8px;"></div>'+
-        '<div class="wb" style="height:14px;"></div>'+
+      
+      '<div class="h-10 bg-slate-50 rounded-2xl flex items-center justify-center gap-1.5 px-4 overflow-hidden mb-6" id="wave-viz">'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:8px;"></div>'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:16px;"></div>'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:10px;"></div>'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:20px;"></div>'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:12px;"></div>'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:18px;"></div>'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:8px;"></div>'+
+        '<div class="wb w-1.5 rounded-full bg-slate-200 transition-all duration-150" style="height:14px;"></div>'+
       '</div>'+
       '<div id="rec-result"></div>'+
     '</div>';
@@ -1280,6 +1112,7 @@ async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
     if(S.mediaRecorder) S.mediaRecorder.stop();
     clearInterval(waveInterval);
     $('rec-btn').classList.remove('recording');
+    $('rec-btn').style.animation = 'none';
     $('rec-btn').textContent = '🎤';
     $('rec-lbl').textContent = 'Memproses...';
     return;
@@ -1327,20 +1160,20 @@ async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
         S.recording = false;
 
         if(!r.success){
-          $('rec-result').innerHTML='<div class="msg msg-err">Gagal menilai: '+r.message+'</div>';
+          $('rec-result').innerHTML='<div class="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl text-sm font-bold">Gagal menilai: '+r.message+'</div>';
           return;
         }
 
         var d=r.data;
         var benar=d.hasil==='benar'||d.hasil==='hampir_benar';
         $('rec-result').innerHTML =
-          '<div class="feedback-card" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
-            '<div class="fb-emoji">'+(d.emoji||( benar?'🎉':'💪'))+'</div>'+
-            '<div class="fb-title" style="color:'+(benar?'#06D6A0':'#FF3D00')+';">'+(benar?'MasyaAllah!':'Yuk coba lagi!')+'</div>'+
-            '<div class="fb-msg">'+d.feedback+'</div>'+
-            (d.catatan_tajwid?'<div style="background:#FFF5E0;border-radius:12px;padding:10px;margin-bottom:14px;font-size:12px;font-weight:700;color:#7A5800;">📝 '+d.catatan_tajwid+'</div>':'')+
-            '<div class="fb-skor" style="background:'+(benar?'#06D6A0':'#FF3D00')+';color:#fff;">Skor: '+d.skor+'/100</div>'+
-            '<button class="btn-lanjut" style="background:linear-gradient(135deg,#00B4D8,#3A86FF);margin-top:14px;" onclick="nextRekam()">'+
+          '<div class="feedback-card rounded-3xl p-6 text-center border-4 mt-6" style="background:'+(benar?'#E8FFF5':'#FFF0E5')+';border-color:'+(benar?'#06D6A0':'#FF3D00')+';">'+
+            '<div class="text-5xl mb-3">'+(d.emoji||( benar?'🎉':'💪'))+'</div>'+
+            '<div class="text-xl font-black mb-1" style="color:'+(benar?'#06D6A0':'#FF3D00')+';">'+(benar?'MasyaAllah!':'Yuk coba lagi!')+'</div>'+
+            '<div class="text-sm font-bold text-slate-500 mb-4">'+d.feedback+'</div>'+
+            (d.catatan_tajwid?'<div class="bg-amber-50 text-amber-700 border border-amber-100 rounded-xl p-3 mb-4 text-xs font-black text-left">📝 '+d.catatan_tajwid+'</div>':'')+
+            '<div class="inline-block px-5 py-2 rounded-full text-sm font-black text-white mb-6" style="background:'+(benar?'#06D6A0':'#FF3D00')+';">Skor: '+d.skor+'/100</div>'+
+            '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#00B4D8] to-[#3A86FF] shadow-lg active:scale-95 transition" onclick="nextRekam()">'+
               (S.recSoalIndex<S.recSoalSet.length-1?'Soal Berikutnya ➡':'Selesai 🏆')+
             '</button>'+
           '</div>';
@@ -1359,7 +1192,7 @@ async function toggleRekam(surahNum, ayatSoalNum, ayatJawabanNum){
 
   } catch(err){
     $('rec-lbl').textContent = 'Tap untuk merekam';
-    $('rec-result').innerHTML='<div class="msg msg-err">Tidak dapat mengakses mikrofon. Pastikan izin mikrofon diberikan.</div>';
+    $('rec-result').innerHTML='<div class="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl text-sm font-bold">Tidak dapat mengakses mikrofon. Pastikan izin mikrofon diberikan.</div>';
     S.recording = false;
   }
 }
@@ -1374,7 +1207,7 @@ async function renderMurojaah(){
   loading('Memuat jadwal...');
   var r = await post({action:'getMurojaahSchedule'});
   if(!r.success){
-    $('app-content').innerHTML='<div class="empty"><div class="empty-icon">😢</div><p>Gagal memuat jadwal.</p></div>';
+    $('app-content').innerHTML='<div class="flex flex-col items-center justify-center p-10"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold">Gagal memuat jadwal.</p></div>';
     return;
   }
 
@@ -1386,8 +1219,8 @@ async function renderMurojaah(){
 
   if(jadwal.length===0){
     $('app-content').innerHTML=
-      '<div class="empty"><div class="empty-icon">📅</div><p>Belum ada jadwal muroja\'ah.</p></div>'+
-      '<button class="btn-gen" onclick="doGenJadwal()">Buat Jadwal Otomatis ✨</button>';
+      '<div class="flex flex-col items-center justify-center text-center p-10 mb-6"><div class="text-6xl mb-4">📅</div><p class="text-slate-500 font-bold mb-4">Belum ada jadwal muroja\'ah.</p></div>'+
+      '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-[#06D6A0] to-[#00B4D8] shadow-lg active:scale-95 transition" onclick="doGenJadwal()">Buat Jadwal Otomatis ✨</button>';
     return;
   }
 
@@ -1398,43 +1231,43 @@ async function renderMurojaah(){
     var audioUrl = '';
     var ayatFirst = S.ayatList.find(function(a){ return a.surah_number===j.surah_number&&a.ayat_number===j.ayat_awal; });
     if(ayatFirst) audioUrl = ayatFirst.audio_url||'';
-    return '<div class="sched-card today">'+
-      '<span class="today-tag">📅 Hari Ini</span>'+
-      '<div class="sched-title">'+nama+'</div>'+
-      '<div class="sched-meta">Ayat '+j.ayat_awal+'–'+j.ayat_akhir+' • '+j.catatan+'</div>'+
-      '<button class="btn-dengar-muroj" onclick="playAudio(\''+audioUrl+'\')">▶ Dengarkan dulu</button>'+
-      '<div class="nilai-grid">'+
-        '<button class="nbtn nl" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'lancar\')">'+
-          '<span class="nbtn-icon">😄</span>Lancar'+
+    return '<div class="bg-emerald-50/50 rounded-3xl p-6 border-2 border-emerald-100 shadow-md mb-6">'+
+      '<span class="inline-block bg-emerald-500 text-white text-[10px] font-black px-3.5 py-1 rounded-full mb-3 shadow-sm">📅 Hari Ini</span>'+
+      '<div class="text-xl font-black text-slate-800 mb-1">'+nama+'</div>'+
+      '<div class="text-sm font-semibold text-slate-500 mb-4">Ayat '+j.ayat_awal+'–'+j.ayat_akhir+' • '+j.catatan+'</div>'+
+      '<button class="w-full py-3.5 rounded-2xl text-xs font-black bg-white text-emerald-600 border border-emerald-200 hover:bg-emerald-50 transition active:scale-95 flex items-center justify-center gap-2 mb-4 shadow-sm" onclick="playAudio(\''+audioUrl+'\')">▶ Dengarkan dulu</button>'+
+      '<div class="grid grid-columns-3 grid-flow-col gap-2.5">'+
+        '<button class="py-3 px-2 rounded-2xl bg-teal-500 hover:bg-teal-600 border-b-4 border-teal-700 text-white font-extrabold text-[10px] flex flex-col items-center justify-center gap-1.5 transition active:scale-95 shadow-sm" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'lancar\')">'+
+          '<span class="text-xl">😄</span>Lancar'+
         '</button>'+
-        '<button class="nbtn na" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'agak_lupa\')">'+
-          '<span class="nbtn-icon">🤔</span>Agak Lupa'+
+        '<button class="py-3 px-2 rounded-2xl bg-amber-400 hover:bg-amber-500 border-b-4 border-amber-600 text-amber-900 font-extrabold text-[10px] flex flex-col items-center justify-center gap-1.5 transition active:scale-95 shadow-sm" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'agak_lupa\')">'+
+          '<span class="text-xl">🤔</span>Agak Lupa'+
         '</button>'+
-        '<button class="nbtn np" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'perlu_diulang\')">'+
-          '<span class="nbtn-icon">😅</span>Perlu Diulang'+
+        '<button class="py-3 px-2 rounded-2xl bg-rose-500 hover:bg-rose-600 border-b-4 border-rose-700 text-white font-extrabold text-[10px] flex flex-col items-center justify-center gap-1.5 transition active:scale-95 shadow-sm" onclick="nilaiMurojaah(\''+j.schedule_id+'\','+j.surah_number+',\''+nama+'\',\'perlu_diulang\')">'+
+          '<span class="text-xl">😅</span>Diulang'+
         '</button>'+
       '</div>'+
     '</div>';
   }).join('');
 
   var upcomingHtml = upcoming.length>0
-    ? '<div class="next-section">'+
-        '<div class="next-lbl">Jadwal Berikutnya</div>'+
+    ? '<div class="bg-violet-50/50 rounded-3xl p-6 border border-violet-100 shadow-inner mt-4 mb-6">'+
+        '<div class="text-xs font-black text-violet-600 uppercase tracking-widest mb-4">Jadwal Berikutnya</div>'+
         upcoming.map(function(j,i){
           var surah=S.surahList.find(function(s){ return s.surah_number===j.surah_number; });
           var nama=surah?surah.nama_latin:'Surah '+j.surah_number;
-          return '<div class="next-item">'+
-            '<div class="next-dot" style="background:'+dotColors[i%dotColors.length]+';"></div>'+
-            '<div class="next-text">'+nama+' — '+j.tanggal_jadwal+'</div>'+
+          return '<div class="flex items-center gap-3 mb-3.5 last:mb-0">'+
+            '<div class="w-3.5 h-3.5 rounded-full flex-shrink-0" style="background:'+dotColors[i%dotColors.length]+';"></div>'+
+            '<div class="text-sm font-extrabold text-slate-700">'+nama+' <span class="text-slate-400 font-semibold">— ${j.tanggal_jadwal}</span></div>'+
           '</div>';
         }).join('')+
       '</div>'
     : '';
 
   $('app-content').innerHTML=
-    (todayList.length>0?todayHtml:'<div class="empty"><div class="empty-icon">✅</div><p>Tidak ada jadwal hari ini.</p></div>')+
+    (todayList.length>0?todayHtml:'<div class="flex flex-col items-center justify-center text-center p-12 bg-white rounded-3xl border shadow-sm mb-4"><div class="text-5xl mb-3">✅</div><p class="text-slate-400 font-extrabold">Tidak ada jadwal muroja\'ah hari ini.</p></div>')+
     upcomingHtml+
-    '<button class="btn-gen-outline" onclick="doGenJadwal()">↻ Perbarui Jadwal</button>';
+    '<button class="w-full py-3.5 text-emerald-600 font-black border-2 border-emerald-200 rounded-2xl bg-white hover:bg-slate-50 transition active:scale-95" onclick="doGenJadwal()">↻ Perbarui Jadwal</button>';
 }
 
 async function doGenJadwal(){
@@ -1443,8 +1276,8 @@ async function doGenJadwal(){
   if(r.success){ renderMurojaah(); }
   else {
     $('app-content').innerHTML=
-      '<div class="empty"><div class="empty-icon">😢</div><p>'+r.message+'</p></div>'+
-      '<button class="btn-gen" onclick="doGenJadwal()">Coba Lagi</button>';
+      '<div class="flex flex-col items-center justify-center text-center p-10 mb-6"><div class="text-5xl mb-3">😢</div><p class="text-slate-500 font-bold mb-4">'+r.message+'</p></div>'+
+      '<button class="w-full py-4 text-white font-black rounded-2xl bg-violet-600 active:scale-95 transition" onclick="doGenJadwal()">Coba Lagi</button>';
   }
 }
 
@@ -1454,12 +1287,12 @@ async function nilaiMurojaah(scheduleId, surahNum, namaSurah, penilaian){
   if(r.success){
     var d=r.data;
     $('app-content').innerHTML=
-      '<div class="feedback-card" style="background:linear-gradient(135deg,#E8FFF5,#E8F4FF);border-color:#06D6A0;">'+
-        '<div class="fb-emoji">'+(d.emoji||'🌟')+'</div>'+
-        '<div class="fb-title" style="color:#06D6A0;">Muroja\'ah Selesai!</div>'+
-        '<div class="fb-msg">'+d.pesan+'</div>'+
-        '<div class="fb-skor" style="background:#06D6A0;color:#fff;">Ulangi dalam '+d.ulang_dalam_hari+' hari</div>'+
-        '<button class="btn-lanjut" style="background:linear-gradient(135deg,#06D6A0,#00B4D8);margin-top:16px;" onclick="renderMurojaah()">Lihat Jadwal 📅</button>'+
+      '<div class="feedback-card rounded-[32px] p-8 text-center border-4 border-emerald-400 bg-gradient-to-br from-[#E8FFF5] to-[#E8F4FF] shadow-xl">'+
+        '<div class="text-6xl mb-4">'+(d.emoji||'🌟')+'</div>'+
+        '<div class="text-2xl font-black text-emerald-600 mb-1">Muroja\'ah Selesai!</div>'+
+        '<div class="text-sm font-bold text-slate-500 mb-6">'+d.pesan+'</div>'+
+        '<div class="inline-block px-6 py-2.5 rounded-full text-base font-extrabold text-white bg-emerald-500 mb-6">Ulangi dalam '+d.ulang_dalam_hari+' hari</div>'+
+        '<button class="w-full py-4 text-white font-black rounded-2xl bg-gradient-to-r from-emerald-500 to-sky-500 shadow-lg active:scale-95 transition" onclick="renderMurojaah()">Lihat Jadwal 📅</button>'+
       '</div>';
   } else { renderMurojaah(); }
 }
