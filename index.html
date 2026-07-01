@@ -1,1664 +1,1129 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marzia Mengaji ✨ Petualangan Hafalan Juz 30</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts (Fredoka & Plus Jakarta Sans) -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
-  
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marzia Mengaji ✨ Petualangan Hafalan Juz 30</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKEN SISTEM WARNA
+   ============================================================ */
+:root {
+  --sunshine:       #FFC857;
+  --sunshine-light: #FFE3A0;
+  --sunshine-dark:  #F2A93B;
+  --coral:          #FF6B5B;
+  --coral-dark:     #E5503F;
+  --sky:            #4ECDE6;
+  --sky-dark:       #2FB6CF;
+  --leaf:           #5FD38D;
+  --leaf-dark:      #3FBE72;
+  --lavender:       #9B8AFB;
+  --lavender-dark:  #7C68E8;
+  --pink:           #FF8FAE;
+  --pink-dark:      #E5507A;
+  --cream:          #FFF8EC;
+  --ink:            #3D2C5F;
+  --ink-soft:       #6B5C8C;
+  --gray-island:    #E4E0F0;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--cream);
+  font-family: 'Quicksand', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+}
 
-  <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    h1, h2, h3, h4, .font-kids {
-      font-family: 'Fredoka', sans-serif;
-    }
-    .arabic-text {
-      font-family: 'Amiri', serif;
-    }
-    /* Efek bouncy pada tombol */
-    .bouncy-btn {
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .bouncy-btn:active {
-      transform: scale(0.95);
-    }
-    /* Animasi denyut halus untuk tombol rekam */
-    @keyframes pulse-ring {
-      0% { transform: scale(0.95); opacity: 0.6; }
-      50% { transform: scale(1.1); opacity: 0.3; }
-      100% { transform: scale(0.95); opacity: 0.6; }
-    }
-    .recording-pulse {
-      animation: pulse-ring 1.5s infinite ease-in-out;
-    }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 99px;
-    }
-  </style>
+/* ============================================================
+   AUTH PAGE
+   ============================================================ */
+#pg-auth {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: linear-gradient(160deg, var(--sunshine-light) 0%, var(--sunshine) 100%);
+}
+.auth-card {
+  background: white; border-radius: 32px; padding: 32px 28px;
+  width: 100%; max-width: 380px;
+  box-shadow: 0 20px 40px -16px rgba(61,44,95,0.3);
+}
+.auth-logo { text-align: center; margin-bottom: 24px; }
+.auth-logo h1 { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; color: var(--ink); }
+.auth-logo p  { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+.auth-tabs {
+  display: flex; background: var(--cream); border-radius: 14px;
+  padding: 4px; gap: 4px; margin-bottom: 24px;
+}
+.auth-tab {
+  flex: 1; padding: 10px; border-radius: 10px; border: none;
+  font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 13px;
+  cursor: pointer; color: var(--ink-soft); background: none; transition: all .15s;
+}
+.auth-tab.active { background: white; color: var(--ink); box-shadow: 0 2px 8px -2px rgba(61,44,95,0.15); }
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-input {
+  width: 100%; padding: 14px 16px; border-radius: 16px;
+  border: 2px solid var(--gray-island); font-family: 'Quicksand', sans-serif;
+  font-size: 14px; font-weight: 600; color: var(--ink);
+  background: var(--cream); outline: none; transition: border-color .15s;
+}
+.auth-input:focus { border-color: var(--sunshine); background: white; }
+.auth-btn {
+  width: 100%; padding: 14px; border-radius: 16px; border: none;
+  background: linear-gradient(135deg, var(--sunshine), var(--coral));
+  color: white; font-family: 'Quicksand', sans-serif;
+  font-weight: 700; font-size: 15px; cursor: pointer;
+  box-shadow: 0 6px 16px -4px rgba(255,107,91,0.4);
+  transition: transform .15s, opacity .15s;
+}
+.auth-btn:hover { transform: translateY(-1px); }
+.auth-btn:disabled { opacity: 0.6; cursor: wait; }
+.auth-error {
+  background: #FFE8E6; color: var(--coral-dark); border-radius: 12px;
+  padding: 10px 14px; font-size: 12px; font-weight: 700; display: none;
+}
+
+/* ============================================================
+   APP PAGE — LAYOUT
+   ============================================================ */
+#pg-app { display: none; }
+.layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 100px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.sidebar { width: 280px; flex-shrink: 0; position: sticky; top: 24px; }
+
+@media (max-width: 860px) {
+  body { padding-bottom: 80px; }
+  .layout { flex-direction: column; padding: 16px 16px 90px; gap: 16px; }
+  .sidebar { width: 100%; position: static; }
+  .nav { display: none; }
+  .main { width: 100%; min-width: 0; }
+  .bottom-nav { display: flex !important; }
+}
+
+.bottom-nav {
+  display: none; position: fixed; bottom: 12px; left: 50%;
+  transform: translateX(-50%); width: calc(100% - 32px); max-width: 480px;
+  background: white; border-radius: 24px; padding: 10px 8px;
+  box-shadow: 0 8px 28px -8px rgba(61,44,95,0.28);
+  z-index: 100; justify-content: space-around; align-items: center; gap: 4px;
+}
+.bottom-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  flex: 1; padding: 6px 4px; border-radius: 16px; border: none; background: none;
+  cursor: pointer; font-family: 'Quicksand', sans-serif;
+  font-size: 9px; font-weight: 700; color: var(--ink-soft); transition: all 0.15s;
+}
+.bottom-nav-item .bn-icon { font-size: 20px; line-height: 1; }
+.bottom-nav-item.active { color: white; }
+
+/* ============================================================
+   SIDEBAR — HERO + MENU
+   ============================================================ */
+.mega { background: white; border-radius: 30px; padding: 8px; box-shadow: 0 10px 26px -12px rgba(61,44,95,0.25); }
+.hero {
+  border-radius: 24px; padding: 18px; position: relative; overflow: hidden;
+  background: linear-gradient(160deg, var(--sunshine-light) 0%, var(--sunshine) 100%);
+  transition: background 0.4s ease;
+}
+.hero .cloud { position: absolute; background: white; }
+.hero .c1 { width: 90px; height: 50px; border-radius: 50px; top: -12px; right: -22px; opacity: 0.45; }
+.hero .c2 { width: 55px; height: 30px; border-radius: 40px; bottom: 14px; left: -16px; opacity: 0.35; }
+.hero-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+.hero-user { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 48px; height: 48px; border-radius: 18px; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); flex-shrink: 0; }
+.hero-greet { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-soft); }
+.hero-name { font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 700; margin-top: 2px; color: var(--ink); }
+.streak-pill { background: var(--coral); color: white; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; display: flex; gap: 4px; align-items: center; box-shadow: 0 4px 10px -2px rgba(255,107,91,0.5); white-space: nowrap; }
+.progress-box { margin-top: 16px; background: rgba(255,255,255,0.5); border-radius: 18px; padding: 14px; position: relative; z-index: 1; }
+.progress-label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.progress-track { height: 14px; border-radius: 99px; background: rgba(255,255,255,0.6); overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--coral), var(--coral-dark)); transition: width 0.8s ease; }
+.nav { padding: 10px 6px 6px; }
+.nav-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-soft); padding: 6px 10px 8px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 16px; font-weight: 700; font-size: 13px; color: var(--ink-soft); margin-bottom: 2px; cursor: pointer; transition: all 0.15s; border: none; width: 100%; text-align: left; background: none; }
+.nav-item:hover { background: var(--cream); }
+.nav-item.active { color: white; box-shadow: 0 6px 14px -4px rgba(0,0,0,0.2); }
+.nav-icon { width: 30px; height: 30px; border-radius: 10px; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.nav-item.active .nav-icon { background: rgba(255,255,255,0.3); }
+.logout-btn { display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 4px; padding: 10px 12px; border-radius: 16px; border: none; background: none; cursor: pointer; font-family: 'Quicksand', sans-serif; font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+.logout-btn:hover { background: #FFE8E6; color: var(--coral-dark); }
+
+/* ============================================================
+   MAIN + TAB PAGES
+   ============================================================ */
+.main { flex-grow: 1; min-width: 0; }
+.tab-page { display: none; }
+.tab-page.active { display: block; }
+.section-title { font-family: 'Baloo 2', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink-soft); margin: 0 0 18px 4px; display: flex; align-items: center; gap: 8px; }
+
+/* Loading state */
+.loading-state { text-align: center; padding: 40px 20px; color: var(--ink-soft); font-weight: 600; font-size: 14px; }
+.loading-spinner { width: 36px; height: 36px; border: 4px solid var(--gray-island); border-top-color: var(--sunshine); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   BERANDA — JALUR PULAU
+   ============================================================ */
+.welcome-card { background: white; border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10); margin-bottom: 28px; }
+.welcome-icon { font-size: 40px; flex-shrink: 0; }
+.welcome-card h3 { font-family: 'Baloo 2', sans-serif; font-size: 17px; margin-bottom: 4px; }
+.welcome-card p { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
+.path-wrap { position: relative; }
+svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.islands { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 8px; }
+.island-row { display: flex; width: 100%; }
+.island-row.left  { justify-content: flex-start; }
+.island-row.right { justify-content: flex-end; }
+.island { display: flex; align-items: center; gap: 14px; background: white; border-radius: 24px; padding: 12px 18px 12px 12px; box-shadow: 0 8px 18px -6px rgba(61,44,95,0.14); cursor: pointer; max-width: 300px; border: 3px solid transparent; transition: transform 0.15s, box-shadow 0.15s; }
+.island:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 24px -8px rgba(61,44,95,0.2); }
+.island.hafal  { border-color: var(--leaf); }
+.island.sedang { border-color: var(--sky); }
+.island.belum  { border-color: var(--gray-island); }
+.island.next   { animation: pulseIsland 1.8s infinite ease-in-out; }
+@keyframes pulseIsland { 0%,100%{box-shadow:0 8px 18px -6px rgba(78,205,230,0.35);} 50%{box-shadow:0 8px 26px -2px rgba(78,205,230,0.65);} }
+.island-badge { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px; color: white; flex-shrink: 0; position: relative; }
+.island.hafal  .island-badge { background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); }
+.island.sedang .island-badge { background: linear-gradient(135deg, var(--sky),  var(--sky-dark)); }
+.island.belum  .island-badge { background: linear-gradient(135deg, #C9C3DE, #B3ACCB); }
+.island-status-icon { position: absolute; bottom: -4px; right: -4px; width: 20px; height: 20px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+.island-info h4 { font-family: 'Baloo 2', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.island-info p  { font-size: 10.5px; color: var(--ink-soft); font-weight: 600; margin-bottom: 6px; }
+.island-mini-track { width: 90px; height: 6px; border-radius: 99px; background: var(--gray-island); overflow: hidden; }
+.island-mini-fill  { height: 100%; border-radius: 99px; }
+.island.hafal  .island-mini-fill { background: var(--leaf); }
+.island.sedang .island-mini-fill { background: var(--sky); }
+.island.belum  .island-mini-fill { background: #C9C3DE; }
+.legend { display: flex; gap: 18px; margin: 24px 4px 0; font-size: 11px; font-weight: 700; color: var(--ink-soft); flex-wrap: wrap; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ============================================================
+   HAFAL AYAT
+   ============================================================ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+.surah-card { background: white; border-radius: 22px; padding: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 16px -8px rgba(61,44,95,0.12); cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+.surah-card:hover { transform: translateY(-2px); border-color: var(--sky); }
+.surah-num { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, var(--sky), var(--sky-dark)); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+.surah-card h4 { font-family: 'Baloo 2', sans-serif; font-size: 14px; margin-bottom: 2px; }
+.surah-card p  { font-size: 10.5px; color: var(--ink-soft); font-weight: 600; }
+.back-btn { background: none; border: none; color: var(--sky-dark); font-weight: 700; font-size: 13px; cursor: pointer; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; font-family: 'Quicksand', sans-serif; }
+.autoplay-bar { background: white; border-radius: 18px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 6px 16px -8px rgba(61,44,95,0.12); }
+.autoplay-bar strong { display: block; font-family: 'Baloo 2', sans-serif; font-size: 13px; }
+.autoplay-bar span   { font-size: 10.5px; color: var(--ink-soft); font-weight: 600; }
+.toggle-switch { width: 48px; height: 26px; border-radius: 99px; background: var(--gray-island); border: none; position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s; }
+.toggle-switch.on { background: linear-gradient(135deg, var(--sky), var(--sky-dark)); }
+.toggle-knob { display: block; width: 20px; height: 20px; border-radius: 50%; background: white; position: absolute; top: 3px; left: 3px; transition: left 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.toggle-switch.on .toggle-knob { left: 25px; }
+.ayat-card { background: white; border-radius: 26px; padding: 20px; box-shadow: 0 8px 20px -10px rgba(61,44,95,0.15); margin-bottom: 14px; border: 3px solid var(--gray-island); transition: border-color 0.2s, box-shadow 0.2s; }
+.ayat-card.hafal   { border-color: var(--leaf); }
+.ayat-card.sedang  { border-color: var(--sky); }
+.ayat-card.belum   { border-color: var(--gray-island); }
+.ayat-card.playing { border-color: var(--sky-dark); box-shadow: 0 0 0 4px rgba(78,205,230,0.2), 0 8px 20px -10px rgba(61,44,95,0.15); }
+.ayat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.ayat-tag { font-size: 11px; font-weight: 700; background: var(--cream); color: var(--ink-soft); padding: 5px 12px; border-radius: 99px; }
+.play-btn { display: flex; align-items: center; gap: 6px; background: var(--sky); color: white; border: none; padding: 7px 14px; border-radius: 99px; font-weight: 700; font-size: 11px; cursor: pointer; font-family: 'Quicksand', sans-serif; }
+.arabic-text { font-size: 26px; text-align: right; line-height: 1.9; color: var(--ink); margin: 8px 0; }
+.translation { font-size: 12px; color: var(--ink-soft); font-style: italic; margin-bottom: 14px; line-height: 1.6; }
+.status-btns { display: flex; gap: 8px; }
+.status-btn { flex: 1; padding: 10px; border-radius: 14px; font-size: 11px; font-weight: 700; border: 2px solid; cursor: pointer; background: white; font-family: 'Quicksand', sans-serif; transition: all 0.15s; }
+.status-btn.hafal         { border-color: var(--leaf); color: var(--leaf-dark); }
+.status-btn.hafal.active  { background: var(--leaf); color: white; }
+.status-btn.sedang        { border-color: var(--sky); color: var(--sky-dark); }
+.status-btn.sedang.active { background: var(--sky); color: white; }
+
+/* ============================================================
+   TEBAK AYAT
+   ============================================================ */
+.quiz-card { background: white; border-radius: 28px; padding: 24px; text-align: center; box-shadow: 0 10px 24px -10px rgba(61,44,95,0.18); }
+.quiz-progress { font-size: 11px; font-weight: 700; color: var(--ink-soft); margin-bottom: 14px; }
+.quiz-soal-label { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin-bottom: 4px; }
+.quiz-soal-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.quiz-arabic { font-size: 28px; color: var(--ink); line-height: 1.8; margin: 10px 0 18px; }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.quiz-option { padding: 14px 16px; border-radius: 16px; border: 2px solid var(--gray-island); font-weight: 700; font-size: 13px; color: var(--ink); cursor: pointer; text-align: right; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: all 0.15s; }
+.quiz-option:not(.answered):hover { border-color: var(--pink); background: #FFF1F5; }
+.quiz-option.correct  { border-color: var(--leaf); background: #EEFBF3; }
+.quiz-option.incorrect { border-color: var(--coral); background: #FFE8E6; }
+.quiz-result-box { margin-top: 20px; padding: 16px; border-radius: 20px; background: var(--cream); text-align: center; }
+.quiz-result-box .result-emoji { font-size: 32px; margin-bottom: 8px; }
+.quiz-result-box p { font-weight: 700; font-size: 14px; color: var(--ink); }
+.quiz-next-btn { margin-top: 14px; padding: 12px 28px; border-radius: 16px; border: none; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; background: linear-gradient(135deg, var(--pink), var(--pink-dark)); color: white; box-shadow: 0 6px 14px -4px rgba(255,143,174,0.4); }
+.audio-mini-btn { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; background: var(--pink); color: white; border: none; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; box-shadow: 0 4px 10px -2px rgba(255,143,174,0.5); transition: transform 0.1s; }
+.audio-mini-btn:active { transform: scale(0.9); }
+.audio-mini-btn.lavender { background: var(--lavender); box-shadow: 0 4px 10px -2px rgba(155,138,251,0.5); }
+
+/* ============================================================
+   LANJUTKAN
+   ============================================================ */
+.mic-card { background: white; border-radius: 28px; padding: 28px; text-align: center; box-shadow: 0 10px 24px -10px rgba(61,44,95,0.18); }
+.mic-soal-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 14px 0; }
+.mic-btn {
+  width: 96px; height: 96px; border-radius: 50%; margin: 22px auto 12px;
+  background: linear-gradient(135deg, var(--lavender), var(--lavender-dark));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; color: white; cursor: pointer;
+  box-shadow: 0 10px 24px -6px rgba(155,138,251,0.5); position: relative;
+}
+.mic-btn::before { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 3px solid var(--lavender); opacity: 0.4; animation: pulseMic 1.8s infinite ease-in-out; }
+.mic-btn.recording { background: linear-gradient(135deg, var(--coral), var(--coral-dark)); box-shadow: 0 10px 24px -6px rgba(255,107,91,0.5); }
+.mic-btn.recording::before { border-color: var(--coral); }
+@keyframes pulseMic { 0%,100%{transform:scale(1); opacity:.4;} 50%{transform:scale(1.1); opacity:.15;} }
+.mic-hint { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin-top: 8px; }
+.mic-timer { font-family: 'Baloo 2', sans-serif; font-size: 22px; font-weight: 700; color: var(--coral); margin-top: 8px; display: none; }
+.mic-result { margin-top: 20px; background: var(--cream); border-radius: 20px; padding: 18px; text-align: left; display: none; }
+.mic-result .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.mic-result .result-skor { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; }
+.mic-result .result-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+.mic-result .result-feedback { font-size: 13px; color: var(--ink); line-height: 1.6; }
+.mic-result .result-tajwid { font-size: 11px; color: var(--ink-soft); margin-top: 8px; font-style: italic; }
+.mic-retry-btn { margin-top: 14px; padding: 10px 20px; border-radius: 14px; border: none; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; background: linear-gradient(135deg, var(--lavender), var(--lavender-dark)); color: white; }
+
+/* ============================================================
+   MUROJA'AH
+   ============================================================ */
+.sched-card { background: white; border-radius: 22px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 6px 16px -8px rgba(63,190,114,0.18); margin-bottom: 12px; border-left: 5px solid var(--leaf); }
+.sched-card.tinggi { border-left-color: var(--leaf-dark); box-shadow: 0 6px 16px -6px rgba(63,190,114,0.35); }
+.sched-date { width: 50px; text-align: center; flex-shrink: 0; }
+.sched-date .d { font-family: 'Baloo 2', sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); }
+.sched-date .m { font-size: 9px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; }
+.sched-divider { width: 1px; height: 40px; background: var(--gray-island); flex-shrink: 0; }
+.sched-info { flex-grow: 1; }
+.sched-info h4 { font-family: 'Baloo 2', sans-serif; font-size: 14px; margin-bottom: 3px; }
+.sched-info p  { font-size: 10.5px; color: var(--ink-soft); font-weight: 600; }
+.btn-primary { display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px 20px; margin-top: 8px; background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); color: white; border: none; border-radius: 18px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: 'Quicksand', sans-serif; box-shadow: 0 6px 14px -4px rgba(95,211,141,0.45); transition: transform 0.15s; }
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: wait; }
+</style>
 </head>
-<body class="bg-indigo-50/40 min-h-screen flex flex-col justify-between text-slate-700 overflow-x-hidden">
+<body>
 
-  <!-- NOTIFIKASI TOAST CUSTOM -->
-  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-xs px-4 pointer-events-none"></div>
-
-  <!-- CONTAINER UTAMA -->
-  <div class="flex-grow flex flex-col">
-    
-    <!-- 1. HALAMAN AUTENTIKASI (LOGIN & REGISTER) -->
-    <section id="pg-auth" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-      <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-2xl w-full max-w-sm border-4 border-white/20 backdrop-blur-sm space-y-6">
-        
-        <!-- Logo & Maskot Bintang Marz -->
-        <div class="text-center space-y-2">
-          <div class="w-24 h-24 mx-auto filter drop-shadow-md">
-            <svg viewBox="0 0 100 100" class="w-full h-full animate-bounce">
-              <polygon points="50,5 64,36 98,36 70,57 81,91 50,70 19,91 30,57 2,36 36,36" fill="#FCD34D" stroke="#D97706" stroke-width="3"/>
-              <ellipse cx="50" cy="22" rx="12" ry="6" fill="#EF4444" />
-              <rect x="46" y="15" width="8" height="7" fill="#EF4444" />
-              <line x1="50" y1="15" x2="54" y2="9" stroke="#10B981" stroke-width="2"/>
-              <circle cx="40" cy="48" r="4.5" fill="#1E293B" />
-              <circle cx="60" cy="48" r="4.5" fill="#1E293B" />
-              <circle cx="35" cy="54" r="3" fill="#FCA5A5" />
-              <circle cx="65" cy="54" r="3" fill="#FCA5A5" />
-              <path d="M43 58 Q50 64 57 58" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
-            </svg>
-          </div>
-          <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Marzia Mengaji</h2>
-          <p class="text-xs text-slate-400 font-semibold" id="auth-subtitle">Belajar & hafal Juz 30 dengan menyenangkan!</p>
-        </div>
-
-        <!-- Formulir Input -->
-        <div class="space-y-4">
-          <div id="msg-auth"></div>
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">Username</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                <i data-lucide="user" class="w-4 h-4"></i>
-              </span>
-              <input type="text" id="auth-username" placeholder="Masukkan username" class="w-full pl-9 pr-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-purple-400 focus:bg-white focus:outline-none transition-all font-semibold text-slate-700 text-sm">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">Password</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                <i data-lucide="lock" class="w-4 h-4"></i>
-              </span>
-              <input type="password" id="auth-password" placeholder="Masukkan password" class="w-full pl-9 pr-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-purple-400 focus:bg-white focus:outline-none transition-all font-semibold text-slate-700 text-sm">
-            </div>
-          </div>
-        </div>
-
-        <!-- Tombol Aksi -->
-        <div class="space-y-3 pt-2">
-          <button id="btn-login-submit" onclick="app.submitAuth(true)" class="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-black rounded-2xl shadow-lg hover:shadow-purple-200/50 hover:scale-[1.02] active:scale-[0.98] border-b-4 border-indigo-800 bouncy-btn text-sm tracking-wide flex justify-center items-center gap-2 transition-all duration-200">
-            <span>Masuk Petualangan ✨</span>
-          </button>
-          
-          <div class="text-center text-[10px] text-slate-400 font-black uppercase tracking-wider">Atau Baru Pertama Kali Mengaji?</div>
-          
-          <button id="btn-register-submit" onclick="app.submitAuth(false)" class="w-full py-3 bg-white hover:bg-purple-50 text-purple-600 font-bold rounded-2xl border-2 border-purple-200 hover:border-purple-300 hover:scale-[1.01] active:scale-[0.98] bouncy-btn text-xs transition-all duration-200">
-            Daftar Akun Baru 🚀
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. TATA LETAK APLIKASI UTAMA (SETELAH LOGIN) -->
-    <section id="pg-app" class="hidden min-h-screen flex flex-col justify-between">
-      
-      <!-- GRID UTAMA RESPONSIF DEKSTOP & MOBILE (Ditambahkan items-start agar sticky desktop bekerja!) -->
-      <div class="max-w-6xl mx-auto w-full px-0 sm:px-6 lg:px-8 py-0 lg:py-8 flex-grow flex flex-col lg:flex-row gap-6 items-start">
-        
-        <!-- BAGIAN KIRI: SIDEBAR DEKSTOP / HEADER HERO MOBILE (Sticky di Mobile & Desktop!) -->
-        <aside class="sticky top-0 lg:top-8 z-30 w-full lg:w-[320px] flex-shrink-0 flex flex-col">
-          
-          <!-- PANEL HERO INFORMASI PROFIL & PROGRESS (ADAPTIF WARNA) -->
-          <div id="app-header" class="relative bg-gradient-to-br from-teal-400 to-emerald-400 text-white px-4 py-4 lg:px-5 lg:pt-6 lg:pb-6 rounded-b-3xl lg:rounded-[2rem] shadow-lg lg:shadow-xl transition-all duration-500">
-            <!-- Awan Estetis Belakang -->
-            <div class="absolute right-3 bottom-3 opacity-10 w-16 h-16 pointer-events-none">
-              <i data-lucide="cloud" class="w-full h-full text-white"></i>
-            </div>
-            
-            <div class="space-y-4 relative z-10">
-              <!-- Sapaan, Profil, Streaks, Logout -->
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-10 h-10 bg-white/20 rounded-full border border-white/40 flex items-center justify-center text-lg shadow-inner">
-                    👶
-                  </div>
-                  <div>
-                    <p class="text-[8px] uppercase font-bold tracking-widest text-white/80 leading-none">Assalamu'alaikum 👋</p>
-                    <h3 class="text-base font-black mt-1 leading-none tracking-wide truncate max-w-[120px]" id="hdr-name">Sahabat</h3>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <!-- Streak Badge -->
-                  <div class="bg-white/20 border border-white/30 px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                    <span class="text-xs">🔥</span>
-                    <span class="text-xs font-black text-yellow-300" id="hdr-streak">0</span>
-                    <span class="text-[8px] font-bold text-white/90">hari</span>
-                  </div>
-                  
-                  <!-- Logout Button -->
-                  <button onclick="app.logout()" class="p-1.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white bouncy-btn" title="Keluar">
-                    <i data-lucide="log-out" class="w-3 h-3"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Progress Bar Hafalan -->
-              <div class="bg-black/10 rounded-xl p-2.5 border border-white/10 space-y-1.5">
-                <div class="flex justify-between items-center text-[10px] font-bold text-white/90">
-                  <span class="flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> Progres Juz 30</span>
-                  <span id="hdr-prog-val" class="bg-white/20 px-2 py-0.5 rounded-full font-black text-[8px]">0 / 564 Ayat</span>
-                </div>
-                <div class="w-full h-2 bg-white/25 rounded-full overflow-hidden shadow-inner">
-                  <div id="hdr-pbar" class="h-full bg-gradient-to-r from-yellow-300 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-md" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SIDEBAR NAVIGASI DEKSTOP (HANYA MUNCUL DI DESKTOP) -->
-          <nav class="hidden lg:flex flex-col bg-white rounded-[2rem] p-4 border border-slate-100 shadow-md mt-4 space-y-1">
-            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-3 pb-2">Menu Petualangan</h4>
-            
-            <button onclick="app.switchTab('beranda')" id="sidebar-beranda" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
-              <i data-lucide="home" class="w-4 h-4"></i>
-              <span>Beranda Peta</span>
-            </button>
-            <button onclick="app.switchTab('hafal')" id="sidebar-hafal" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
-              <i data-lucide="book-open" class="w-4 h-4"></i>
-              <span>Hafal Ayat</span>
-            </button>
-            <button onclick="app.switchTab('tebak')" id="sidebar-tebak" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
-              <i data-lucide="sparkles" class="w-4 h-4"></i>
-              <span>Tebak Ayat</span>
-            </button>
-            <button onclick="app.switchTab('lanjut')" id="sidebar-lanjut" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
-              <i data-lucide="mic" class="w-4 h-4"></i>
-              <span>Lanjutkan</span>
-            </button>
-            <button onclick="app.switchTab('murojaah')" id="sidebar-murojaah" class="tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn">
-              <i data-lucide="calendar" class="w-4 h-4"></i>
-              <span>Muroja'ah</span>
-            </button>
-          </nav>
-        </aside>
-
-        <!-- PANEL KANAN: KONTEN UTAMA DAN BOTTOM BAR MOBILE -->
-        <div class="flex-grow flex flex-col min-w-0 w-full">
-          
-          <!-- TAB BAR BOTTOM NAVIGATION MOBILE (STICKY FIXED DI BAGIAN BAWAH LAYAR) -->
-          <nav class="lg:hidden fixed bottom-4 left-4 right-4 z-40">
-            <div class="bg-white/90 backdrop-blur-md border border-indigo-100/80 shadow-2xl rounded-2xl p-1.5 flex justify-between gap-0.5">
-              <button onclick="app.switchTab('beranda')" id="tab-beranda" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
-                <i data-lucide="home" class="w-4 h-4"></i>
-                <span class="text-[9px]">Beranda</span>
-              </button>
-              <button onclick="app.switchTab('hafal')" id="tab-hafal" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
-                <i data-lucide="book-open" class="w-4 h-4"></i>
-                <span class="text-[9px]">Hafal</span>
-              </button>
-              <button onclick="app.switchTab('tebak')" id="tab-tebak" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
-                <i data-lucide="sparkles" class="w-4 h-4"></i>
-                <span class="text-[9px]">Tebak</span>
-              </button>
-              <button onclick="app.switchTab('lanjut')" id="tab-lanjut" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
-                <i data-lucide="mic" class="w-4 h-4"></i>
-                <span class="text-[9px]">Lanjut</span>
-              </button>
-              <button onclick="app.switchTab('murojaah')" id="tab-murojaah" class="tab-btn flex-1 py-2 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 font-bold bouncy-btn transition-all">
-                <i data-lucide="calendar" class="w-4 h-4"></i>
-                <span class="text-[9px]">Muroja'ah</span>
-              </button>
-            </div>
-          </nav>
-
-          <!-- AREA UTAMA RENDERING KONTEN (Ditambahkan safe padding pb-28 di Mobile) -->
-          <main class="flex-grow p-4 md:p-6 lg:p-0 pb-28 lg:pb-0 w-full">
-            <div id="app-content" class="space-y-6">
-              <!-- Rendered dynamically by JavaScript -->
-            </div>
-          </main>
-        </div>
-
-      </div>
-    </section>
-  </div>
-
-  <!-- MODAL PENILAIAN AI (MOCKUP/LIVE POP-UP) -->
-  <div id="modal-result" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div id="modal-container" class="bg-white rounded-[2rem] p-5 max-w-sm w-full border-4 border-yellow-200 shadow-2xl text-center space-y-4 transform scale-95 transition-all duration-300">
-      
-      <!-- SVG Maskot Penilaian Dinamis - Dibatasi ukurannya agar pas di layar HP -->
-      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto flex items-center justify-center" id="result-mascot-container"></div>
-
-      <div class="space-y-0.5">
-        <h3 class="text-lg font-black text-indigo-600" id="result-title">Subhanallah! 🎉</h3>
-        <p class="text-[10px] text-slate-400 font-bold" id="result-score-tag">Skor Hafalan: 95/100</p>
-      </div>
-
-      <!-- Pesan Feedback -->
-      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100 text-left space-y-1">
-        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Pesan Kak Marz:</p>
-        <p class="text-xs text-slate-600 leading-relaxed italic" id="result-message">
-          "Luar biasa! Bacaanmu lancar sekali."
-        </p>
-      </div>
-
-      <!-- Tips Tajwid -->
-      <div id="result-tajwid-container" class="hidden bg-amber-50 text-amber-800 border border-amber-200 rounded-xl p-2.5 text-left flex gap-1.5 items-start">
-        <span class="text-sm">💡</span>
-        <div class="text-[10px]">
-          <p class="font-extrabold">Tips Pelafalan & Tajwid:</p>
-          <p id="result-tajwid-text" class="mt-0.5 leading-normal"></p>
-        </div>
-      </div>
-
-      <!-- Tombol Aksi Lanjut -->
-      <button id="modal-action-btn" class="w-full py-3 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-2xl border-b-4 border-purple-700 bouncy-btn shadow-md text-xs">
-        Alhamdulillah, Lanjut! 🚀
-      </button>
+<!-- ===================== AUTH PAGE ===================== -->
+<div id="pg-auth">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div style="font-size:48px;margin-bottom:8px;">🌙</div>
+      <h1>Marzia Mengaji</h1>
+      <p>Petualangan Hafalan Juz 30</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="setAuthMode('login')">Masuk</button>
+      <button class="auth-tab" onclick="setAuthMode('register')">Daftar</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div class="auth-form">
+      <input class="auth-input" id="auth-username" type="text" placeholder="Nama pengguna" autocomplete="username">
+      <input class="auth-input" id="auth-password" type="password" placeholder="Password" autocomplete="current-password">
+      <button class="auth-btn" id="auth-submit" onclick="submitAuth()">Masuk</button>
     </div>
   </div>
+</div>
 
-  <!-- FOOTER RESPONSIVE -->
-  <footer class="bg-white border-t border-slate-100 py-3 pb-24 lg:pb-3 text-center text-[10px] text-slate-400 font-bold uppercase tracking-wider relative z-10">
-    Dibuat dengan ❤️ untuk Marzia • Google Apps Script + Gemini AI
-  </footer>
+<!-- ===================== APP PAGE ===================== -->
+<div id="pg-app">
+  <div class="layout">
 
-  <!-- SCRIPTS UTAMA -->
-  <script>
-    // Konfigurasi Web App URL Google Apps Script Anda (AKTIF & TERKONEKSI SEUTUHNYA)
-    const CONFIG = {
-      API_ENDPOINT: 'https://script.google.com/macros/s/AKfycby6t5frYANPwjzL_Nh0Cn1tdqeb_7KggMMBRJy7XZk99BchxQUTt5juIFYUuPhtRcE/exec'
-    };
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="mega">
+        <div class="hero" id="appHero">
+          <div class="cloud c1"></div>
+          <div class="cloud c2"></div>
+          <div class="hero-top">
+            <div class="hero-user">
+              <div class="avatar">👧</div>
+              <div>
+                <div class="hero-greet">Assalamu'alaikum 👋</div>
+                <div class="hero-name" id="hdr-name">—</div>
+              </div>
+            </div>
+            <div class="streak-pill">🔥 <span id="hdr-streak">0</span> hari</div>
+          </div>
+          <div class="progress-box">
+            <div class="progress-label">
+              <span>🏆 Progres Juz 30</span>
+              <span id="hdr-prog-val">0 / 564 Ayat</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="hdr-pbar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="nav-title">Menu Petualangan</div>
+          <button class="nav-item active" data-tab="beranda"  onclick="switchTab('beranda')"><div class="nav-icon">🏠</div> Beranda Peta</button>
+          <button class="nav-item" data-tab="hafal"    onclick="switchTab('hafal')"><div class="nav-icon">📖</div> Hafal Ayat</button>
+          <button class="nav-item" data-tab="tebak"    onclick="switchTab('tebak')"><div class="nav-icon">✨</div> Tebak Ayat</button>
+          <button class="nav-item" data-tab="lanjut"   onclick="switchTab('lanjut')"><div class="nav-icon">🎙️</div> Lanjutkan</button>
+          <button class="nav-item" data-tab="murojaah" onclick="switchTab('murojaah')"><div class="nav-icon">📅</div> Muroja'ah</button>
+          <button class="logout-btn" onclick="doLogout()">🚪 Keluar</button>
+        </nav>
+      </div>
+    </aside>
 
-    // PENGAMAN UTAMA: Warna Bintang / Balon untuk list kartu Surah
-    const BUBBLE_COLORS = [
-      'bg-rose-100 text-rose-600',
-      'bg-pink-100 text-pink-600',
-      'bg-purple-100 text-purple-600',
-      'bg-indigo-100 text-indigo-600',
-      'bg-blue-100 text-blue-600',
-      'bg-cyan-100 text-cyan-600',
-      'bg-teal-100 text-teal-600',
-      'bg-emerald-100 text-emerald-600',
-      'bg-amber-100 text-amber-600',
-      'bg-orange-100 text-orange-600'
-    ];
+    <!-- MAIN -->
+    <main class="main">
 
-    // State Internal Aplikasi (Mengikuti format terstruktur dari data backend GAS)
-    const S = {
-      token: localStorage.getItem('mm_token') || null,
-      userId: localStorage.getItem('mm_uid') || null,
-      username: localStorage.getItem('mm_uname') || null,
-      streak: parseInt(localStorage.getItem('mm_streak') || '0'),
-      surahList: [],   // Diisi secara dinamis dari API 'getInitialData'
-      ayatList: [],    // Diisi secara dinamis dari API 'getInitialData'
-      progressMap: {}, // Diisi secara dinamis dari API 'getInitialData'
-      totalHafal: 0,
-      totalSedang: 0,
-      currentTab: 'beranda',
-      activeAudio: null,
-      activeAudioUrl: null,
-      autoPlayNext: false,
-      currentPlayingIndex: -1,
-      quizSet: [],
-      quizIndex: 0,
-      quizSelected: null,
-      recSet: [],
-      recIndex: 0,
-      mediaRecorder: null,
-      recordingChunks: [],
-      isRecording: false,
-      recSeconds: 0,
-      recTimer: null,
-      murojaahSchedule: []
-    };
+      <!-- BERANDA -->
+      <div class="tab-page active" id="page-beranda">
+        <div class="welcome-card">
+          <div class="welcome-icon">⭐</div>
+          <div>
+            <h3>Yuk, Kumpulkan Bintang!</h3>
+            <p>Tandai setiap ayat yang sudah berhasil kamu hafal untuk menerangi pulau-pulau di peta petualanganmu.</p>
+          </div>
+        </div>
+        <div class="section-title">🗺️ Pulau Petualangan Juz 30</div>
+        <div class="path-wrap" id="pathWrap">
+          <svg class="connector" id="connectorSvg"></svg>
+          <div class="islands" id="islandsContainer">
+            <div class="loading-state"><div class="loading-spinner"></div>Memuat peta petualangan...</div>
+          </div>
+        </div>
+        <div class="legend">
+          <span><span class="dot" style="background:var(--leaf)"></span> Sudah Hafal</span>
+          <span><span class="dot" style="background:var(--sky)"></span> Sedang Dipelajari</span>
+          <span><span class="dot" style="background:#C9C3DE"></span> Belum Dimulai</span>
+        </div>
+      </div>
 
-    // --- HELPER NAVIGASI & NOTIFIKASI TOAST ---
-    function showToast(message, type = 'info') {
-      const colors = {
-        success: 'bg-emerald-500 text-white',
-        error: 'bg-rose-500 text-white',
-        info: 'bg-indigo-500 text-white'
-      };
-      const toast = document.createElement('div');
-      toast.className = `${colors[type] || colors.info} px-4 py-2.5 rounded-2xl shadow-xl font-bold text-xs text-center border-2 border-white/20 transition-all duration-300 transform translate-y-2 opacity-0 flex items-center justify-center gap-2 pointer-events-auto`;
-      toast.innerHTML = `<span>✨</span><span>${message}</span>`;
-      
-      const container = document.getElementById('toast-container');
-      container.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.classList.remove('translate-y-2', 'opacity-0');
-      }, 50);
+      <!-- HAFAL AYAT: DAFTAR SURAH -->
+      <div class="tab-page" id="page-hafal">
+        <div class="section-title">📖 Pilih Surah Hafalan</div>
+        <div class="grid-2" id="surahListContainer">
+          <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div>Memuat daftar surah...</div>
+        </div>
+      </div>
 
-      setTimeout(() => {
-        toast.classList.add('translate-y-2', 'opacity-0');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
+      <!-- HAFAL AYAT: DETAIL AYAT -->
+      <div class="tab-page" id="page-hafal-detail">
+        <button class="back-btn" onclick="switchTab('hafal')">← Kembali ke Daftar Surah</button>
+        <div class="autoplay-bar">
+          <div>
+            <strong id="detail-surah-name">—</strong>
+            <span id="autoplay-status">Putar seluruh ayat secara berurutan</span>
+          </div>
+          <button class="toggle-switch" id="autoplayToggle" onclick="toggleAutoplay()">
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+        <div id="ayatDetailContainer">
+          <div class="loading-state"><div class="loading-spinner"></div>Memuat ayat...</div>
+        </div>
+      </div>
+
+      <!-- TEBAK AYAT -->
+      <div class="tab-page" id="page-tebak">
+        <div class="section-title">✨ Tebak Lanjutan Ayat</div>
+        <div id="tebakContainer">
+          <div class="loading-state"><div class="loading-spinner"></div>Menyiapkan soal...</div>
+        </div>
+      </div>
+
+      <!-- LANJUTKAN -->
+      <div class="tab-page" id="page-lanjut">
+        <div class="section-title">🎙️ Lanjutkan Setoran Hafalan</div>
+        <div class="mic-card">
+          <div class="ayat-tag" id="lanjut-surah-tag">Pilih surah di tab Hafal Ayat terlebih dahulu</div>
+          <div class="mic-soal-row">
+            <div class="quiz-arabic" dir="rtl" id="lanjut-soal-arab" style="margin:0">—</div>
+            <button class="audio-mini-btn lavender" id="lanjut-audio-btn" onclick="playAudioUrl(S.lanjutSoalAudio)" title="Dengar soal">▶</button>
+          </div>
+          <div class="mic-btn" id="micBtn" onclick="toggleRecording()">🎤</div>
+          <div class="mic-timer" id="micTimer">0:00</div>
+          <p class="mic-hint" id="micHint">Sentuh mikrofon untuk mulai merekam setoran hafalanmu</p>
+          <div class="mic-result" id="micResult">
+            <div class="result-header">
+              <div class="result-skor" id="micSkor">—</div>
+              <div>
+                <div style="font-size:20px" id="micEmoji">—</div>
+                <div class="result-label" id="micHasil">—</div>
+              </div>
+            </div>
+            <div class="result-feedback" id="micFeedback">—</div>
+            <div class="result-tajwid" id="micTajwid"></div>
+            <button class="mic-retry-btn" onclick="resetRecording()">🎤 Rekam Ulang</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MUROJA'AH -->
+      <div class="tab-page" id="page-murojaah">
+        <div class="section-title">📅 Jadwal Muroja'ah Minggu Ini</div>
+        <div id="murojaahContainer">
+          <div class="loading-state"><div class="loading-spinner"></div>Memuat jadwal...</div>
+        </div>
+        <button class="btn-primary" id="generateJadwalBtn" onclick="doGenerateJadwal()" style="margin-top:16px;">✨ Susun Ulang Jadwal dengan AI</button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- BOTTOM NAV (mobile) -->
+  <div class="bottom-nav" id="bottomNav">
+    <button class="bottom-nav-item active" data-tab="beranda"  onclick="switchTab('beranda')"><span class="bn-icon">🏠</span>Beranda</button>
+    <button class="bottom-nav-item" data-tab="hafal"    onclick="switchTab('hafal')"><span class="bn-icon">📖</span>Hafal</button>
+    <button class="bottom-nav-item" data-tab="tebak"    onclick="switchTab('tebak')"><span class="bn-icon">✨</span>Tebak</button>
+    <button class="bottom-nav-item" data-tab="lanjut"   onclick="switchTab('lanjut')"><span class="bn-icon">🎙️</span>Lanjut</button>
+    <button class="bottom-nav-item" data-tab="murojaah" onclick="switchTab('murojaah')"><span class="bn-icon">📅</span>Muroja'ah</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   KONFIGURASI
+   ============================================================ */
+const GAS_URL = 'GANTI_DENGAN_URL_DEPLOY_GAS_KAMU';
+// Contoh: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+/* ============================================================
+   STATE GLOBAL
+   ============================================================ */
+const S = {
+  token:           null,
+  username:        null,
+  surahList:       [],   // array dari getInitialData
+  ayatList:        [],   // array dari getInitialData
+  progressMap:     {},   // { "114_1": "hafal", ... }
+  totalHafal:      0,
+  totalAyat:       564,
+  // State per fitur
+  currentSurah:    null, // surah yang sedang dibuka di hafal-detail
+  currentAyatList: [],   // ayat untuk surah yang sedang dibuka
+  autoplayAudio:   null, // HTMLAudioElement aktif
+  autoplayIdx:     0,
+  // Tebak Ayat
+  tebakSoal:       null,
+  tebakJawabanIdx: null,
+  tebakAnswered:   false,
+  tebakNo:         0,
+  // Lanjutkan
+  lanjutSoalAudio: null,
+  // Rekaman
+  mediaRecorder:   null,
+  audioChunks:     [],
+  recTimer:        null,
+  recSeconds:      0,
+};
+
+/* ============================================================
+   API HELPER
+   ============================================================ */
+async function api(payload) {
+  if (S.token) payload.token = S.token;
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+let authMode = 'login';
+function setAuthMode(mode) {
+  authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && mode === 'login') || (i === 1 && mode === 'register'));
+  });
+  document.getElementById('auth-submit').textContent = mode === 'login' ? 'Masuk' : 'Daftar';
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+async function submitAuth() {
+  const username = document.getElementById('auth-username').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  const btn = document.getElementById('auth-submit');
+  errEl.style.display = 'none';
+  if (!username || !password) { showAuthError('Isi username dan password dulu ya!'); return; }
+  btn.disabled = true;
+  btn.textContent = authMode === 'login' ? 'Masuk...' : 'Mendaftar...';
+  try {
+    const res = await api({ action: authMode, username, password });
+    if (!res.success) { showAuthError(res.message); return; }
+    if (authMode === 'register') {
+      showAuthError('Pendaftaran berhasil! Silakan masuk sekarang.', true);
+      setAuthMode('login');
+      return;
     }
+    S.token    = res.token;
+    S.username = res.username;
+    localStorage.setItem('mm_token',    S.token);
+    localStorage.setItem('mm_username', S.username);
+    enterApp();
+  } catch(e) {
+    showAuthError('Gagal terhubung ke server. Coba lagi.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = authMode === 'login' ? 'Masuk' : 'Daftar';
+  }
+}
 
-    // Generator Maskot SVG Dinamis berdasarkan ekspresi
-    function getMascotSVG(expression) {
-      let mouth = '<path d="M43 58 Q50 64 57 58" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" />';
-      let eyes = '<circle cx="40" cy="48" r="4.5" fill="#1E293B" /><circle cx="60" cy="48" r="4.5" fill="#1E293B" />';
-      let sparkles = '';
-      let crown = '';
-      let motionClass = '';
+function showAuthError(msg, isSuccess=false) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = isSuccess ? '#EEFBF3' : '#FFE8E6';
+  el.style.color = isSuccess ? 'var(--leaf-dark)' : 'var(--coral-dark)';
+}
 
-      if (expression === 'listening') {
-        eyes = '<path d="M35 48 Q40 52 45 48" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" /><path d="M55 48 Q60 52 65 48" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />';
-        mouth = '<path d="M45 58 Q50 61 55 58" fill="none" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />';
-        sparkles = `
-          <!-- Headphone -->
-          <path d="M25 50 A 25 25 0 0 1 75 50" fill="none" stroke="#EC4899" stroke-width="6" stroke-linecap="round"/>
-          <rect x="20" y="44" width="8" height="12" rx="3" fill="#EC4899" />
-          <rect x="72" y="44" width="8" height="12" rx="3" fill="#EC4899" />
-        `;
-      } else if (expression === 'thinking') {
-        eyes = '<circle cx="40" cy="48" r="4.5" fill="#1E293B" /><line x1="56" y1="48" x2="64" y2="48" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" />';
-        mouth = '<circle cx="50" cy="58" r="3.5" fill="#1E293B" />';
-        motionClass = 'animate-bounce';
-      } else if (expression === 'success') {
-        eyes = `
-          <polygon points="40,40 43,45 48,45 44,48 46,53 40,50 34,53 36,48 32,45 37,45" fill="#FBBF24" />
-          <polygon points="60,40 63,45 68,45 64,48 66,53 60,50 54,53 56,48 52,45 57,45" fill="#FBBF24" />
-        `;
-        mouth = '<path d="M40 56 Q50 66 60 56" fill="none" stroke="#1E293B" stroke-width="4.5" stroke-linecap="round" />';
-        crown = '<polygon points="40,12 45,2 50,12 55,2 60,12" fill="#FBBF24" stroke="#D97706" stroke-width="1.5" />';
-        motionClass = 'animate-bounce';
-      } else if (expression === 'encouraging') {
-        eyes = '<path d="M34 48 L44 48" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/><circle cx="60" cy="48" r="4.5" fill="#1E293B" />';
-        mouth = '<path d="M43 57 Q50 62 57 57" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round" />';
-      }
+async function doLogout() {
+  await api({ action: 'logout' }).catch(()=>{});
+  localStorage.removeItem('mm_token');
+  localStorage.removeItem('mm_username');
+  S.token = null; S.username = null;
+  document.getElementById('pg-app').style.display = 'none';
+  document.getElementById('pg-auth').style.display = 'flex';
+}
 
-      return `
-        <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md ${motionClass}">
-          <polygon points="50,5 64,36 98,36 70,57 81,91 50,70 19,91 30,57 2,36 36,36" fill="#FCD34D" stroke="#D97706" stroke-width="3"/>
-          ${crown}
-          ${eyes}
-          <circle cx="34" cy="54" r="4" fill="#FCA5A5" />
-          <circle cx="66" cy="54" r="4" fill="#FCA5A5" />
-          ${mouth}
-          ${sparkles}
-        </svg>
-      `;
+/* ============================================================
+   APP INIT
+   ============================================================ */
+async function enterApp() {
+  document.getElementById('pg-auth').style.display = 'none';
+  document.getElementById('pg-app').style.display  = 'block';
+  initNavColors();
+  await loadInitialData();
+}
+
+async function loadInitialData() {
+  const res = await api({ action: 'getInitialData' });
+  if (!res.success) { showToast('Gagal memuat data: ' + res.message); return; }
+  const d = res.data;
+  S.surahList   = d.surahList;
+  S.ayatList    = d.ayatList;
+  S.progressMap = d.progressMap;
+  S.totalHafal  = d.totalHafal;
+  S.username    = d.username;
+
+  // Update header
+  document.getElementById('hdr-name').textContent    = d.username;
+  document.getElementById('hdr-prog-val').textContent = d.totalHafal + ' / ' + d.totalAyat + ' Ayat';
+  document.getElementById('hdr-pbar').style.width    = Math.round(d.totalHafal / d.totalAyat * 100) + '%';
+
+  // Render beranda & hafal
+  renderBeranda();
+  renderSurahList();
+}
+
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+const HERO_GRADIENT = {
+  beranda:       ['#FFE3A0','#FFC857'],
+  hafal:         ['#A7E9F2','#4ECDE6'],
+  'hafal-detail':['#A7E9F2','#4ECDE6'],
+  tebak:         ['#FBC4D4','#FF8FAE'],
+  lanjut:        ['#D7CFFC','#9B8AFB'],
+  murojaah:      ['#B8EFCB','#5FD38D'],
+};
+const NAV_GRADIENT = {
+  beranda: 'linear-gradient(135deg,#FFC857,#FF6B5B)',
+  hafal:   'linear-gradient(135deg,#4ECDE6,#2FB6CF)',
+  tebak:   'linear-gradient(135deg,#FF8FAE,#E5503F)',
+  lanjut:  'linear-gradient(135deg,#9B8AFB,#7C68E8)',
+  murojaah:'linear-gradient(135deg,#5FD38D,#3FBE72)',
+};
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  const navKey = tab.startsWith('hafal') ? 'hafal' : tab;
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.remove('active'); n.style.background=''; n.style.color=''; n.style.boxShadow='';
+  });
+  const an = document.querySelector(`.nav-item[data-tab="${navKey}"]`);
+  if (an) { an.classList.add('active'); an.style.background=NAV_GRADIENT[navKey]; an.style.color='white'; an.style.boxShadow='0 6px 14px -4px rgba(0,0,0,0.2)'; }
+  document.querySelectorAll('.bottom-nav-item').forEach(n => { n.classList.remove('active'); n.style.background=''; n.style.color=''; });
+  const bn = document.querySelector(`.bottom-nav-item[data-tab="${navKey}"]`);
+  if (bn) { bn.classList.add('active'); bn.style.background=NAV_GRADIENT[navKey]; bn.style.color='white'; }
+  const [f,t] = HERO_GRADIENT[tab] || HERO_GRADIENT.beranda;
+  document.getElementById('appHero').style.background = `linear-gradient(160deg,${f} 0%,${t} 100%)`;
+  if (tab === 'beranda')  { setTimeout(drawConnectors, 50); }
+  if (tab === 'tebak')    { loadTebakSoal(); }
+  if (tab === 'murojaah') { loadMurojaah(); }
+  if (tab !== 'hafal-detail' && autoplayOn) stopAutoplay();
+}
+
+function initNavColors() {
+  const bn = document.querySelector('.bottom-nav-item[data-tab="beranda"]');
+  if (bn) { bn.style.background=NAV_GRADIENT.beranda; bn.style.color='white'; }
+  const an = document.querySelector('.nav-item[data-tab="beranda"]');
+  if (an) { an.style.background=NAV_GRADIENT.beranda; an.style.color='white'; an.style.boxShadow='0 6px 14px -4px rgba(0,0,0,0.2)'; }
+}
+
+/* ============================================================
+   BERANDA — JALUR PULAU
+   ============================================================ */
+function renderBeranda() {
+  const c = document.getElementById('islandsContainer');
+  c.innerHTML = '';
+  if (!S.surahList.length) { c.innerHTML='<div class="loading-state">Belum ada data surah.</div>'; return; }
+  // Tentukan pulau "selanjutnya" = surah pertama yang bukan hafal penuh
+  let nextFound = false;
+  S.surahList.forEach((s, idx) => {
+    const row = document.createElement('div');
+    row.className = `island-row ${idx % 2 === 0 ? 'left' : 'right'}`;
+    const isNext = !nextFound && s.status !== 'hafal';
+    if (isNext) nextFound = true;
+    const icon = s.status === 'hafal' ? '👑' : s.status === 'sedang' ? '📝' : '🔒';
+    row.innerHTML = `
+      <div class="island ${s.status}${isNext ? ' next' : ''}" onclick="openSurahDetail(${s.surah_number})">
+        <div class="island-badge">${s.surah_number}<div class="island-status-icon">${icon}</div></div>
+        <div class="island-info">
+          <h4>${s.nama_latin}</h4>
+          <p>${s.terjemahan_nama} • ${s.jumlah_ayat} Ayat</p>
+          <div class="island-mini-track"><div class="island-mini-fill" style="width:${s.pct}%"></div></div>
+        </div>
+      </div>`;
+    c.appendChild(row);
+  });
+  setTimeout(drawConnectors, 50);
+}
+
+function drawConnectors() {
+  const svg  = document.getElementById('connectorSvg');
+  const wrap = document.getElementById('pathWrap');
+  const islands = document.querySelectorAll('#islandsContainer .island');
+  if (!islands.length) return;
+  svg.innerHTML = '';
+  svg.setAttribute('viewBox', `0 0 ${wrap.offsetWidth} ${wrap.offsetHeight}`);
+  svg.setAttribute('width',  wrap.offsetWidth);
+  svg.setAttribute('height', wrap.offsetHeight);
+  const wR = wrap.getBoundingClientRect();
+  const pts = Array.from(islands).map(el => {
+    const r = el.getBoundingClientRect();
+    return { x: r.left-wR.left+r.width/2, y: r.top-wR.top+r.height/2 };
+  });
+  for (let i=0; i<pts.length-1; i++) {
+    const p1=pts[i], p2=pts[i+1], midY=(p1.y+p2.y)/2;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M ${p1.x} ${p1.y} C ${p1.x} ${midY}, ${p2.x} ${midY}, ${p2.x} ${p2.y}`);
+    path.setAttribute('fill','none'); path.setAttribute('stroke','#D9D2EE');
+    path.setAttribute('stroke-width','4'); path.setAttribute('stroke-dasharray','2,10');
+    path.setAttribute('stroke-linecap','round');
+    svg.appendChild(path);
+  }
+}
+window.addEventListener('resize', drawConnectors);
+
+/* ============================================================
+   HAFAL AYAT — DAFTAR SURAH
+   ============================================================ */
+function renderSurahList() {
+  const c = document.getElementById('surahListContainer');
+  c.innerHTML = '';
+  if (!S.surahList.length) { c.innerHTML='<div class="loading-state" style="grid-column:1/-1">Belum ada data.</div>'; return; }
+  const numGrad = {
+    hafal:  'linear-gradient(135deg,var(--leaf),var(--leaf-dark))',
+    sedang: 'linear-gradient(135deg,var(--sky),var(--sky-dark))',
+    belum:  'linear-gradient(135deg,#C9C3DE,#B3ACCB)',
+  };
+  S.surahList.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'surah-card';
+    card.onclick = () => openSurahDetail(s.surah_number);
+    card.innerHTML = `
+      <div class="surah-num" style="background:${numGrad[s.status]}">${s.surah_number}</div>
+      <div>
+        <h4>${s.nama_latin}</h4>
+        <p>${s.hafal} / ${s.jumlah_ayat} Ayat Dihafal</p>
+      </div>`;
+    c.appendChild(card);
+  });
+}
+
+/* ============================================================
+   HAFAL AYAT — DETAIL AYAT
+   ============================================================ */
+function openSurahDetail(surahNumber) {
+  const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
+  if (!surah) return;
+  S.currentSurah    = surah;
+  S.currentAyatList = S.ayatList.filter(a => Number(a.surah_number) === Number(surahNumber));
+  document.getElementById('detail-surah-name').textContent = surah.nama_latin;
+  renderAyatDetail();
+  switchTab('hafal-detail');
+  // Siapkan soal Lanjutkan otomatis ke surah ini
+  setupLanjutSoal(surahNumber);
+}
+
+function renderAyatDetail() {
+  const c = document.getElementById('ayatDetailContainer');
+  c.innerHTML = '';
+  S.currentAyatList.forEach((a, idx) => {
+    const key    = String(a.surah_number) + '_' + String(a.ayat_number);
+    const status = S.progressMap[key] || 'belum';
+    const div = document.createElement('div');
+    div.className = `ayat-card ${status}`;
+    div.id = `ayat-card-${idx}`;
+    div.innerHTML = `
+      <div class="ayat-top">
+        <span class="ayat-tag">Ayat ${a.ayat_number}</span>
+        ${a.audio_url ? `<button class="play-btn" onclick="playAyatByIdx(${idx})">▶ DENGAR</button>` : ''}
+      </div>
+      <div class="arabic-text" dir="rtl">${a.teks_arab}</div>
+      <div class="translation">"${a.terjemahan_id}"</div>
+      <div class="status-btns">
+        <button class="status-btn hafal ${status==='hafal'?'active':''}"
+          onclick="updateStatus(${idx},'hafal',this)">✓ HAFAL</button>
+        <button class="status-btn sedang ${status==='sedang'?'active':''}"
+          onclick="updateStatus(${idx},'sedang',this)">⏳ ULANG</button>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+
+async function updateStatus(ayatIdx, newStatus, btn) {
+  const a   = S.currentAyatList[ayatIdx];
+  const key = String(a.surah_number) + '_' + String(a.ayat_number);
+  // Optimistic UI update
+  const card = document.getElementById(`ayat-card-${ayatIdx}`);
+  card.className = `ayat-card ${newStatus}`;
+  card.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  S.progressMap[key] = newStatus;
+  // Kirim ke backend
+  const res = await api({ action:'updateProgress', surah_number:a.surah_number, ayat_number:a.ayat_number, status:newStatus });
+  if (!res.success) { showToast('Gagal menyimpan: ' + res.message); return; }
+  // Update surahList stats
+  const surah = S.surahList.find(s => Number(s.surah_number) === Number(a.surah_number));
+  if (surah) {
+    const ayatSurah = S.ayatList.filter(x => Number(x.surah_number) === Number(a.surah_number));
+    let hafal=0, sedang=0;
+    ayatSurah.forEach(x => {
+      const st = S.progressMap[x.surah_number+'_'+x.ayat_number] || 'belum';
+      if (st==='hafal') hafal++; else if (st==='sedang') sedang++;
+    });
+    surah.hafal  = hafal;
+    surah.sedang = sedang;
+    surah.pct    = Math.round(hafal/surah.jumlah_ayat*100);
+    surah.status = hafal===surah.jumlah_ayat ? 'hafal' : hafal>0||sedang>0 ? 'sedang' : 'belum';
+  }
+  // Hitung ulang total
+  S.totalHafal = Object.values(S.progressMap).filter(v=>v==='hafal').length;
+  document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
+  document.getElementById('hdr-pbar').style.width = Math.round(S.totalHafal/S.totalAyat*100) + '%';
+  renderBeranda();
+}
+
+/* ============================================================
+   AUDIO PLAYBACK
+   ============================================================ */
+function playAudioUrl(url) {
+  if (!url) { showToast('Audio tidak tersedia untuk ayat ini.'); return; }
+  if (S.autoplayAudio) { S.autoplayAudio.pause(); S.autoplayAudio = null; }
+  S.autoplayAudio = new Audio(url);
+  S.autoplayAudio.play().catch(() => showToast('Gagal memutar audio.'));
+}
+
+function playAyatByIdx(idx) {
+  const a = S.currentAyatList[idx];
+  if (!a || !a.audio_url) { showToast('Audio tidak tersedia.'); return; }
+  document.querySelectorAll('.ayat-card').forEach(c => c.classList.remove('playing'));
+  document.getElementById(`ayat-card-${idx}`).classList.add('playing');
+  if (S.autoplayAudio) S.autoplayAudio.pause();
+  S.autoplayAudio = new Audio(a.audio_url);
+  S.autoplayAudio.play().catch(() => showToast('Gagal memutar audio.'));
+  S.autoplayAudio.onended = () => {
+    document.getElementById(`ayat-card-${idx}`).classList.remove('playing');
+    if (autoplayOn) {
+      const next = idx + 1;
+      if (next < S.currentAyatList.length) { playAyatByIdx(next); }
+      else { stopAutoplay(); document.getElementById('autoplay-status').textContent = 'Selesai! Semua ayat sudah diputar.'; }
     }
+  };
+}
+
+/* ============================================================
+   AUTOPLAY
+   ============================================================ */
+let autoplayOn = false;
+function toggleAutoplay() {
+  autoplayOn = !autoplayOn;
+  document.getElementById('autoplayToggle').classList.toggle('on', autoplayOn);
+  if (autoplayOn) {
+    document.getElementById('autoplay-status').textContent = 'Sedang memutar seluruh ayat...';
+    playAyatByIdx(0);
+  } else { stopAutoplay(); }
+}
+function stopAutoplay() {
+  autoplayOn = false;
+  if (S.autoplayAudio) { S.autoplayAudio.pause(); S.autoplayAudio = null; }
+  document.getElementById('autoplayToggle').classList.remove('on');
+  document.getElementById('autoplay-status').textContent = 'Putar seluruh ayat secara berurutan';
+  document.querySelectorAll('.ayat-card').forEach(c => c.classList.remove('playing'));
+}
+
+/* ============================================================
+   TEBAK AYAT
+   ============================================================ */
+async function loadTebakSoal() {
+  const c = document.getElementById('tebakContainer');
+  c.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Menyiapkan soal...</div>';
+  S.tebakAnswered = false;
+  S.tebakNo++;
+  const res = await api({ action: 'getTebakSoal' });
+  if (!res.success) {
+    c.innerHTML = `<div class="loading-state">😔 ${res.message}<br><br><button onclick="loadTebakSoal()" style="margin-top:10px;padding:10px 20px;border-radius:14px;border:none;background:var(--pink);color:white;font-weight:700;cursor:pointer;">Coba Lagi</button></div>`;
+    return;
+  }
+  const d = res.data;
+  S.tebakSoal       = d.soal;
+  S.tebakJawabanIdx = d.jawaban_index;
+
+  c.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-progress">Soal ke-${S.tebakNo}</div>
+      <p class="quiz-soal-label">Lanjutan ayat dari:</p>
+      <div class="quiz-soal-row">
+        <div class="quiz-arabic" dir="rtl" style="margin:0">${d.soal.teks_arab}</div>
+        ${d.soal.audio_url ? `<button class="audio-mini-btn" onclick="playAudioUrl('${d.soal.audio_url}')" title="Dengar soal">▶</button>` : ''}
+      </div>
+      <div class="quiz-options" id="quizOptions">
+        ${d.pilihan.map((p, i) => `
+          <div class="quiz-option" dir="rtl" id="qopt-${i}" onclick="jawabTebak(${i})">
+            <span>${p.teks_arab}</span>
+            ${p.audio_url ? `<button class="audio-mini-btn" onclick="event.stopPropagation();playAudioUrl('${p.audio_url}')" title="Dengar pilihan ini">▶</button>` : ''}
+          </div>`).join('')}
+      </div>
+      <div class="quiz-result-box" id="quizResult" style="display:none"></div>
+    </div>`;
+}
+
+async function jawabTebak(idx) {
+  if (S.tebakAnswered) return;
+  S.tebakAnswered = true;
+  // Tandai pilihan di UI
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.add('answered'));
+  document.getElementById(`qopt-${S.tebakJawabanIdx}`).classList.add('correct');
+  if (idx !== S.tebakJawabanIdx) document.getElementById(`qopt-${idx}`).classList.add('incorrect');
+  // Kirim ke backend
+  const res = await api({
+    action:        'jawabTebak',
+    pilihan_index: idx,
+    jawaban_index: S.tebakJawabanIdx,
+    soal_surah:    S.tebakSoal.surah_number,
+    soal_ayat:     S.tebakSoal.ayat_number,
+  });
+  const data = res.success ? res.data : { benar: idx===S.tebakJawabanIdx, pesan: '' };
+  const box  = document.getElementById('quizResult');
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div class="result-emoji">${data.benar ? '🌟' : '💪'}</div>
+    <p>${data.pesan || (data.benar ? 'Jawaban benar!' : 'Jawaban kurang tepat.')}</p>
+    <button class="quiz-next-btn" onclick="loadTebakSoal()" style="margin-top:12px;">Soal Berikutnya →</button>`;
+}
+
+/* ============================================================
+   LANJUTKAN — SETUP SOAL
+   ============================================================ */
+function setupLanjutSoal(surahNumber) {
+  const ayatSurah = S.ayatList.filter(a => Number(a.surah_number) === Number(surahNumber));
+  if (!ayatSurah.length) return;
+  // Cari ayat terakhir yang sedang/hafal sebagai soal
+  let soalAyat = ayatSurah[0];
+  for (const a of ayatSurah) {
+    const key = String(a.surah_number) + '_' + String(a.ayat_number);
+    if (S.progressMap[key] === 'hafal' || S.progressMap[key] === 'sedang') soalAyat = a;
+  }
+  const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
+  S.lanjutSoalAudio = soalAyat.audio_url || null;
+  document.getElementById('lanjut-surah-tag').textContent = (surah ? surah.nama_latin : 'Surah ' + surahNumber) + ' • Ayat ' + soalAyat.ayat_number;
+  document.getElementById('lanjut-soal-arab').textContent = soalAyat.teks_arab;
+  // Simpan data ke S untuk dikirim saat rekaman selesai
+  S.lanjutSurahNumber = surahNumber;
+  S.lanjutAyatNumber  = soalAyat.ayat_number;
+}
+
+/* ============================================================
+   LANJUTKAN — REKAMAN
+   ============================================================ */
+function toggleRecording() {
+  if (S.mediaRecorder && S.mediaRecorder.state === 'recording') {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+async function startRecording() {
+  if (!S.lanjutSurahNumber) { showToast('Pilih surah dulu di tab Hafal Ayat!'); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    S.audioChunks = [];
+    S.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    S.mediaRecorder.ondataavailable = e => { if (e.data.size>0) S.audioChunks.push(e.data); };
+    S.mediaRecorder.onstop = processRecording;
+    S.mediaRecorder.start(100);
+    // UI recording state
+    document.getElementById('micBtn').classList.add('recording');
+    document.getElementById('micBtn').textContent = '⏹';
+    document.getElementById('micHint').textContent = 'Sedang merekam... Sentuh lagi untuk berhenti.';
+    document.getElementById('micTimer').style.display = 'block';
+    document.getElementById('micResult').style.display = 'none';
+    S.recSeconds = 0;
+    S.recTimer = setInterval(() => {
+      S.recSeconds++;
+      const m = Math.floor(S.recSeconds/60), s = S.recSeconds%60;
+      document.getElementById('micTimer').textContent = m + ':' + String(s).padStart(2,'0');
+    }, 1000);
+  } catch(e) {
+    showToast('Tidak bisa akses mikrofon. Izinkan akses mikrofon di browser.');
+  }
+}
+
+function stopRecording() {
+  if (S.mediaRecorder && S.mediaRecorder.state === 'recording') {
+    S.mediaRecorder.stop();
+    S.mediaRecorder.stream.getTracks().forEach(t => t.stop());
+    clearInterval(S.recTimer);
+    document.getElementById('micBtn').textContent = '⏳';
+    document.getElementById('micHint').textContent = 'Memproses rekaman...';
+    document.getElementById('micTimer').style.display = 'none';
+  }
+}
+
+async function processRecording() {
+  const blob = new Blob(S.audioChunks, { type: 'audio/webm' });
+  // Konversi blob ke base64
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+  document.getElementById('micHint').textContent = 'Menilai bacaan...';
+  const res = await api({
+    action:       'nilaiRekaman',
+    audio_base64: base64,
+    mime_type:    'audio/webm',
+    surah_number: S.lanjutSurahNumber,
+    ayat_number:  S.lanjutAyatNumber,
+  });
+  resetRecordingUI();
+  if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
+  const d = res.data;
+  const warna = d.hasil === 'benar' ? 'var(--leaf)' : d.hasil === 'hampir_benar' ? 'var(--sunshine-dark)' : 'var(--coral)';
+  document.getElementById('micSkor').textContent    = d.skor + ' / 100';
+  document.getElementById('micSkor').style.color    = warna;
+  document.getElementById('micEmoji').textContent   = d.emoji || '🎙️';
+  document.getElementById('micHasil').textContent   = d.hasil.replace('_',' ').toUpperCase();
+  document.getElementById('micFeedback').textContent = d.feedback;
+  document.getElementById('micTajwid').textContent  = d.catatan_tajwid ? '📝 ' + d.catatan_tajwid : '';
+  document.getElementById('micResult').style.display = 'block';
+}
+
+function resetRecordingUI() {
+  document.getElementById('micBtn').classList.remove('recording');
+  document.getElementById('micBtn').textContent = '🎤';
+  document.getElementById('micHint').textContent = 'Sentuh mikrofon untuk mulai merekam setoran hafalanmu';
+  document.getElementById('micTimer').style.display = 'none';
+}
+
+function resetRecording() {
+  document.getElementById('micResult').style.display = 'none';
+  resetRecordingUI();
+}
+
+/* ============================================================
+   MUROJA'AH
+   ============================================================ */
+const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+async function loadMurojaah() {
+  const c = document.getElementById('murojaahContainer');
+  c.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Memuat jadwal...</div>';
+  const res = await api({ action: 'getMurojaahSchedule' });
+  if (!res.success) { c.innerHTML = '<div class="loading-state">Gagal memuat jadwal.</div>'; return; }
+  const jadwal = res.data.filter(j => j.status === 'terjadwal')
+    .sort((a,b) => new Date(a.tanggal_jadwal) - new Date(b.tanggal_jadwal))
+    .slice(0, 10);
+  if (!jadwal.length) {
+    c.innerHTML = '<div class="loading-state">Belum ada jadwal muroja\'ah.<br>Klik tombol di bawah untuk buat jadwal dengan AI! ✨</div>';
+    return;
+  }
+  c.innerHTML = jadwal.map(j => {
+    const tgl   = new Date(j.tanggal_jadwal);
+    const surah = S.surahList.find(s => Number(s.surah_number) === Number(j.surah_number));
+    const nama  = surah ? surah.nama_latin : 'Surah ' + j.surah_number;
+    return `
+      <div class="sched-card ${j.prioritas === 'tinggi' ? 'tinggi' : ''}">
+        <div class="sched-date">
+          <div class="d">${String(tgl.getDate()).padStart(2,'0')}</div>
+          <div class="m">${BULAN[tgl.getMonth()]}</div>
+        </div>
+        <div class="sched-divider"></div>
+        <div class="sched-info">
+          <h4>${nama}</h4>
+          <p>${j.catatan || 'Jadwal muroja\'ah'}</p>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function doGenerateJadwal() {
+  const btn = document.getElementById('generateJadwalBtn');
+  btn.disabled = true; btn.textContent = '⏳ Menyusun jadwal...';
+  const res = await api({ action: 'generateJadwal' });
+  btn.disabled = false; btn.textContent = '✨ Susun Ulang Jadwal dengan AI';
+  if (!res.success) { showToast(res.message || 'Gagal generate jadwal.'); return; }
+  showToast('Jadwal baru berhasil dibuat! 📅');
+  loadMurojaah();
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg) {
+  let t = document.getElementById('_toast');
+  if (!t) {
+    t = document.createElement('div'); t.id = '_toast';
+    Object.assign(t.style, {
+      position:'fixed', bottom:'24px', left:'50%', transform:'translateX(-50%)',
+      background:'var(--ink)', color:'white', padding:'10px 20px', borderRadius:'99px',
+      fontSize:'12px', fontWeight:'700', fontFamily:"'Quicksand',sans-serif",
+      zIndex:'9999', boxShadow:'0 6px 20px rgba(0,0,0,0.25)',
+      transition:'opacity 0.3s ease', pointerEvents:'none',
+    });
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { t.style.opacity = '0'; }, 2200);
+}
+
+/* ============================================================
+   INIT — cek sesi tersimpan
+   ============================================================ */
+window.addEventListener('load', async () => {
+  const savedToken    = localStorage.getItem('mm_token');
+  const savedUsername = localStorage.getItem('mm_username');
+  if (savedToken) {
+    S.token    = savedToken;
+    S.username = savedUsername;
+    // Validasi token ke backend sebelum masuk app
+    const res = await api({ action: 'getUserProgress' }).catch(() => null);
+    if (res && res.success) {
+      enterApp();
+    } else {
+      localStorage.removeItem('mm_token');
+      localStorage.removeItem('mm_username');
+    }
+  }
+});
+</script>
 
-    // --- MANAJEMEN AUTENTIKASI ---
-    const auth = {
-      init() {
-        if (S.token) {
-          document.getElementById('pg-auth').classList.add('hidden');
-          document.getElementById('pg-app').classList.remove('hidden');
-          app.start();
-        } else {
-          document.getElementById('pg-auth').classList.remove('hidden');
-          document.getElementById('pg-app').classList.add('hidden');
-        }
-      }
-    };
-
-    // --- CORE ENGINE APLIKASI ---
-    const app = {
-      async start() {
-        document.getElementById('hdr-name').textContent = S.username || 'Sahabat';
-        
-        // Memuat streak
-        const streakDateStr = localStorage.getItem('mm_streak_date');
-        const todayStr = new Date().toDateString();
-        if (streakDateStr !== todayStr) {
-          S.streak = (streakDateStr === new Date(Date.now() - 86400000).toDateString()) ? S.streak + 1 : 1;
-          localStorage.setItem('mm_streak', S.streak);
-          localStorage.setItem('mm_streak_date', todayStr);
-        }
-        document.getElementById('hdr-streak').textContent = S.streak;
-
-        this.showLoading();
-        
-        // Memuat data awal dari backend Google Apps Script
-        await this.loadInitialData();
-      },
-
-      showLoading() {
-        document.getElementById('app-content').innerHTML = `
-          <div class="flex flex-col items-center justify-center py-16 space-y-4">
-            <div class="w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
-            <p class="text-xs font-bold text-slate-400">Menyinkronkan data petualanganmu... ✨</p>
-          </div>
-        `;
-      },
-
-      async loadInitialData() {
-        try {
-          const response = await this.callAPI({ action: 'getInitialData' });
-          if (response.success && response.data) {
-            S.username = response.data.username;
-            S.surahList = response.data.surahList;
-            S.ayatList = response.data.ayatList;
-            S.progressMap = response.data.progressMap;
-            
-            // Rekalkulasi progress lokal sesuai data dari DB Google Sheets
-            this.recalculateStats();
-            this.switchTab('beranda');
-          } else {
-            // Jika token kedaluwarsa atau terjadi galat sesi
-            this.logout();
-            showToast('Sesi belajar berakhir. Silakan login kembali ya sayang!', 'error');
-          }
-        } catch(e) {
-          console.error(e);
-          document.getElementById('app-content').innerHTML = `
-            <div class="bg-white rounded-[2rem] p-8 shadow-md border-2 border-rose-100 text-center space-y-4 max-w-sm mx-auto">
-              <span class="text-5xl block">😢</span>
-              <h3 class="text-lg font-black text-slate-700">Gagal Memuat Data</h3>
-              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Pastikan koneksi internetmu lancar dan URL Web App Apps Script sudah terpasang dengan benar!</p>
-              <button onclick="app.start()" class="py-3 px-6 bg-indigo-500 hover:bg-indigo-600 text-white font-extrabold rounded-2xl bouncy-btn shadow-md text-xs">Coba Lagi 🔄</button>
-            </div>
-          `;
-        }
-      },
-
-      recalculateStats() {
-        S.totalHafal = 0;
-        S.totalSedang = 0;
-
-        // Atur urutan surah terbalik (descending dari surat nomor terbesar ke terkecil)
-        S.surahList.sort((a, b) => b.surah_number - a.surah_number);
-        
-        // Atur urutan ayat agar selalu berurutan normal (ascending)
-        S.ayatList.sort((a, b) => a.ayat_number - b.ayat_number);
-
-        S.surahList.forEach(s => {
-          // Cari ayat yang sesuai
-          const matchingAyat = S.ayatList.filter(a => a.surah_number === s.surah_number);
-          let countHafal = 0;
-          let countSedang = 0;
-
-          matchingAyat.forEach(a => {
-            const status = S.progressMap[`${s.surah_number}_${a.ayat_number}`] || 'belum';
-            if (status === 'hafal') countHafal++;
-            if (status === 'sedang') countSedang++;
-          });
-
-          s.hafal = countHafal;
-          s.sedang = countSedang;
-          s.pct = Math.round((countHafal / s.jumlah_ayat) * 100);
-          s.status = (countHafal === s.jumlah_ayat) ? 'hafal' : (countHafal > 0 || countSedang > 0) ? 'sedang' : 'belum';
-
-          S.totalHafal += countHafal;
-          S.totalSedang += countSedang;
-        });
-
-        // Update progress bar global
-        const totalAyatJuz30 = 564; // Total ayat di Juz 30 (Al-Naba ke Al-Nas)
-        const visualPct = Math.round((S.totalHafal / totalAyatJuz30) * 100);
-        document.getElementById('hdr-prog-val').textContent = `${S.totalHafal} / ${totalAyatJuz30} Ayat`;
-        document.getElementById('hdr-pbar').style.width = `${Math.min(visualPct, 100)}%`;
-      },
-
-      switchTab(tab) {
-        S.currentTab = tab;
-        this.stopAudio();
-
-        // Skema Gradasi Warna Header Ceria Per Tab
-        const heroBackgrounds = {
-          beranda: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)', // Orange Mentari
-          hafal: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',   // Lavender Ungu
-          tebak: 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)',   // Pink Stroberi
-          lanjut: 'linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%)',  // Biru Langit
-          murojaah: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' // Hijau Mint
-        };
-        document.getElementById('app-header').style.background = heroBackgrounds[tab];
-
-        // Kelola CSS tombol tab aktif / tidak aktif (Mobile Nav)
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-          btn.classList.add('text-slate-400');
-          btn.classList.remove('text-purple-600', 'bg-purple-50/55', 'border-t-2', 'border-purple-500');
-        });
-        const activeBtn = document.getElementById(`tab-${tab}`);
-        if (activeBtn) {
-          activeBtn.classList.remove('text-slate-400');
-          activeBtn.classList.add('text-purple-600', 'bg-purple-50/55', 'border-t-2', 'border-purple-500');
-        }
-
-        // Kelola CSS tombol tab aktif / tidak aktif (Desktop Sidebar)
-        document.querySelectorAll('.tab-btn-desktop').forEach(btn => {
-          btn.className = "tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-bold transition-all text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-sm bouncy-btn";
-          btn.style.background = '';
-          btn.style.color = '';
-        });
-        const activeBtnDesktop = document.getElementById(`sidebar-${tab}`);
-        if (activeBtnDesktop) {
-          activeBtnDesktop.className = "tab-btn-desktop w-full px-4 py-3 rounded-2xl flex items-center gap-3 font-black transition-all text-white text-sm bouncy-btn shadow-md";
-          activeBtnDesktop.style.background = heroBackgrounds[tab];
-        }
-
-        // Render Modul Tab Terkait
-        if (tab === 'beranda') this.renderBeranda();
-        else if (tab === 'hafal') this.renderHafalList();
-        else if (tab === 'tebak') this.renderTebak();
-        else if (tab === 'lanjut') this.renderLanjutkan();
-        else if (tab === 'murojaah') this.renderMurojaah();
-      },
-
-      // --- TAB 1: BERANDA (Dashboard Peta) ---
-      renderBeranda() {
-        const container = document.getElementById('app-content');
-        
-        let surahListCards = S.surahList.map((s, idx) => {
-          const themeColors = {
-            hafal: { border: 'border-emerald-200 bg-emerald-50/30', badge: 'bg-emerald-500 text-white', icon: '👑 Hafal!' },
-            sedang: { border: 'border-amber-200 bg-amber-50/30', badge: 'bg-amber-500 text-white', icon: '📝 Diulang' },
-            belum: { border: 'border-slate-100 bg-white', badge: 'bg-slate-100 text-slate-400', icon: '📖 Belum' }
-          };
-          const style = themeColors[s.status] || themeColors.belum;
-          const bubbleColor = BUBBLE_COLORS[s.surah_number % BUBBLE_COLORS.length] || 'bg-indigo-100 text-indigo-600';
-
-          return `
-            <div onclick="app.openDetailHafal(${s.surah_number})" class="flex items-center justify-between p-4 rounded-3xl border-2 ${style.border} shadow-sm hover:shadow-md cursor-pointer bouncy-btn transition-all">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl ${bubbleColor} flex items-center justify-center font-black font-kids text-base">
-                  ${s.surah_number}
-                </div>
-                <div>
-                  <h4 class="font-extrabold text-slate-700 leading-tight">${s.nama_latin}</h4>
-                  <p class="text-[10px] text-slate-400 font-bold">${s.terjemahan_nama} • ${s.jumlah_ayat} Ayat</p>
-                  
-                  <!-- Mini Progress Bar -->
-                  <div class="w-24 h-1.5 bg-slate-100 rounded-full mt-1.5 overflow-hidden">
-                    <div class="h-full bg-indigo-500" style="width: ${s.pct}%"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <span class="text-[9px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full ${style.badge}">
-                  ${style.icon}
-                </span>
-                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        container.innerHTML = `
-          <!-- Kartu Selamat Datang Maskot -->
-          <div class="bg-white rounded-[2rem] p-5 shadow-sm border-2 border-indigo-100 flex gap-4 items-center relative overflow-hidden">
-            <div class="w-20 h-20 flex-shrink-0">
-              ${getMascotSVG('encouraging')}
-            </div>
-            <div class="space-y-1">
-              <h3 class="text-base font-black text-slate-700 leading-tight">Yuk, Kumpulkan Bintang! ⭐</h3>
-              <p class="text-[11px] text-slate-400 leading-relaxed font-semibold">Tandai setiap ayat yang sudah berhasil kamu hafal untuk mendapatkan bintang-bintang ceria dari Kak Marz!</p>
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Pulau Petualangan Juz 30</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${surahListCards}</div>
-          </div>
-        `;
-        lucide.createIcons();
-      },
-
-      // --- TAB 2: HAFAL AYAT ---
-      renderHafalList() {
-        const container = document.getElementById('app-content');
-        let cardListHtml = S.surahList.map(s => {
-          return `
-            <div onclick="app.openDetailHafal(${s.surah_number})" class="bg-white p-4 rounded-2xl border-2 border-slate-100 flex items-center justify-between shadow-sm cursor-pointer hover:border-purple-300 bouncy-btn transition-all">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center font-black text-base font-kids">
-                  ${s.surah_number}
-                </div>
-                <div>
-                  <h4 class="font-black text-slate-700">${s.nama_latin}</h4>
-                  <p class="text-[10px] text-slate-400 font-bold">${s.hafal} / ${s.jumlah_ayat} Ayat Dihafal</p>
-                </div>
-              </div>
-              <div class="w-7 h-7 bg-purple-50 text-purple-500 rounded-full flex items-center justify-center">
-                <i data-lucide="book-open" class="w-4 h-4"></i>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        container.innerHTML = `
-          <div class="space-y-3">
-            <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Pilih Surah Hafalan</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${cardListHtml}</div>
-          </div>
-        `;
-        lucide.createIcons();
-      },
-
-      openDetailHafal(surahNum) {
-        this.stopAudio();
-        
-        const surah = S.surahList.find(s => s.surah_number === surahNum);
-        const listAyat = S.ayatList.filter(a => a.surah_number === surahNum);
-        
-        if (!surah || !listAyat.length) {
-          showToast('Data ayat surah tersebut tidak ditemukan.', 'error');
-          return;
-        }
-
-        const container = document.getElementById('app-content');
-        
-        // Buat daftar kartu ayat
-        let listAyatHtml = listAyat.map(a => {
-          const key = `${a.surah_number}_${a.ayat_number}`;
-          const currentStatus = S.progressMap[key] || 'belum';
-          
-          let cardStyle = "border-slate-100 bg-white";
-          if (currentStatus === 'hafal') cardStyle = "border-emerald-300 bg-emerald-50/10";
-          if (currentStatus === 'sedang') cardStyle = "border-amber-300 bg-amber-50/10";
-
-          return `
-            <div id="ayat-card-${a.ayat_number}" class="border-2 rounded-3xl p-5 shadow-sm space-y-4 transition-all duration-300 ${cardStyle}">
-              <!-- Atas: Nomor Ayat & Play Audio Individu -->
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-black text-slate-400 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full">Ayat ${a.ayat_number}</span>
-                <button onclick="app.playSingleVerse('${a.audio_url}', ${a.ayat_number})" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white font-extrabold text-[10px] rounded-full bouncy-btn shadow-sm">
-                  <i data-lucide="play" class="w-3.5 h-3.5"></i> DENGAR
-                </button>
-              </div>
-
-              <!-- Tengah: Teks Arab Besar & Terjemahan -->
-              <div class="space-y-3 text-right">
-                <h2 class="arabic-text text-3xl font-bold leading-loose text-indigo-950" dir="rtl">${a.teks_arab}</h2>
-                <p class="text-xs text-slate-500 text-left leading-relaxed font-semibold italic">"${a.terjemahan_id}"</p>
-              </div>
-
-              <!-- Bawah: Penanda Status Cepat -->
-              <div class="flex items-center gap-2 pt-1">
-                <button onclick="app.setAyatStatus(${surah.surah_number}, ${a.ayat_number}, 'hafal')" class="flex-1 py-2 rounded-xl text-[10px] font-black border-2 border-emerald-500 hover:bg-emerald-50 ${currentStatus === 'hafal' ? 'bg-emerald-500 text-white hover:bg-emerald-500' : 'text-emerald-600 bg-white'} bouncy-btn transition-all">
-                  ✓ HAFAL
-                </button>
-                <button onclick="app.setAyatStatus(${surah.surah_number}, ${a.ayat_number}, 'sedang')" class="flex-1 py-2 rounded-xl text-[10px] font-black border-2 border-amber-500 hover:bg-amber-50 ${currentStatus === 'sedang' ? 'bg-amber-500 text-white hover:bg-amber-500' : 'text-amber-600 bg-white'} bouncy-btn transition-all">
-                  ⏳ ULANG
-                </button>
-                <button onclick="app.setAyatStatus(${surah.surah_number}, ${a.ayat_number}, 'belum')" class="py-2 px-3 rounded-xl text-[10px] font-black border-2 border-slate-200 text-slate-400 hover:bg-slate-50 bouncy-btn transition-all">
-                  ✕ RESET
-                </button>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        container.innerHTML = `
-          <!-- Navigasi Kembali -->
-          <div class="flex items-center justify-between">
-            <button onclick="app.renderHafalList()" class="flex items-center gap-1.5 text-purple-600 hover:text-purple-700 font-extrabold text-sm bouncy-btn">
-              <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Daftar Surah
-            </button>
-            <span class="text-xs font-black text-purple-500 uppercase tracking-widest bg-purple-100/50 px-3 py-1 rounded-full">
-              Surah ${surah.nama_latin}
-            </span>
-          </div>
-
-          <!-- AUDIO PLAYER BAR INTERAKTIF -->
-          <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-[2rem] p-5 border-2 border-indigo-100 shadow-sm space-y-4">
-            <div class="flex justify-between items-center">
-              <div class="flex items-center gap-2">
-                <span class="p-2 bg-indigo-100 rounded-2xl text-lg">🎧</span>
-                <div>
-                  <h4 class="text-xs font-black text-slate-700">Murattal Mishary Al-Afasy</h4>
-                  <p class="text-[9px] text-slate-400 font-bold" id="player-status-subtitle">Tekan tombol putar untuk memutar semua ayat</p>
-                </div>
-              </div>
-              
-              <!-- Auto Play Next Switch (iOS-Style Toggle) -->
-              <div class="flex items-center gap-2">
-                <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider" id="lbl-toggle-auto">PUTAR MANUAL</span>
-                <button onclick="app.toggleAutoPlayNext()" id="btn-toggle-auto" class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-300 transition-colors duration-200 ease-in-out focus:outline-none bouncy-btn">
-                  <span id="btn-toggle-auto-dot" class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-                </button>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-4">
-              <button onclick="app.togglePlayAllSurah(${surah.surah_number})" id="main-player-play-btn" class="w-12 h-12 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white flex items-center justify-center shadow-lg hover:shadow-indigo-200 bouncy-btn">
-                <i data-lucide="play" class="w-6 h-6"></i>
-              </button>
-              <div class="flex-grow space-y-1">
-                <div class="flex justify-between text-[10px] font-bold text-slate-400">
-                  <span id="player-progress-label">Ayat 1 dari ${surah.jumlah_ayat}</span>
-                  <span id="player-progress-pct">0%</span>
-                </div>
-                <!-- Track Progress -->
-                <div class="w-full h-2 bg-slate-200/50 rounded-full overflow-hidden">
-                  <div id="player-track-bar" class="h-full bg-indigo-500 transition-all duration-300" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            ${listAyatHtml}
-          </div>
-        `;
-        
-        // Atur posisi awal toggle jika putar otomatis aktif
-        setTimeout(() => {
-          const btn = document.getElementById('btn-toggle-auto');
-          const dot = document.getElementById('btn-toggle-auto-dot');
-          const lbl = document.getElementById('lbl-toggle-auto');
-          if (btn && dot && lbl) {
-            if (S.autoPlayNext) {
-              btn.classList.remove('bg-slate-300');
-              btn.classList.add('bg-indigo-500');
-              dot.classList.remove('translate-x-0');
-              dot.classList.add('translate-x-4');
-              lbl.textContent = "PUTAR OTOMATIS";
-            } else {
-              btn.classList.remove('bg-indigo-500');
-              btn.classList.add('bg-slate-300');
-              dot.classList.remove('translate-x-4');
-              dot.classList.add('translate-x-0');
-              lbl.textContent = "PUTAR MANUAL";
-            }
-          }
-        }, 50);
-
-        lucide.createIcons();
-      },
-
-      // --- AUDIO LOGICS ---
-      playSingleVerse(url, ayatNumber) {
-        this.stopAudio();
-        
-        S.activeAudio = new Audio(url);
-        S.activeAudio.play().catch(err => {
-          showToast('Klik kembali tombol dengar untuk memutar suara!', 'info');
-        });
-        
-        // Highlight visual pada ayat aktif
-        document.querySelectorAll('[id^="ayat-card-"]').forEach(c => c.classList.remove('border-indigo-500', 'bg-indigo-50/10'));
-        const activeCard = document.getElementById(`ayat-card-${ayatNumber}`);
-        if (activeCard) {
-          activeCard.classList.add('border-indigo-500', 'bg-indigo-50/10');
-          activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      },
-
-      toggleAutoPlayNext() {
-        S.autoPlayNext = !S.autoPlayNext;
-        const btn = document.getElementById('btn-toggle-auto');
-        const dot = document.getElementById('btn-toggle-auto-dot');
-        const lbl = document.getElementById('lbl-toggle-auto');
-        if (S.autoPlayNext) {
-          btn.classList.remove('bg-slate-300');
-          btn.classList.add('bg-indigo-500');
-          dot.classList.remove('translate-x-0');
-          dot.classList.add('translate-x-5');
-          lbl.textContent = "PUTAR OTOMATIS";
-          showToast('Putar otomatis ke ayat berikutnya diaktifkan!', 'success');
-        } else {
-          btn.classList.remove('bg-indigo-500');
-          btn.classList.add('bg-slate-300');
-          dot.classList.remove('translate-x-5');
-          dot.classList.add('translate-x-0');
-          lbl.textContent = "PUTAR MANUAL";
-          showToast('Putar otomatis dinonaktifkan.', 'info');
-        }
-      },
-
-      togglePlayAllSurah(surahNum) {
-        if (S.activeAudio && !S.activeAudio.paused) {
-          this.stopAudio();
-          this.updatePlayerButtonIcon(false);
-          return;
-        }
-
-        S.currentPlayingIndex = 0;
-        this.playSurahSequence(surahNum);
-      },
-
-      playSurahSequence(surahNum) {
-        const ayatList = S.ayatList.filter(a => a.surah_number === surahNum);
-        if (S.currentPlayingIndex >= ayatList.length) {
-          this.stopAudio();
-          this.updatePlayerButtonIcon(false);
-          showToast('Alhamdulillah, surah telah selesai diputar!', 'success');
-          return;
-        }
-
-        const activeAyat = ayatList[S.currentPlayingIndex];
-        const progressPct = Math.round(((S.currentPlayingIndex + 1) / ayatList.length) * 100);
-        
-        document.getElementById('player-progress-label').textContent = `Ayat ${S.currentPlayingIndex + 1} dari ${ayatList.length}`;
-        document.getElementById('player-progress-pct').textContent = `${progressPct}%`;
-        document.getElementById('player-track-bar').style.width = `${progressPct}%`;
-        document.getElementById('player-status-subtitle').textContent = `Sedang memutar ayat ke-${activeAyat.ayat_number}... 🌟`;
-        this.updatePlayerButtonIcon(true);
-
-        // Highlight visual
-        document.querySelectorAll('[id^="ayat-card-"]').forEach(c => {
-          c.classList.remove('border-indigo-400', 'bg-indigo-50/10');
-        });
-        const activeCard = document.getElementById(`ayat-card-${activeAyat.ayat_number}`);
-        if (activeCard) {
-          activeCard.classList.add('border-indigo-400', 'bg-indigo-50/10');
-          activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        S.activeAudio = new Audio(activeAyat.audio_url);
-        S.activeAudio.play().catch(() => {});
-        S.activeAudio.onended = () => {
-          if (S.autoPlayNext) {
-            S.currentPlayingIndex++;
-            this.playSurahSequence(surahNum);
-          } else {
-            this.updatePlayerButtonIcon(false);
-            document.getElementById('player-status-subtitle').textContent = 'Tekan tombol putar untuk memutar semua ayat';
-          }
-        };
-      },
-
-      updatePlayerButtonIcon(isPlaying) {
-        const btn = document.getElementById('main-player-play-btn');
-        if (btn) {
-          btn.innerHTML = isPlaying ? '<i data-lucide="pause" class="w-6 h-6"></i>' : '<i data-lucide="play" class="w-6 h-6"></i>';
-          lucide.createIcons();
-        }
-      },
-
-      stopAudio() {
-        if (S.activeAudio) {
-          S.activeAudio.pause();
-          S.activeAudio = null;
-        }
-      },
-
-      async setAyatStatus(surahNum, ayatNum, status) {
-        const key = `${surahNum}_${ayatNum}`;
-        S.progressMap[key] = status;
-        this.recalculateStats();
-
-        // Update UI Kartu Ayat
-        const card = document.getElementById(`ayat-card-${ayatNum}`);
-        if (card) {
-          card.classList.remove("border-slate-100", "bg-white", "border-emerald-300", "bg-emerald-50/10", "border-amber-300", "bg-amber-50/10");
-          if (status === 'hafal') card.classList.add("border-emerald-300", "bg-emerald-50/10");
-          else if (status === 'sedang') card.classList.add("border-amber-300", "bg-amber-50/10");
-          else card.classList.add("border-slate-100", "bg-white");
-        }
-
-        showToast('Progres hafalan berhasil disimpan!', 'success');
-
-        try {
-          await app.callAPI({
-            action: 'updateProgress',
-            surah_number: surahNum,
-            ayat_number: ayatNum,
-            status: status
-          });
-        } catch(e) {
-          console.error("Gagal sinkron status ke Apps Script:", e);
-        }
-      },
-
-      // --- TAB 3: TEBAK AYAT ---
-      renderTebak() {
-        const container = document.getElementById('app-content');
-        this.generateQuizSet();
-
-        if (!S.quizSet.length) {
-          container.innerHTML = `
-            <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-4 max-w-sm mx-auto">
-              <span class="text-5xl block animate-bounce">📖</span>
-              <h3 class="text-xl font-black text-slate-700">Pulau Tebak Masih Kosong</h3>
-              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Silakan tandai minimal 2 ayat sebagai "Hafal" atau "Sedang" terlebih dahulu di tab Hafal Ayat ya!</p>
-              <button onclick="app.switchTab('hafal')" class="py-3 px-6 bg-purple-500 hover:bg-purple-600 text-white font-extrabold rounded-2xl bouncy-btn shadow-md text-xs">Tandai Sekarang 🚀</button>
-            </div>
-          `;
-          return;
-        }
-
-        this.showQuizQuestion();
-      },
-
-      generateQuizSet() {
-        const learnedAyats = S.ayatList.filter(a => {
-          const status = S.progressMap[`${a.surah_number}_${a.ayat_number}`];
-          return status === 'hafal' || status === 'sedang';
-        });
-
-        const pool = (learnedAyats.length >= 2) ? learnedAyats : S.ayatList;
-        const shuffled = [...pool].sort(() => Math.random() - 0.5);
-        
-        S.quizSet = shuffled.slice(0, 3).map(item => {
-          const surahAyatList = S.ayatList.filter(a => a.surah_number === item.surah_number);
-          let correctNextAyat = surahAyatList.find(a => a.ayat_number === item.ayat_number + 1);
-          if (!correctNextAyat) {
-            correctNextAyat = surahAyatList[0];
-          }
-
-          const distractors = S.ayatList.filter(a => a.teks_arab !== item.teks_arab && a.teks_arab !== correctNextAyat.teks_arab)
-                                        .sort(() => Math.random() - 0.5)
-                                        .slice(0, 2);
-
-          const choices = [correctNextAyat, ...distractors].sort(() => Math.random() - 0.5);
-
-          return {
-            surahMeta: S.surahList.find(s => s.surah_number === item.surah_number),
-            soal: item,
-            jawabanBenar: correctNextAyat,
-            choices: choices
-          };
-        });
-
-        S.quizIndex = 0;
-      },
-
-      showQuizQuestion() {
-        const container = document.getElementById('app-content');
-        const item = S.quizSet[S.quizIndex];
-        
-        let dots = S.quizSet.map((_, i) => {
-          const color = (i < S.quizIndex) ? 'bg-emerald-500' : (i === S.quizIndex) ? 'bg-pink-500' : 'bg-slate-200';
-          return `<div class="h-2 rounded-full flex-1 ${color} transition-all duration-300"></div>`;
-        }).join('');
-
-        let choicesHtml = item.choices.map((c, idx) => {
-          return `
-            <div onclick="app.selectQuizChoice(${idx})" id="choice-box-${idx}" class="border-2 border-slate-100 bg-slate-50/50 p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-pink-300 bouncy-btn transition-all">
-              <div class="flex items-center gap-3 flex-grow">
-                <button onclick="event.stopPropagation(); app.playSingleVerse('${c.audio_url}', -1)" class="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center shadow-md flex-shrink-0 bouncy-btn">
-                  <i data-lucide="volume-2" class="w-4 h-4"></i>
-                </button>
-                <div class="arabic-text text-xl font-bold leading-relaxed text-right flex-grow mr-2" dir="rtl">${c.teks_arab}</div>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        container.innerHTML = `
-          <div class="flex gap-2 w-full">${dots}</div>
-
-          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-pink-100 space-y-6 relative overflow-hidden">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-black bg-pink-100 text-pink-600 px-3 py-1 rounded-full uppercase tracking-widest font-kids">Soal ${S.quizIndex + 1} • ${item.surahMeta.nama_latin}</span>
-              <button onclick="app.playSingleVerse('${item.soal.audio_url}', -1)" class="flex items-center gap-1.5 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-extrabold text-xs rounded-full shadow-lg hover:shadow-pink-200 bouncy-btn">
-                <i data-lucide="play" class="w-4 h-4"></i> DENGAR SOAL
-              </button>
-            </div>
-
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 text-center space-y-2">
-              <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">Ayat Soal (${item.soal.ayat_number}):</p>
-              <h2 class="arabic-text text-2xl font-bold leading-loose text-pink-900" dir="rtl">${item.soal.teks_arab}</h2>
-            </div>
-
-            <div class="space-y-3">
-              <p class="text-xs font-black text-slate-400 uppercase tracking-widest text-center">👇 Pilih Ayat Kelanjutannya:</p>
-              <div class="grid grid-cols-1 gap-3">${choicesHtml}</div>
-            </div>
-
-            <button onclick="app.submitQuizAnswer()" class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl shadow-lg border-b-4 border-rose-700 bouncy-btn text-base tracking-wide flex justify-center items-center gap-2">
-              <span>Periksa Jawaban ✓</span>
-            </button>
-          </div>
-        `;
-        S.quizSelected = null;
-        lucide.createIcons();
-      },
-
-      selectQuizChoice(idx) {
-        S.quizSelected = idx;
-        document.querySelectorAll('[id^="choice-box-"]').forEach(box => {
-          box.className = "border-2 border-slate-100 bg-slate-50/50 p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-pink-300 bouncy-btn transition-all";
-        });
-        const activeBox = document.getElementById(`choice-box-${idx}`);
-        if (activeBox) {
-          activeBox.className = "border-2 border-pink-400 bg-pink-50/30 p-4 rounded-3xl flex items-center justify-between cursor-pointer bouncy-btn transition-all";
-        }
-      },
-
-      submitQuizAnswer() {
-        if (S.quizSelected === null) {
-          showToast('Pilih salah satu ayat kelanjutan dulu ya, sayang!', 'info');
-          return;
-        }
-
-        const item = S.quizSet[S.quizIndex];
-        const selectedAyat = item.choices[S.quizSelected];
-        const isCorrect = selectedAyat.teks_arab === item.jawabanBenar.teks_arab;
-
-        item.choices.forEach((c, idx) => {
-          const box = document.getElementById(`choice-box-${idx}`);
-          if (box) {
-            if (c.teks_arab === item.jawabanBenar.teks_arab) {
-              box.className = "border-2 border-emerald-400 bg-emerald-50/30 p-4 rounded-3xl flex items-center justify-between transition-all";
-            } else if (idx === S.quizSelected) {
-              box.className = "border-2 border-rose-400 bg-rose-50/30 p-4 rounded-3xl flex items-center justify-between transition-all";
-            }
-          }
-        });
-
-        if (!CONFIG.MOCK_MODE) {
-          app.callAPI({
-            action: 'saveLog',
-            surah_number: item.soal.surah_number,
-            ayat_number: item.soal.ayat_number,
-            fitur: 'tebak_ayat',
-            hasil: isCorrect ? 'benar' : 'salah',
-            skor: isCorrect ? 100 : 0
-          }).catch(() => {});
-        }
-
-        setTimeout(() => {
-          this.showMascotResultModal(isCorrect, isCorrect ? 100 : 0, isCorrect ? "MasyaAllah! Pilihanmu tepat sekali. Hebat, hafalanmu sangat lancar!" : "Sayang sekali belum tepat, ayo coba pelajari lagi ayat ini ya!", "Lanjut Ayat", () => {
-            S.quizIndex++;
-            if (S.quizIndex < S.quizSet.length) {
-              app.showQuizQuestion();
-            } else {
-              app.showQuizEnd();
-            }
-          });
-        }, 1200);
-      },
-
-      showQuizEnd() {
-        const container = document.getElementById('app-content');
-        container.innerHTML = `
-          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-6 max-w-sm mx-auto">
-            <div class="w-32 h-32 mx-auto">
-              ${getMascotSVG('success')}
-            </div>
-            <div class="space-y-1">
-              <h3 class="text-2xl font-black text-indigo-600">Sesi Tebak Selesai!</h3>
-              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Maa syaa Allah, kamu berhasil menyelesaikan semua tantangan tebak ayat hari ini! Kumpulkan bintang prestasi yang melimpah.</p>
-            </div>
-            
-            <div class="bg-indigo-50 text-indigo-700 border border-indigo-100 p-4 rounded-2xl flex items-center justify-center gap-3 font-black text-base">
-              <span>⭐</span> Tambah +15 Bintang Prestasi!
-            </div>
-
-            <div class="flex gap-2">
-              <button onclick="app.renderTebak()" class="flex-1 py-4 bg-purple-500 hover:bg-purple-600 text-white font-extrabold rounded-2xl border-b-4 border-purple-700 bouncy-btn text-xs shadow-md">Main Lagi 🔄</button>
-              <button onclick="app.switchTab('hafal')" class="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-500 font-extrabold rounded-2xl bouncy-btn text-xs">Hafal Ayat 📖</button>
-            </div>
-          </div>
-        `;
-      },
-
-      // --- TAB 4: LANJUTKAN ---
-      renderLanjutkan() {
-        const container = document.getElementById('app-content');
-        this.generateRecSet();
-
-        if (!S.recSet.length) {
-          container.innerHTML = `
-            <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-4 max-w-sm mx-auto">
-              <span class="text-5xl block animate-bounce">📖</span>
-              <h3 class="text-xl font-black text-slate-700">Pulau Rekaman Masih Kosong</h3>
-              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Silakan tandai minimal 2 ayat sebagai "Hafal" atau "Sedang" terlebih dahulu di tab Hafal Ayat ya!</p>
-              <button onclick="app.switchTab('hafal')" class="py-3 px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-extrabold rounded-2xl bouncy-btn shadow-md text-xs">Tandai Sekarang 🚀</button>
-            </div>
-          `;
-          return;
-        }
-
-        this.showRecQuestion();
-      },
-
-      generateRecSet() {
-        const learnedAyats = S.ayatList.filter(a => {
-          const status = S.progressMap[`${a.surah_number}_${a.ayat_number}`];
-          return status === 'hafal' || status === 'sedang';
-        });
-
-        const pool = (learnedAyats.length >= 2) ? learnedAyats : S.ayatList;
-        const shuffled = [...pool].sort(() => Math.random() - 0.5);
-        
-        S.recSet = shuffled.slice(0, 3).map(item => {
-          const surahAyatList = S.ayatList.filter(a => a.surah_number === item.surah_number);
-          let correctNextAyat = surahAyatList.find(a => a.ayat_number === item.ayat_number + 1);
-          if (!correctNextAyat) {
-            correctNextAyat = surahAyatList[0];
-          }
-
-          return {
-            surahMeta: S.surahList.find(s => s.surah_number === item.surah_number),
-            soal: item,
-            jawabanBenar: correctNextAyat
-          };
-        });
-
-        S.recIndex = 0;
-      },
-
-      showRecQuestion() {
-        const container = document.getElementById('app-content');
-        const item = S.recSet[S.recIndex];
-        
-        let dots = S.recSet.map((_, i) => {
-          const color = (i < S.recIndex) ? 'bg-emerald-500' : (i === S.recIndex) ? 'bg-cyan-500' : 'bg-slate-200';
-          return `<div class="h-2 rounded-full flex-1 ${color} transition-all duration-300"></div>`;
-        }).join('');
-
-        container.innerHTML = `
-          <div class="flex gap-2 w-full">${dots}</div>
-
-          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-cyan-100 space-y-6 relative overflow-hidden">
-            <div class="w-24 h-24 mx-auto" id="recording-mascot">
-              ${getMascotSVG('normal')}
-            </div>
-
-            <div class="text-center space-y-1">
-              <span class="text-xs font-black bg-cyan-100 text-cyan-600 px-3 py-1 rounded-full uppercase tracking-widest font-kids">Sesi ${S.recIndex + 1} • ${item.surahMeta.nama_latin}</span>
-              <h3 class="text-base font-black text-slate-700 pt-2">Dengarkan ayat soal di bawah & lanjutkan pelafalannya!</h3>
-            </div>
-
-            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100 text-center space-y-2">
-              <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">Ayat Soal (${item.soal.ayat_number}):</p>
-              <h2 class="arabic-text text-2xl font-bold leading-loose text-cyan-900" dir="rtl">${item.soal.teks_arab}</h2>
-              <button onclick="app.playSingleVerse('${item.soal.audio_url}', -1)" class="mx-auto flex items-center gap-1 px-3 py-1 bg-white border border-slate-200 text-slate-500 font-extrabold text-[10px] rounded-full bouncy-btn shadow-sm mt-1">
-                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> PUTAR SOAL
-              </button>
-            </div>
-
-            <div class="flex flex-col items-center justify-center space-y-4 pt-2">
-              <div id="rec-wave" class="hidden flex items-center justify-center gap-1.5 h-10 w-full transition-all">
-                <span class="w-1.5 h-6 bg-cyan-400 rounded-full wave-bar"></span>
-                <span class="w-1.5 h-10 bg-cyan-500 rounded-full wave-bar"></span>
-                <span class="w-1.5 h-8 bg-cyan-400 rounded-full wave-bar"></span>
-                <span class="w-1.5 h-10 bg-purple-500 rounded-full wave-bar"></span>
-                <span class="w-1.5 h-6 bg-cyan-400 rounded-full wave-bar"></span>
-                <span class="w-1.5 h-8 bg-cyan-500 rounded-full wave-bar"></span>
-                <span class="w-1.5 h-5 bg-cyan-400 rounded-full wave-bar"></span>
-              </div>
-
-              <div id="rec-timer" class="hidden text-cyan-500 font-bold text-sm tracking-widest font-kids">
-                00:00
-              </div>
-
-              <div class="relative">
-                <div id="rec-glow-ring" class="hidden absolute inset-0 bg-cyan-400/30 rounded-full recording-pulse"></div>
-                <button id="btn-rec-control" onclick="app.toggleMicrophoneRecording()" class="relative z-10 w-24 h-24 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white flex items-center justify-center shadow-xl hover:shadow-cyan-200 bouncy-btn border-8 border-cyan-100">
-                  <i data-lucide="mic" class="w-10 h-10" id="rec-btn-icon"></i>
-                </button>
-              </div>
-
-              <p id="rec-instruction-lbl" class="text-xs text-slate-400 font-extrabold text-center max-w-xs leading-relaxed">
-                Sentuh mikrofon di atas untuk mulai merekam setoran hafalanmu
-              </p>
-            </div>
-
-          </div>
-        `;
-        lucide.createIcons();
-      },
-
-      async toggleMicrophoneRecording() {
-        if (S.isRecording) {
-          this.stopMicrophoneRecording();
-          return;
-        }
-
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          showToast('Maaf, browser Anda tidak mengizinkan akses ke mikrofon.', 'error');
-          return;
-        }
-
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          S.mediaRecorder = new MediaRecorder(stream);
-          S.recordingChunks = [];
-
-          S.mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) S.recordingChunks.push(e.data);
-          };
-
-          S.mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(S.recordingChunks, { type: 'audio/webm' });
-            
-            document.getElementById('recording-mascot').innerHTML = getMascotSVG('thinking');
-            document.getElementById('rec-instruction-lbl').textContent = "Kak Marz sedang mendengarkan setoranmu... 🌟";
-
-            const base64Audio = await this.convertBlobToBase64(audioBlob);
-            this.sendAudioToGeminiServer(base64Audio);
-          };
-
-          S.mediaRecorder.start();
-          S.isRecording = true;
-
-          document.getElementById('btn-rec-control').className = "relative z-10 w-24 h-24 rounded-full bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-xl bouncy-btn border-8 border-rose-100";
-          document.getElementById('rec-btn-icon').setAttribute('data-lucide', 'square');
-          document.getElementById('rec-instruction-lbl').textContent = "Mendengarkan suaramu... Sentuh tombol kotak merah jika sudah selesai";
-          document.getElementById('rec-wave').classList.remove('hidden');
-          document.getElementById('rec-timer').classList.remove('hidden');
-          document.getElementById('rec-glow-ring').classList.remove('hidden');
-          document.getElementById('recording-mascot').innerHTML = getMascotSVG('listening');
-          lucide.createIcons();
-
-          S.recSeconds = 0;
-          document.getElementById('rec-timer').textContent = "00:00";
-          S.recTimer = setInterval(() => {
-            S.recSeconds++;
-            const mm = String(Math.floor(S.recSeconds / 60)).padStart(2, '0');
-            const ss = String(S.recSeconds % 60).padStart(2, '0');
-            document.getElementById('rec-timer').textContent = `${mm}:${ss}`;
-            
-            if (S.recSeconds >= 15) {
-              app.stopMicrophoneRecording();
-            }
-          }, 1000);
-
-        } catch(e) {
-          console.error(e);
-          showToast('Izin mikrofon ditolak. Periksa pengaturan browser Anda!', 'error');
-        }
-      },
-
-      stopMicrophoneRecording() {
-        if (S.mediaRecorder && S.isRecording) {
-          S.mediaRecorder.stop();
-          S.isRecording = false;
-          clearInterval(S.recTimer);
-
-          S.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-
-          document.getElementById('btn-rec-control').className = "relative z-10 w-24 h-24 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white flex items-center justify-center shadow-xl bouncy-btn border-8 border-cyan-100";
-          document.getElementById('rec-btn-icon').setAttribute('data-lucide', 'mic');
-          document.getElementById('rec-wave').classList.add('hidden');
-          document.getElementById('rec-timer').classList.add('hidden');
-          document.getElementById('rec-glow-ring').classList.add('hidden');
-          lucide.createIcons();
-        }
-      },
-
-      convertBlobToBase64(blob) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result.split(',')[1]);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-      },
-
-      async sendAudioToGeminiServer(base64Audio) {
-        const item = S.recSet[S.recIndex];
-        try {
-          const response = await app.callAPI({
-            action: 'nilaiRekaman',
-            surah_number: item.soal.surah_number,
-            ayat_number: item.soal.ayat_number,
-            audio_base64: base64Audio,
-            mime_type: 'audio/webm'
-          });
-
-          if (response.success && response.data) {
-            this.showEvaluationResult(response.data);
-          } else {
-            showToast('Evaluasi gagal: ' + response.message, 'error');
-            document.getElementById('recording-mascot').innerHTML = getMascotSVG('normal');
-            document.getElementById('rec-instruction-lbl').textContent = "Sentuh mikrofon di atas untuk mulai merekam setoran hafalanmu";
-          }
-        } catch(e) {
-          console.error(e);
-          document.getElementById('recording-mascot').innerHTML = getMascotSVG('normal');
-          document.getElementById('rec-instruction-lbl').textContent = "Sentuh mikrofon di atas untuk mulai merekam setoran hafalanmu";
-        }
-      },
-
-      showEvaluationResult(evalData) {
-        const isSuccess = evalData.skor >= 80;
-        
-        this.showMascotResultModal(
-          isSuccess,
-          evalData.skor,
-          evalData.feedback,
-          evalData.catatan_tajwid,
-          isSuccess ? "Lanjut Ayat" : "Ulangi Ayat",
-          () => {
-            if (isSuccess) {
-              S.recIndex++;
-              if (S.recIndex < S.recSet.length) {
-                app.showRecQuestion();
-              } else {
-                app.showRecEnd();
-              }
-            } else {
-              app.showRecQuestion();
-            }
-          }
-        );
-      },
-
-      showRecEnd() {
-        const container = document.getElementById('app-content');
-        container.innerHTML = `
-          <div class="bg-white rounded-[2rem] p-6 shadow-sm border-2 border-slate-100 text-center space-y-6 max-w-sm mx-auto">
-            <div class="w-32 h-32 mx-auto">
-              ${getMascotSVG('success')}
-            </div>
-            <div class="space-y-1">
-              <h3 class="text-2xl font-black text-indigo-600">Petualangan Selesai!</h3>
-              <p class="text-xs text-slate-400 font-semibold leading-relaxed">Subhanallah, semua tantangan lanjutan ayat berhasil kamu setorkan ke Kak Marz hari ini! Hebat dan lancar.</p>
-            </div>
-            
-            <div class="bg-indigo-50 text-indigo-700 border border-indigo-100 p-4 rounded-2xl flex items-center justify-center gap-3 font-black text-base">
-              <span>👑</span> Tambah +20 Bintang Prestasi!
-            </div>
-
-            <div class="flex gap-2">
-              <button onclick="app.renderLanjutkan()" class="flex-1 py-4 bg-purple-500 hover:bg-purple-600 text-white font-extrabold rounded-2xl border-b-4 border-purple-700 bouncy-btn text-xs shadow-md">Setor Lagi 🔄</button>
-              <button onclick="app.switchTab('beranda')" class="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-500 font-extrabold rounded-2xl bouncy-btn text-xs">Peta Hafalan 🗺️</button>
-            </div>
-          </div>
-        `;
-      },
-
-      // --- TAB 5: MUROJA'AH ---
-      async renderMurojaah() {
-        const container = document.getElementById('app-content');
-        this.showLoading();
-
-        try {
-          const r = await app.callAPI({ action: 'getMurojaahSchedule' });
-          if (!r.success) {
-            container.innerHTML = `
-              <div class="empty text-center py-12"><div class="text-5xl mb-2">😢</div><p class="text-sm font-bold text-slate-400">Gagal memuat jadwal muroja'ah.</p></div>
-              <button class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl bouncy-btn" onclick="app.rebuildScheduleByAI()">Buat Jadwal Otomatis ✨</button>
-            `;
-            return;
-          }
-
-          S.murojaahSchedule = r.data;
-          const todayStr = new Date().toISOString().split('T')[0];
-          
-          const todayTasks = S.murojaahSchedule.filter(j => j.tanggal_jadwal === todayStr && j.status === 'terjadwal');
-          const upcomingTasks = S.murojaahSchedule.filter(j => j.tanggal_jadwal > todayStr && j.status === 'terjadwal').slice(0, 3);
-
-          let todayHtml = todayTasks.map(j => {
-            const surahAyatList = S.ayatList.filter(a => a.surah_number === j.surah_number);
-            const firstAyatAudio = surahAyatList.length ? surahAyatList[0].audio_url : '';
-
-            return `
-              <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-[2rem] p-5 shadow-sm space-y-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-[10px] font-black bg-emerald-500 text-white px-3 py-1 rounded-full uppercase tracking-wider font-kids">📅 JADWAL HARI INI</span>
-                  <button onclick="app.playSingleVerse('${firstAyatAudio}', -1)" class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-[10px] rounded-full shadow-sm bouncy-btn">
-                    <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> PUTAR SURAH
-                  </button>
-                </div>
-
-                <div>
-                  <h3 class="text-xl font-black text-slate-700">${j.nama_surah || 'Surah ' + j.surah_number}</h3>
-                  <p class="text-xs text-slate-400 font-bold leading-tight mt-1">Ayat ${j.ayat_awal}–${j.ayat_akhir} • ${j.catatan || 'Fokus kelancaran makhraj.'}</p>
-                </div>
-
-                <div class="space-y-2 pt-2">
-                  <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest text-center">👇 Bagaimana Kelancaran Muroja'ahmu?</p>
-                  <div class="grid grid-cols-3 gap-2">
-                    <button onclick="app.setMurojaahResult('${j.schedule_id}', ${j.surah_number}, 'lancar')" class="bg-emerald-500 text-white hover:bg-emerald-600 p-3 rounded-2xl flex flex-col items-center gap-1 bouncy-btn border-b-4 border-emerald-700 font-black text-[10px]">
-                      <span class="text-2xl">😄</span> LANCAR
-                    </button>
-                    <button onclick="app.setMurojaahResult('${j.schedule_id}', ${j.surah_number}, 'agak_lupa')" class="bg-amber-500 text-white hover:bg-amber-600 p-3 rounded-2xl flex flex-col items-center gap-1 bouncy-btn border-b-4 border-amber-700 font-black text-[10px]">
-                      <span class="text-2xl">🤔</span> AGAK LUPA
-                    </button>
-                    <button onclick="app.setMurojaahResult('${j.schedule_id}', ${j.surah_number}, 'perlu_diulang')" class="bg-rose-500 text-white hover:bg-rose-600 p-3 rounded-2xl flex flex-col items-center gap-1 bouncy-btn border-b-4 border-rose-700 font-black text-[10px]">
-                      <span class="text-2xl">😅</span> DIULANG
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          if (!todayTasks.length) {
-            todayHtml = `
-              <div class="bg-white rounded-3xl p-6 shadow-sm border-2 border-slate-100 text-center space-y-2 max-w-sm mx-auto">
-                <span class="text-4xl block animate-bounce">🎉</span>
-                <h3 class="text-base font-black text-slate-700">Muroja'ah Hari Ini Selesai</h3>
-                <p class="text-xs text-slate-400 font-semibold leading-relaxed">Semua jadwal muroja'ah hari ini telah kamu selesaikan dengan gemilang!</p>
-              </div>
-            `;
-          }
-
-          let upcomingHtml = upcomingTasks.map(j => {
-            const surah = S.surahList.find(s => s.surah_number === j.surah_number);
-            const nama = surah ? surah.nama_latin : 'Surah ' + j.surah_number;
-            return `
-              <div class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between shadow-sm">
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">📅</span>
-                  <div>
-                    <h4 class="font-extrabold text-slate-700">${nama}</h4>
-                    <p class="text-[9px] text-slate-400 font-bold">Ayat ${j.ayat_awal}–${j.ayat_akhir}</p>
-                  </div>
-                </div>
-                <span class="text-[9px] font-black tracking-wider uppercase bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-full">${j.tanggal_jadwal}</span>
-              </div>
-            `;
-          }).join('');
-
-          container.innerHTML = `
-            <div class="space-y-4">
-              ${todayHtml}
-            </div>
-
-            <div class="space-y-3">
-              <div class="flex justify-between items-center px-1">
-                <h4 class="text-sm font-black text-slate-400 uppercase tracking-widest">Jadwal Muroja'ah Mendatang</h4>
-                <button onclick="app.rebuildScheduleByAI()" class="text-[10px] font-black text-emerald-600 hover:underline">🔄 Susun Ulang Jadwal</button>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                ${upcomingTasks.length ? upcomingHtml : `<p class="text-xs text-slate-400 text-center font-bold col-span-2 py-4">Belum ada jadwal esok hari.</p>`}
-              </div>
-            </div>
-          `;
-          lucide.createIcons();
-
-        } catch(e) {
-          console.error(e);
-          container.innerHTML = `
-            <div class="text-center py-12"><p class="text-xs font-bold text-slate-400">Jadwal muroja'ah kosong / Belum memiliki setoran.</p></div>
-            <button class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-2xl bouncy-btn" onclick="app.rebuildScheduleByAI()">Buat Jadwal Otomatis ✨</button>
-          `;
-        }
-      },
-
-      async setMurojaahResult(scheduleId, surahNum, resultValue) {
-        this.showLoading();
-        try {
-          const r = await app.callAPI({
-            action: 'selesaiMurojaah',
-            schedule_id: scheduleId,
-            surah_number: surahNum,
-            penilaian: resultValue
-          });
-
-          if (r.success && r.data) {
-            this.showMascotResultModal(
-              true,
-              100,
-              r.data.pesan,
-              `Ayo murattal kembali surah ini dalam ${r.data.ulang_dalam_hari} hari mendatang ya!`,
-              "Alhamdulillah, Selesai",
-              () => {
-                app.renderMurojaah();
-              }
-            );
-          } else {
-            app.renderMurojaah();
-          }
-        } catch(e) {
-          console.error(e);
-          app.renderMurojaah();
-        }
-      },
-
-      async rebuildScheduleByAI() {
-        this.showLoading();
-        try {
-          const r = await app.callAPI({ action: 'generateJadwal' });
-          if (r.success) {
-            showToast('Jadwal muroja\'ah barumu berhasil dibuat!', 'success');
-          } else {
-            showToast('Gagal menyusun jadwal: ' + r.message, 'error');
-          }
-          app.renderMurojaah();
-        } catch(e) {
-          console.error(e);
-          app.renderMurojaah();
-        }
-      },
-
-      async submitAuth(isLogin) {
-        const usernameInput = document.getElementById('auth-username').value.trim();
-        const passwordInput = document.getElementById('auth-password').value.trim();
-
-        if (!usernameInput || !passwordInput) {
-          showToast('Silakan isi nama pengguna dan kata sandi terlebih dahulu!', 'error');
-          return;
-        }
-
-        const btn = document.getElementById(isLogin ? 'btn-login-submit' : 'btn-register-submit');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = `<span class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>`;
-        btn.disabled = true;
-
-        try {
-          const response = await this.callAPI({
-            action: isLogin ? 'login' : 'register',
-            username: usernameInput,
-            password: passwordInput
-          });
-
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-
-          if (response.success) {
-            if (isLogin) {
-              S.token = response.token;
-              S.userId = response.userId;
-              S.username = response.username;
-
-              localStorage.setItem('mm_token', S.token);
-              localStorage.setItem('mm_uid', S.userId);
-              localStorage.setItem('mm_uname', S.username);
-
-              showToast(`Selamat datang, ${usernameInput}! ✨`, 'success');
-              auth.init();
-            } else {
-              showToast('Pendaftaran berhasil! Silakan langsung login ya.', 'success');
-            }
-          } else {
-            showToast(response.message || 'Terjadi kesalahan sistem.', 'error');
-          }
-        } catch(e) {
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-          showToast('Gagal berkomunikasi dengan server.', 'error');
-        }
-      },
-
-      logout() {
-        this.stopAudio();
-        S.token = null;
-        S.userId = null;
-        S.username = null;
-        
-        localStorage.removeItem('mm_token');
-        localStorage.removeItem('mm_uid');
-        localStorage.removeItem('mm_uname');
-
-        showToast('Sampai jumpa lagi di petualangan berikutnya! 👋', 'info');
-        auth.init();
-      },
-
-      async callAPI(payload) {
-        // Sematkan token sesi saat ini ke semua request API
-        payload.token = S.token;
-        try {
-          const response = await fetch(CONFIG.API_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload)
-          });
-          return await response.json();
-        } catch(e) {
-          console.error("Gagal terhubung ke GAS:", e);
-          throw e;
-        }
-      },
-
-      // --- POPUP MODAL DIALOG MASKOT ---
-      showMascotResultModal(isSuccess, score, message, tajwidText, actionLabel, onConfirm) {
-        const modal = document.getElementById('modal-result');
-        const container = document.getElementById('modal-container');
-        const mascotContainer = document.getElementById('result-mascot-container');
-        const titleEl = document.getElementById('result-title');
-        const scoreEl = document.getElementById('result-score-tag');
-        const messageEl = document.getElementById('result-message');
-        const tajwidContainer = document.getElementById('result-tajwid-container');
-        const tajwidTextEl = document.getElementById('result-tajwid-text');
-        const actionBtn = document.getElementById('modal-action-btn');
-
-        mascotContainer.innerHTML = getMascotSVG(isSuccess ? 'success' : 'encouraging');
-
-        if (isSuccess) {
-          titleEl.textContent = "Subhanallah! 🎉";
-          titleEl.className = "text-2xl font-bold text-emerald-500";
-          container.className = "bg-white rounded-[2rem] p-5 max-w-sm w-full border-4 border-emerald-200 shadow-2xl text-center space-y-4 transform scale-100 transition-all duration-300";
-        } else {
-          titleEl.textContent = "Ayo Semangat! 💪";
-          titleEl.className = "text-2xl font-bold text-amber-500";
-          container.className = "bg-white rounded-[2rem] p-5 max-w-sm w-full border-4 border-amber-200 shadow-2xl text-center space-y-4 transform scale-100 transition-all duration-300";
-        }
-
-        scoreEl.textContent = `Skor Hafalan: ${score}/100`;
-        messageEl.textContent = `"${message}"`;
-
-        if (tajwidText) {
-          tajwidContainer.classList.remove('hidden');
-          tajwidTextEl.textContent = tajwidText;
-        } else {
-          tajwidContainer.classList.add('hidden');
-        }
-
-        actionBtn.textContent = actionLabel;
-        actionBtn.onclick = () => {
-          modal.classList.add('hidden');
-          if (onConfirm) onConfirm();
-        };
-
-        modal.classList.remove('hidden');
-      }
-    };
-
-    window.onload = () => {
-      auth.init();
-    };
-  </script>
 </body>
 </html>
