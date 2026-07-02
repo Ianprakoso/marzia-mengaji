@@ -615,6 +615,8 @@ async function loadInitialData() {
   // Render beranda & hafal
   renderBeranda();
   renderSurahList();
+  // Auto-setup tab Lanjutkan dari data hafalan yang sudah ada
+  autoSetupLanjut();
 }
 
 /* ============================================================
@@ -670,13 +672,16 @@ function renderBeranda() {
   const c = document.getElementById('islandsContainer');
   c.innerHTML = '';
   if (!S.surahList.length) { c.innerHTML='<div class="loading-state">Belum ada data surah.</div>'; return; }
-  // Tentukan pulau "selanjutnya" = surah pertama yang bukan hafal penuh
-  let nextFound = false;
-  S.surahList.forEach((s, idx) => {
+  // Urutkan dari surah tertinggi (114) ke terendah — tampilan top-down dari An-Nas
+  const sorted = [...S.surahList].sort((a,b) => Number(b.surah_number) - Number(a.surah_number));
+  // Tentukan pulau "selanjutnya" = surah dengan nomor terkecil yang belum hafal penuh
+  const nextSurah = [...S.surahList]
+    .sort((a,b) => Number(a.surah_number) - Number(b.surah_number))
+    .find(s => s.status !== 'hafal');
+  sorted.forEach((s, idx) => {
     const row = document.createElement('div');
     row.className = `island-row ${idx % 2 === 0 ? 'left' : 'right'}`;
-    const isNext = !nextFound && s.status !== 'hafal';
-    if (isNext) nextFound = true;
+    const isNext = nextSurah && Number(s.surah_number) === Number(nextSurah.surah_number);
     const icon = s.status === 'hafal' ? '👑' : s.status === 'sedang' ? '📝' : '🔒';
     row.innerHTML = `
       <div class="island ${s.status}${isNext ? ' next' : ''}" onclick="openSurahDetail(${s.surah_number})">
@@ -730,7 +735,9 @@ function renderSurahList() {
     sedang: 'linear-gradient(135deg,var(--sky),var(--sky-dark))',
     belum:  'linear-gradient(135deg,#C9C3DE,#B3ACCB)',
   };
-  S.surahList.forEach(s => {
+  // Urutkan dari surah tertinggi (114) ke terendah
+  const sorted = [...S.surahList].sort((a,b) => Number(b.surah_number) - Number(a.surah_number));
+  sorted.forEach(s => {
     const card = document.createElement('div');
     card.className = 'surah-card';
     card.onclick = () => openSurahDetail(s.surah_number);
@@ -924,6 +931,22 @@ async function jawabTebak(idx) {
     <div class="result-emoji">${data.benar ? '🌟' : '💪'}</div>
     <p>${data.pesan || (data.benar ? 'Jawaban benar!' : 'Jawaban kurang tepat.')}</p>
     <button class="quiz-next-btn" onclick="loadTebakSoal()" style="margin-top:12px;">Soal Berikutnya →</button>`;
+}
+
+/* ============================================================
+   LANJUTKAN — AUTO SETUP DARI PROGRESS YANG SUDAH ADA
+   ============================================================ */
+function autoSetupLanjut() {
+  // Kumpulkan semua surah yang punya setidaknya 1 ayat hafal/sedang
+  const surahDenganHafalan = S.surahList
+    .filter(s => s.status === 'hafal' || s.status === 'sedang')
+    .sort((a, b) => Number(a.surah_number) - Number(b.surah_number)); // prioritas surah terkecil (yang sedang dipelajari)
+
+  if (!surahDenganHafalan.length) return; // belum ada hafalan sama sekali
+
+  // Pilih surah dengan status "sedang" dulu, kalau tidak ada ambil yang terakhir hafal
+  const target = surahDenganHafalan.find(s => s.status === 'sedang') || surahDenganHafalan[surahDenganHafalan.length - 1];
+  setupLanjutSoal(target.surah_number);
 }
 
 /* ============================================================
@@ -1127,3 +1150,4 @@ window.addEventListener('load', async () => {
 
 </body>
 </html>
+
