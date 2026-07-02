@@ -262,6 +262,22 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .audio-mini-btn:active { transform: scale(0.9); }
 .audio-mini-btn.lavender { background: var(--lavender); box-shadow: 0 4px 10px -2px rgba(155,138,251,0.5); }
 
+/* Qari Toggle */
+.qari-toggle {
+  display: flex; background: var(--cream); border-radius: 14px;
+  padding: 4px; gap: 4px; margin-bottom: 16px;
+}
+.qari-btn {
+  flex: 1; padding: 8px 10px; border-radius: 10px; border: none;
+  font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 11px;
+  cursor: pointer; color: var(--ink-soft); background: none;
+  transition: all .15s; text-align: center;
+}
+.qari-btn.active {
+  background: white; color: var(--ink);
+  box-shadow: 0 2px 8px -2px rgba(61,44,95,0.15);
+}
+
 /* ============================================================
    LANJUTKAN
    ============================================================ */
@@ -407,6 +423,13 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       <!-- HAFAL AYAT: DETAIL AYAT -->
       <div class="tab-page" id="page-hafal-detail">
         <button class="back-btn" onclick="switchTab('hafal')">← Kembali ke Daftar Surah</button>
+
+        <!-- Toggle Qari -->
+        <div class="qari-toggle">
+          <button class="qari-btn active" id="qbtn-misyari" onclick="setQari('misyari')">🎙️ Misyari Rasyid</button>
+          <button class="qari-btn" id="qbtn-ibrahim" onclick="setQari('ibrahim')">🎙️ Ibrahim Al-Dossari</button>
+        </div>
+
         <div class="autoplay-bar">
           <div>
             <strong id="detail-surah-name">—</strong>
@@ -501,6 +524,7 @@ const S = {
   currentAyatList: [],   // ayat untuk surah yang sedang dibuka
   autoplayAudio:   null, // HTMLAudioElement aktif
   autoplayIdx:     0,
+  qari:            'misyari', // qari aktif: 'misyari' | 'ibrahim'
   // Tebak Ayat
   tebakSoal:       null,
   tebakJawabanIdx: null,
@@ -772,13 +796,14 @@ function renderAyatDetail() {
   S.currentAyatList.forEach((a, idx) => {
     const key    = String(a.surah_number) + '_' + String(a.ayat_number);
     const status = S.progressMap[key] || 'belum';
+    const audioUrl = getAudioUrl(a);
     const div = document.createElement('div');
     div.className = `ayat-card ${status}`;
     div.id = `ayat-card-${idx}`;
     div.innerHTML = `
       <div class="ayat-top">
         <span class="ayat-tag">Ayat ${a.ayat_number}</span>
-        ${a.audio_url ? `<button class="play-btn" onclick="playAyatByIdx(${idx})">▶ DENGAR</button>` : ''}
+        ${audioUrl ? `<button class="play-btn" onclick="playAyatByIdx(${idx})">▶ DENGAR</button>` : ''}
       </div>
       <div class="arabic-text" dir="rtl">${a.teks_arab}</div>
       <div class="translation">"${a.terjemahan_id}"</div>
@@ -826,6 +851,27 @@ async function updateStatus(ayatIdx, newStatus, btn) {
 }
 
 /* ============================================================
+   QARI SELECTOR
+   ============================================================ */
+function setQari(qari) {
+  S.qari = qari;
+  document.querySelectorAll('.qari-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('qbtn-' + qari);
+  if (btn) btn.classList.add('active');
+  // Stop audio yang sedang diputar
+  if (S.autoplayAudio) { S.autoplayAudio.pause(); S.autoplayAudio = null; }
+  stopAutoplay();
+  showToast('Qari: ' + (qari === 'misyari' ? 'Misyari Rasyid' : 'Ibrahim Al-Dossari'));
+}
+
+/** Ambil URL audio ayat sesuai qari aktif */
+function getAudioUrl(ayat) {
+  return S.qari === 'misyari'
+    ? (ayat.audio_misyari || ayat.audio_ibrahim || null)
+    : (ayat.audio_ibrahim || ayat.audio_misyari || null);
+}
+
+/* ============================================================
    AUDIO PLAYBACK
    ============================================================ */
 function playAudioUrl(url) {
@@ -836,15 +882,17 @@ function playAudioUrl(url) {
 }
 
 function playAyatByIdx(idx) {
-  const a = S.currentAyatList[idx];
-  if (!a || !a.audio_url) { showToast('Audio tidak tersedia.'); return; }
+  const a   = S.currentAyatList[idx];
+  const url = a ? getAudioUrl(a) : null;
+  if (!url) { showToast('Audio tidak tersedia.'); return; }
   document.querySelectorAll('.ayat-card').forEach(c => c.classList.remove('playing'));
-  document.getElementById(`ayat-card-${idx}`).classList.add('playing');
+  const card = document.getElementById(`ayat-card-${idx}`);
+  if (card) { card.classList.add('playing'); card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
   if (S.autoplayAudio) S.autoplayAudio.pause();
-  S.autoplayAudio = new Audio(a.audio_url);
+  S.autoplayAudio = new Audio(url);
   S.autoplayAudio.play().catch(() => showToast('Gagal memutar audio.'));
   S.autoplayAudio.onended = () => {
-    document.getElementById(`ayat-card-${idx}`).classList.remove('playing');
+    if (card) card.classList.remove('playing');
     if (autoplayOn) {
       const next = idx + 1;
       if (next < S.currentAyatList.length) { playAyatByIdx(next); }
@@ -890,20 +938,26 @@ async function loadTebakSoal() {
   S.tebakSoal       = d.soal;
   S.tebakJawabanIdx = d.jawaban_index;
 
+  // Ambil audio URL sesuai qari aktif
+  const soalAudio   = S.qari === 'misyari' ? (d.soal.audio_misyari || d.soal.audio_ibrahim) : (d.soal.audio_ibrahim || d.soal.audio_misyari);
+
   c.innerHTML = `
     <div class="quiz-card">
       <div class="quiz-progress">Soal ke-${S.tebakNo}</div>
       <p class="quiz-soal-label">Lanjutan ayat dari:</p>
       <div class="quiz-soal-row">
         <div class="quiz-arabic" dir="rtl" style="margin:0">${d.soal.teks_arab}</div>
-        ${d.soal.audio_url ? `<button class="audio-mini-btn" onclick="playAudioUrl('${d.soal.audio_url}')" title="Dengar soal">▶</button>` : ''}
+        ${soalAudio ? `<button class="audio-mini-btn" onclick="playAudioUrl('${soalAudio}')" title="Dengar soal">▶</button>` : ''}
       </div>
       <div class="quiz-options" id="quizOptions">
-        ${d.pilihan.map((p, i) => `
+        ${d.pilihan.map((p, i) => {
+          const pAudio = S.qari === 'misyari' ? (p.audio_misyari || p.audio_ibrahim) : (p.audio_ibrahim || p.audio_misyari);
+          return `
           <div class="quiz-option" dir="rtl" id="qopt-${i}" onclick="jawabTebak(${i})">
             <span>${p.teks_arab}</span>
-            ${p.audio_url ? `<button class="audio-mini-btn" onclick="event.stopPropagation();playAudioUrl('${p.audio_url}')" title="Dengar pilihan ini">▶</button>` : ''}
-          </div>`).join('')}
+            ${pAudio ? `<button class="audio-mini-btn" onclick="event.stopPropagation();playAudioUrl('${pAudio}')" title="Dengar pilihan ini">▶</button>` : ''}
+          </div>`;
+        }).join('')}
       </div>
       <div class="quiz-result-box" id="quizResult" style="display:none"></div>
     </div>`;
@@ -962,7 +1016,7 @@ function setupLanjutSoal(surahNumber) {
     if (S.progressMap[key] === 'hafal' || S.progressMap[key] === 'sedang') soalAyat = a;
   }
   const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
-  S.lanjutSoalAudio = soalAyat.audio_url || null;
+  S.lanjutSoalAudio = getAudioUrl(soalAyat);
   document.getElementById('lanjut-surah-tag').textContent = (surah ? surah.nama_latin : 'Surah ' + surahNumber) + ' • Ayat ' + soalAyat.ayat_number;
   document.getElementById('lanjut-soal-arab').textContent = soalAyat.teks_arab;
   // Simpan data ke S untuk dikirim saat rekaman selesai
@@ -1150,4 +1204,3 @@ window.addEventListener('load', async () => {
 
 </body>
 </html>
-
