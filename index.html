@@ -320,39 +320,16 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .btn-primary:hover { transform: translateY(-1px); }
 .btn-primary:disabled { opacity: 0.6; cursor: wait; }
 
-/* ── Tombol Mulai di kartu jadwal ── */
-.sched-start-btn {
-  padding: 7px 14px; border-radius: 12px; border: none;
-  background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
-  color: white; font-family: 'Quicksand', sans-serif;
-  font-weight: 700; font-size: 11px; cursor: pointer;
-  box-shadow: 0 4px 10px -2px rgba(95,211,141,0.4);
-  white-space: nowrap; flex-shrink: 0;
-}
+.sched-start-btn { padding: 7px 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); color: white; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 11px; cursor: pointer; box-shadow: 0 4px 10px -2px rgba(95,211,141,0.4); white-space: nowrap; flex-shrink: 0; }
 .sched-start-btn.done { background: linear-gradient(135deg,#C9C3DE,#B3ACCB); box-shadow: none; cursor: default; }
 
-/* ── Modal Rekaman Muroja'ah ── */
-.murojaah-modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(61,44,95,0.5); backdrop-filter: blur(4px);
-  z-index: 200; align-items: center; justify-content: center; padding: 20px;
-}
+.murojaah-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(61,44,95,0.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
 .murojaah-modal-overlay.open { display: flex; }
-.murojaah-modal {
-  background: white; border-radius: 32px; padding: 28px;
-  width: 100%; max-width: 420px; text-align: center;
-  box-shadow: 0 20px 50px -16px rgba(61,44,95,0.4);
-}
+.murojaah-modal { background: white; border-radius: 32px; padding: 28px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 50px -16px rgba(61,44,95,0.4); }
 .murojaah-modal h3 { font-family: 'Baloo 2', sans-serif; font-size: 18px; margin-bottom: 4px; }
 .murojaah-modal .surah-tag { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin-bottom: 18px; display: block; }
 .murojaah-modal .tip { font-size: 11px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 20px; background: var(--cream); border-radius: 14px; padding: 12px; }
-.murojaah-mic-btn {
-  width: 88px; height: 88px; border-radius: 50%; margin: 0 auto 12px;
-  background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 34px; cursor: pointer; position: relative;
-  box-shadow: 0 10px 24px -6px rgba(95,211,141,0.5);
-}
+.murojaah-mic-btn { width: 88px; height: 88px; border-radius: 50%; margin: 0 auto 12px; background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); display: flex; align-items: center; justify-content: center; font-size: 34px; cursor: pointer; position: relative; box-shadow: 0 10px 24px -6px rgba(95,211,141,0.5); }
 .murojaah-mic-btn::before { content:""; position:absolute; inset:-8px; border-radius:50%; border:3px solid var(--leaf); opacity:0.4; animation:pulseMic 1.8s infinite ease-in-out; }
 .murojaah-mic-btn.recording { background: linear-gradient(135deg, var(--coral), var(--coral-dark)); box-shadow: 0 10px 24px -6px rgba(255,107,91,0.5); }
 .murojaah-mic-btn.recording::before { border-color: var(--coral); }
@@ -532,11 +509,10 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 
       <!-- MUROJA'AH -->
       <div class="tab-page" id="page-murojaah">
-        <div class="section-title">📅 Jadwal Muroja'ah Minggu Ini</div>
+        <div class="section-title">📅 Jadwal Muroja'ah</div>
         <div id="murojaahContainer">
           <div class="loading-state"><div class="loading-spinner"></div>Memuat jadwal...</div>
         </div>
-        <button class="btn-primary" id="generateJadwalBtn" onclick="doGenerateJadwal()" style="margin-top:16px;">✨ Susun Ulang Jadwal dengan AI</button>
       </div>
 
     </main>
@@ -558,11 +534,9 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       <h3 id="modalSurahName">—</h3>
       <span class="surah-tag" id="modalSurahTag">—</span>
       <div class="tip">📖 Baca seluruh surah dari awal sampai akhir dengan tartil. Sentuh mikrofon saat siap mulai.</div>
-      <div id="modalRecordingArea">
-        <div class="murojaah-mic-btn" id="murojaahMicBtn" onclick="toggleMurojaahRecording()">🎤</div>
-        <div class="murojaah-timer" id="murojaahTimer"></div>
-        <p class="murojaah-hint" id="murojaahHint">Sentuh mikrofon untuk mulai membaca</p>
-      </div>
+      <div class="murojaah-mic-btn" id="murojaahMicBtn" onclick="toggleMurojaahRecording()">🎤</div>
+      <div class="murojaah-timer" id="murojaahTimer"></div>
+      <p class="murojaah-hint" id="murojaahHint">Sentuh mikrofon untuk mulai membaca</p>
       <div class="murojaah-result" id="murojaahResult" style="display:none">
         <div class="res-top">
           <div class="res-skor" id="murojaahSkor">—</div>
@@ -577,7 +551,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
         </div>
       </div>
       <div class="murojaah-modal-actions">
-        <button class="btn-retry" id="murojaahRetryBtn" onclick="resetMurojaahRecording()">🎤 Rekam Ulang</button>
+        <button class="btn-retry" onclick="resetMurojaahRecording()">🎤 Rekam Ulang</button>
         <button class="btn-close-modal" onclick="closeMurojaahModal()">Selesai ✓</button>
       </div>
     </div>
@@ -703,6 +677,11 @@ async function enterApp() {
   document.getElementById('pg-app').style.display  = 'block';
   initNavColors();
   await loadInitialData();
+  // Inisialisasi jadwal muroja'ah jika belum ada
+  const jadwalRes = await api({ action: 'getMurojaahSchedule' });
+  if (jadwalRes.success && jadwalRes.data.filter(j => j.status === 'terjadwal').length === 0) {
+    await api({ action: 'initJadwal' });
+  }
 }
 
 async function loadInitialData() {
@@ -1210,16 +1189,16 @@ async function loadMurojaah() {
   if (!res.success) { c.innerHTML = '<div class="loading-state">Gagal memuat jadwal.</div>'; return; }
   const jadwal = res.data.filter(j => j.status === 'terjadwal')
     .sort((a,b) => new Date(a.tanggal_jadwal) - new Date(b.tanggal_jadwal))
-    .slice(0, 10);
+    .slice(0, 3);
   if (!jadwal.length) {
-    c.innerHTML = '<div class="loading-state">Belum ada jadwal muroja\'ah.<br>Klik tombol di bawah untuk buat jadwal dengan AI! ✨</div>';
+    c.innerHTML = '<div class="loading-state">Semua jadwal sudah selesai! Jadwal baru sedang disiapkan... 🌟</div>';
     return;
   }
   const today = new Date().toISOString().split('T')[0];
   c.innerHTML = jadwal.map(j => {
-    const tgl    = new Date(j.tanggal_jadwal);
-    const surah  = S.surahList.find(s => Number(s.surah_number) === Number(j.surah_number));
-    const nama   = surah ? surah.nama_latin : 'Surah ' + j.surah_number;
+    const tgl   = new Date(j.tanggal_jadwal);
+    const surah = S.surahList.find(s => Number(s.surah_number) === Number(j.surah_number));
+    const nama  = surah ? surah.nama_latin : 'Surah ' + j.surah_number;
     const isToday = j.tanggal_jadwal === today;
     return `
       <div class="sched-card ${j.prioritas === 'tinggi' ? 'tinggi' : ''}">
@@ -1238,146 +1217,6 @@ async function loadMurojaah() {
         }
       </div>`;
   }).join('');
-}
-
-/* ============================================================
-   MODAL REKAMAN MUROJA'AH
-   ============================================================ */
-const MS = {  // state modal murojaah
-  scheduleId:   null,
-  surahNumber:  null,
-  ayatAwal:     null,
-  ayatAkhir:    null,
-  mediaRecorder: null,
-  audioChunks:  [],
-  recTimer:     null,
-  recSeconds:   0,
-  isRecording:  false,
-};
-
-function openMurojaahModal(scheduleId, surahNumber, namaSurah, ayatAwal, ayatAkhir) {
-  MS.scheduleId  = scheduleId;
-  MS.surahNumber = surahNumber;
-  MS.ayatAwal    = ayatAwal;
-  MS.ayatAkhir   = ayatAkhir;
-  document.getElementById('modalSurahName').textContent = namaSurah;
-  document.getElementById('modalSurahTag').textContent  = `Ayat ${ayatAwal} – ${ayatAkhir}`;
-  resetMurojaahRecording();
-  document.getElementById('murojaahModalOverlay').classList.add('open');
-}
-
-function closeMurojaahModal() {
-  if (MS.isRecording) stopMurojaahRecording();
-  document.getElementById('murojaahModalOverlay').classList.remove('open');
-  loadMurojaah(); // refresh kartu jadwal
-}
-
-function resetMurojaahRecording() {
-  if (MS.isRecording) stopMurojaahRecording();
-  MS.audioChunks = [];
-  const micBtn = document.getElementById('murojaahMicBtn');
-  micBtn.classList.remove('recording');
-  micBtn.textContent = '🎤';
-  document.getElementById('murojaahTimer').textContent = '';
-  document.getElementById('murojaahHint').textContent  = 'Sentuh mikrofon untuk mulai membaca';
-  document.getElementById('murojaahResult').style.display = 'none';
-  document.getElementById('murojaahRetryBtn').style.display = '';
-  document.getElementById('murojaahJadwalUlang').style.display = 'none';
-}
-
-function toggleMurojaahRecording() {
-  if (MS.isRecording) { stopMurojaahRecording(); }
-  else { startMurojaahRecording(); }
-}
-
-async function startMurojaahRecording() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    MS.audioChunks  = [];
-    MS.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-    MS.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) MS.audioChunks.push(e.data); };
-    MS.mediaRecorder.onstop = processMurojaahRecording;
-    MS.mediaRecorder.start(100);
-    MS.isRecording  = true;
-    MS.recSeconds   = 0;
-    const micBtn = document.getElementById('murojaahMicBtn');
-    micBtn.classList.add('recording');
-    micBtn.textContent = '⏹';
-    document.getElementById('murojaahHint').textContent = 'Sedang merekam... Sentuh lagi untuk berhenti.';
-    document.getElementById('murojaahResult').style.display = 'none';
-    MS.recTimer = setInterval(() => {
-      MS.recSeconds++;
-      const m = Math.floor(MS.recSeconds / 60), s = MS.recSeconds % 60;
-      document.getElementById('murojaahTimer').textContent = m + ':' + String(s).padStart(2, '0');
-    }, 1000);
-  } catch(e) {
-    showToast('Tidak bisa akses mikrofon. Izinkan akses mikrofon di browser.');
-  }
-}
-
-function stopMurojaahRecording() {
-  if (MS.mediaRecorder && MS.mediaRecorder.state === 'recording') {
-    MS.mediaRecorder.stop();
-    MS.mediaRecorder.stream.getTracks().forEach(t => t.stop());
-  }
-  clearInterval(MS.recTimer);
-  MS.isRecording = false;
-  const micBtn = document.getElementById('murojaahMicBtn');
-  micBtn.textContent = '⏳';
-  document.getElementById('murojaahHint').textContent = 'Menilai bacaanmu...';
-  document.getElementById('murojaahTimer').textContent = '';
-}
-
-async function processMurojaahRecording() {
-  const blob   = new Blob(MS.audioChunks, { type: 'audio/webm' });
-  const base64 = await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-
-  const res = await api({
-    action:       'rekamanMurojaah',
-    audio_base64: base64,
-    mime_type:    'audio/webm',
-    surah_number: MS.surahNumber,
-    schedule_id:  MS.scheduleId,
-    ayat_awal:    MS.ayatAwal,
-    ayat_akhir:   MS.ayatAkhir,
-  });
-
-  const micBtn = document.getElementById('murojaahMicBtn');
-  micBtn.textContent = '🎤';
-  micBtn.classList.remove('recording');
-  document.getElementById('murojaahHint').textContent = 'Sentuh mikrofon untuk rekam ulang';
-  document.getElementById('murojaahRetryBtn').style.display = '';
-
-  if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
-
-  const d = res.data;
-  const warna = d.lulus ? 'var(--leaf-dark)' : 'var(--coral-dark)';
-  document.getElementById('murojaahSkor').textContent    = d.skor + ' / 100';
-  document.getElementById('murojaahSkor').style.color    = warna;
-  document.getElementById('murojaahEmoji').textContent   = d.emoji || '🎙️';
-  document.getElementById('murojaahBadge').textContent   = d.lulus ? '✅ LULUS' : '❌ Belum Lulus';
-  document.getElementById('murojaahBadge').className     = 'res-badge ' + (d.lulus ? 'lulus' : 'belum');
-  document.getElementById('murojaahFeedback').textContent = d.feedback;
-  document.getElementById('murojaahResult').style.display = 'block';
-
-  if (d.jadwal_ulang && !d.jadwal_ulang.sudah_ada && !d.lulus) {
-    document.getElementById('murojaahJadwalUlang').style.display = 'block';
-  }
-}
-
-async function doGenerateJadwal() {
-  const btn = document.getElementById('generateJadwalBtn');
-  btn.disabled = true; btn.textContent = '⏳ Menyusun jadwal...';
-  const res = await api({ action: 'generateJadwal' });
-  btn.disabled = false; btn.textContent = '✨ Susun Ulang Jadwal dengan AI';
-  if (!res.success) { showToast(res.message || 'Gagal generate jadwal.'); return; }
-  showToast('Jadwal baru berhasil dibuat! 📅');
-  loadMurojaah();
 }
 
 /* ============================================================
@@ -1420,7 +1259,134 @@ window.addEventListener('load', async () => {
     }
   }
 });
-</script>
+
+/* ============================================================
+   MODAL REKAMAN MUROJA'AH
+   ============================================================ */
+const MS = {
+  scheduleId:    null,
+  surahNumber:   null,
+  ayatAwal:      null,
+  ayatAkhir:     null,
+  mediaRecorder: null,
+  audioChunks:   [],
+  recTimer:      null,
+  recSeconds:    0,
+  isRecording:   false,
+};
+
+function openMurojaahModal(scheduleId, surahNumber, namaSurah, ayatAwal, ayatAkhir) {
+  MS.scheduleId  = scheduleId;
+  MS.surahNumber = surahNumber;
+  MS.ayatAwal    = ayatAwal;
+  MS.ayatAkhir   = ayatAkhir;
+  document.getElementById('modalSurahName').textContent = namaSurah;
+  document.getElementById('modalSurahTag').textContent  = 'Ayat ' + ayatAwal + ' – ' + ayatAkhir;
+  resetMurojaahRecording();
+  document.getElementById('murojaahModalOverlay').classList.add('open');
+}
+
+function closeMurojaahModal() {
+  if (MS.isRecording) stopMurojaahRecording();
+  document.getElementById('murojaahModalOverlay').classList.remove('open');
+  loadMurojaah();
+}
+
+function resetMurojaahRecording() {
+  if (MS.isRecording) stopMurojaahRecording();
+  MS.audioChunks = [];
+  const micBtn = document.getElementById('murojaahMicBtn');
+  if (!micBtn) return;
+  micBtn.classList.remove('recording');
+  micBtn.textContent = '🎤';
+  document.getElementById('murojaahTimer').textContent  = '';
+  document.getElementById('murojaahHint').textContent   = 'Sentuh mikrofon untuk mulai membaca';
+  document.getElementById('murojaahResult').style.display = 'none';
+  const jU = document.getElementById('murojaahJadwalUlang');
+  if (jU) jU.style.display = 'none';
+}
+
+function toggleMurojaahRecording() {
+  MS.isRecording ? stopMurojaahRecording() : startMurojaahRecording();
+}
+
+async function startMurojaahRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    MS.audioChunks   = [];
+    MS.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    MS.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) MS.audioChunks.push(e.data); };
+    MS.mediaRecorder.onstop = processMurojaahRecording;
+    MS.mediaRecorder.start(100);
+    MS.isRecording = true;
+    MS.recSeconds  = 0;
+    const micBtn = document.getElementById('murojaahMicBtn');
+    micBtn.classList.add('recording');
+    micBtn.textContent = '⏹';
+    document.getElementById('murojaahHint').textContent = 'Sedang merekam... Sentuh lagi untuk berhenti.';
+    document.getElementById('murojaahResult').style.display = 'none';
+    MS.recTimer = setInterval(() => {
+      MS.recSeconds++;
+      const m = Math.floor(MS.recSeconds / 60), s = MS.recSeconds % 60;
+      document.getElementById('murojaahTimer').textContent = m + ':' + String(s).padStart(2, '0');
+    }, 1000);
+  } catch(e) {
+    showToast('Tidak bisa akses mikrofon. Izinkan akses mikrofon di browser.');
+  }
+}
+
+function stopMurojaahRecording() {
+  if (MS.mediaRecorder && MS.mediaRecorder.state === 'recording') {
+    MS.mediaRecorder.stop();
+    MS.mediaRecorder.stream.getTracks().forEach(t => t.stop());
+  }
+  clearInterval(MS.recTimer);
+  MS.isRecording = false;
+  const micBtn = document.getElementById('murojaahMicBtn');
+  if (micBtn) { micBtn.textContent = '⏳'; micBtn.classList.remove('recording'); }
+  document.getElementById('murojaahHint').textContent = 'Menilai bacaanmu...';
+  document.getElementById('murojaahTimer').textContent = '';
+}
+
+async function processMurojaahRecording() {
+  const blob   = new Blob(MS.audioChunks, { type: 'audio/webm' });
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+
+  const res = await api({
+    action:       'rekamanMurojaah',
+    audio_base64: base64,
+    mime_type:    'audio/webm',
+    surah_number: MS.surahNumber,
+    schedule_id:  MS.scheduleId,
+    ayat_awal:    MS.ayatAwal,
+    ayat_akhir:   MS.ayatAkhir,
+  });
+
+  const micBtn = document.getElementById('murojaahMicBtn');
+  if (micBtn) { micBtn.textContent = '🎤'; micBtn.classList.remove('recording'); }
+  document.getElementById('murojaahHint').textContent = 'Sentuh mikrofon untuk rekam ulang';
+
+  if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
+
+  const d     = res.data;
+  const warna = d.lulus ? 'var(--leaf-dark)' : 'var(--coral-dark)';
+  document.getElementById('murojaahSkor').textContent    = d.skor + ' / 100';
+  document.getElementById('murojaahSkor').style.color    = warna;
+  document.getElementById('murojaahEmoji').textContent   = d.emoji || '🎙️';
+  document.getElementById('murojaahBadge').textContent   = d.lulus ? '✅ LULUS' : '❌ Belum Lulus';
+  document.getElementById('murojaahBadge').className     = 'res-badge ' + (d.lulus ? 'lulus' : 'belum');
+  document.getElementById('murojaahFeedback').textContent = d.feedback;
+  document.getElementById('murojaahResult').style.display = 'block';
+
+  const jU = document.getElementById('murojaahJadwalUlang');
+  if (jU && d.next && d.next.jadwal_ulang && !d.lulus) jU.style.display = 'block';
+  if (jU && d.lulus) jU.style.display = 'none';
+}
 
 </body>
 </html>
