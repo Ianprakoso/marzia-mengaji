@@ -590,8 +590,7 @@ const S = {
   tebakNo:         0,
   // Lanjutkan
   lanjutSoalAudio: null,
-  // Rekaman
-  mediaRecorder:   null,
+  mimeType:        null, // mimeType aktif yang dipakai MediaRecorder
   audioChunks:     [],
   recTimer:        null,
   recSeconds:      0,
@@ -1101,13 +1100,14 @@ function toggleRecording() {
 async function startRecording() {
   if (!S.lanjutSurahNumber) { showToast('Pilih surah dulu di tab Hafal Ayat!'); return; }
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    S.audioChunks = [];
-    S.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    const stream   = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimeType = getSupportedMimeType();
+    S.mimeType     = mimeType || 'audio/webm'; // fallback label untuk backend
+    S.audioChunks  = [];
+    S.mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : {});
     S.mediaRecorder.ondataavailable = e => { if (e.data.size>0) S.audioChunks.push(e.data); };
     S.mediaRecorder.onstop = processRecording;
     S.mediaRecorder.start(100);
-    // UI recording state
     document.getElementById('micBtn').classList.add('recording');
     document.getElementById('micBtn').textContent = '⏹';
     document.getElementById('micHint').textContent = 'Sedang merekam... Sentuh lagi untuk berhenti.';
@@ -1120,7 +1120,13 @@ async function startRecording() {
       document.getElementById('micTimer').textContent = m + ':' + String(s).padStart(2,'0');
     }, 1000);
   } catch(e) {
-    showToast('Tidak bisa akses mikrofon. Izinkan akses mikrofon di browser.');
+    if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
+      showToast('Akses mikrofon ditolak. Buka pengaturan browser dan izinkan mikrofon.');
+    } else if (e.name === 'NotFoundError') {
+      showToast('Mikrofon tidak ditemukan di perangkat ini.');
+    } else {
+      showToast('Gagal memulai rekaman: ' + e.message);
+    }
   }
 }
 
@@ -1136,8 +1142,7 @@ function stopRecording() {
 }
 
 async function processRecording() {
-  const blob = new Blob(S.audioChunks, { type: 'audio/webm' });
-  // Konversi blob ke base64
+  const blob = new Blob(S.audioChunks, { type: S.mimeType });
   const base64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result.split(',')[1]);
@@ -1148,7 +1153,7 @@ async function processRecording() {
   const res = await api({
     action:       'nilaiRekaman',
     audio_base64: base64,
-    mime_type:    'audio/webm',
+    mime_type:    S.mimeType,
     surah_number: S.lanjutSurahNumber,
     ayat_number:  S.lanjutAyatNumber,
   });
@@ -1273,7 +1278,26 @@ const MS = {
   recTimer:      null,
   recSeconds:    0,
   isRecording:   false,
+  mimeType:      null, // mimeType aktif yang dipakai MediaRecorder
 };
+
+/**
+ * Deteksi MIME type audio yang didukung browser saat ini.
+ * Urutan prioritas: WebM (Chrome/Android) → MP4 (iOS/Safari) → OGG (Firefox) → default
+ */
+function getSupportedMimeType() {
+  const types = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/mp4',
+    'audio/ogg;codecs=opus',
+    'audio/ogg',
+  ];
+  for (const type of types) {
+    if (MediaRecorder.isTypeSupported(type)) return type;
+  }
+  return ''; // biarkan browser pilih sendiri
+}
 
 function openMurojaahModal(scheduleId, surahNumber, namaSurah, ayatAwal, ayatAkhir) {
   MS.scheduleId  = scheduleId;
@@ -1312,9 +1336,11 @@ function toggleMurojaahRecording() {
 
 async function startMurojaahRecording() {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    MS.audioChunks   = [];
-    MS.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    const stream   = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimeType = getSupportedMimeType();
+    MS.mimeType    = mimeType || 'audio/webm';
+    MS.audioChunks = [];
+    MS.mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : {});
     MS.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) MS.audioChunks.push(e.data); };
     MS.mediaRecorder.onstop = processMurojaahRecording;
     MS.mediaRecorder.start(100);
@@ -1331,7 +1357,13 @@ async function startMurojaahRecording() {
       document.getElementById('murojaahTimer').textContent = m + ':' + String(s).padStart(2, '0');
     }, 1000);
   } catch(e) {
-    showToast('Tidak bisa akses mikrofon. Izinkan akses mikrofon di browser.');
+    if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
+      showToast('Akses mikrofon ditolak. Buka pengaturan browser dan izinkan mikrofon.');
+    } else if (e.name === 'NotFoundError') {
+      showToast('Mikrofon tidak ditemukan di perangkat ini.');
+    } else {
+      showToast('Gagal memulai rekaman: ' + e.message);
+    }
   }
 }
 
@@ -1349,7 +1381,7 @@ function stopMurojaahRecording() {
 }
 
 async function processMurojaahRecording() {
-  const blob   = new Blob(MS.audioChunks, { type: 'audio/webm' });
+  const blob   = new Blob(MS.audioChunks, { type: MS.mimeType });
   const base64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload  = () => resolve(reader.result.split(',')[1]);
@@ -1360,7 +1392,7 @@ async function processMurojaahRecording() {
   const res = await api({
     action:       'rekamanMurojaah',
     audio_base64: base64,
-    mime_type:    'audio/webm',
+    mime_type:    MS.mimeType,
     surah_number: MS.surahNumber,
     schedule_id:  MS.scheduleId,
     ayat_awal:    MS.ayatAwal,
