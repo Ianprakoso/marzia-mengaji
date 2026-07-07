@@ -1199,7 +1199,7 @@ async function loadMurojaah() {
     const tgl   = new Date(j.tanggal_jadwal);
     const surah = S.surahList.find(s => Number(s.surah_number) === Number(j.surah_number));
     const nama  = surah ? surah.nama_latin : 'Surah ' + j.surah_number;
-    const isToday = j.tanggal_jadwal === today;
+    const isAvailable = j.tanggal_jadwal <= today; // hari ini ATAU sudah lewat
     return `
       <div class="sched-card ${j.prioritas === 'tinggi' ? 'tinggi' : ''}">
         <div class="sched-date">
@@ -1211,7 +1211,7 @@ async function loadMurojaah() {
           <h4>${nama}</h4>
           <p>${j.catatan || 'Jadwal muroja\'ah'}</p>
         </div>
-        ${isToday
+        ${isAvailable
           ? `<button class="sched-start-btn" onclick="openMurojaahModal('${j.schedule_id}',${j.surah_number},'${nama}',${j.ayat_awal},${j.ayat_akhir})">▶ Mulai</button>`
           : `<span class="sched-start-btn done">📅 Terjadwal</span>`
         }
