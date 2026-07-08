@@ -1217,7 +1217,7 @@ async function loadMurojaah() {
           <p>${j.catatan || 'Jadwal muroja\'ah'}</p>
         </div>
         ${isAvailable
-          ? `<button class="sched-start-btn" onclick="openMurojaahModal('${j.schedule_id}',${j.surah_number},'${nama}',${j.ayat_awal},${j.ayat_akhir})">▶ Mulai</button>`
+          ? `<button class="sched-start-btn" onclick="openMurojaahModal('${j.schedule_id}',${j.surah_number},${j.ayat_awal},${j.ayat_akhir})">▶ Mulai</button>`
           : `<span class="sched-start-btn done">📅 Terjadwal</span>`
         }
       </div>`;
@@ -1299,7 +1299,9 @@ function getSupportedMimeType() {
   return ''; // biarkan browser pilih sendiri
 }
 
-function openMurojaahModal(scheduleId, surahNumber, namaSurah, ayatAwal, ayatAkhir) {
+function openMurojaahModal(scheduleId, surahNumber, ayatAwal, ayatAkhir) {
+  const surah    = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
+  const namaSurah = surah ? surah.nama_latin : 'Surah ' + surahNumber;
   MS.scheduleId  = scheduleId;
   MS.surahNumber = surahNumber;
   MS.ayatAwal    = ayatAwal;
