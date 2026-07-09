@@ -553,6 +553,8 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       <div class="murojaah-modal-actions">
         <button class="btn-retry" onclick="resetMurojaahRecording()">🎤 Rekam Ulang</button>
         <button class="btn-close-modal" onclick="closeMurojaahModal()">Selesai ✓</button>
+        <!-- DEBUG — hapus setelah diagnosa -->
+        <button style="flex:1;padding:10px;border-radius:14px;border:2px dashed #aaa;background:none;font-size:11px;font-weight:700;cursor:pointer;color:#666;" onclick="debugUploadAudio()">🔍 Debug Audio</button>
       </div>
     </div>
   </div>
@@ -1420,6 +1422,31 @@ async function processMurojaahRecording() {
   const jU = document.getElementById('murojaahJadwalUlang');
   if (jU && d.next && d.next.jadwal_ulang && !d.lulus) jU.style.display = 'block';
   if (jU && d.lulus) jU.style.display = 'none';
+}
+// ===== DEBUG — hapus setelah diagnosa =====
+async function debugUploadAudio() {
+  if (!MS.audioChunks || MS.audioChunks.length === 0) {
+    showToast('Rekam dulu sebelum debug!'); return;
+  }
+  showToast('Mengupload audio ke Drive...');
+  const blob   = new Blob(MS.audioChunks, { type: MS.mimeType });
+  const base64 = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+  const result = await api({ action: 'debugAudio', audio_base64: base64, mime_type: MS.mimeType });
+  if (result.success) {
+    showToast('✅ ' + result.size_kb + ' — buka console untuk URL');
+    console.log('=== DEBUG AUDIO ===');
+    console.log('MIME type :', result.mime_type);
+    console.log('Ukuran    :', result.size_kb);
+    console.log('Drive URL :', result.url);
+    console.log('Direct URL:', result.direct_url);
+  } else {
+    showToast('❌ ' + result.message);
+  }
 }
 
 </script>
