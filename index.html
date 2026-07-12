@@ -502,6 +502,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             </div>
             <div class="result-feedback" id="micFeedback">—</div>
             <div class="result-tajwid" id="micTajwid"></div>
+            <div id="micTranskripsi" style="font-size:11px;color:var(--ink-soft);margin-top:6px;padding:6px 10px;background:var(--cream);border-radius:10px;text-align:right;line-height:1.8;display:none;"></div>
             <button class="mic-retry-btn" onclick="resetRecording()">🎤 Rekam Ulang</button>
           </div>
         </div>
@@ -546,6 +547,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           </div>
         </div>
         <div class="res-feedback" id="murojaahFeedback">—</div>
+        <div id="murojaahTranskripsi" style="font-size:11px;color:var(--ink-soft);margin-top:8px;padding:8px 10px;background:white;border-radius:10px;text-align:right;line-height:1.8;display:none;"></div>
         <div class="res-jadwal" id="murojaahJadwalUlang" style="display:none">
           📅 Jadwal muroja'ah sudah ditambahkan untuk besok!
         </div>
@@ -553,6 +555,8 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       <div class="murojaah-modal-actions">
         <button class="btn-retry" onclick="resetMurojaahRecording()">🎤 Rekam Ulang</button>
         <button class="btn-close-modal" onclick="closeMurojaahModal()">Selesai ✓</button>
+        <!-- DEBUG — hapus setelah diagnosa -->
+        <button style="flex:1;padding:10px;border-radius:14px;border:2px dashed #aaa;background:none;font-size:11px;font-weight:700;cursor:pointer;color:#666;" onclick="debugUploadAudio()">🔍 Debug Audio</button>
       </div>
     </div>
   </div>
@@ -563,7 +567,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 /* ============================================================
    KONFIGURASI
    ============================================================ */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby6wVjKJUCqaJ3GciFXrVQT2yo861TBvV1aPWRXEsqy3O8md71JqZv-52ls1Tag/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby6t5frYANPwjzL_Nh0Cn1tdqeb_7KggMMBRJy7XZk99BchxQUTt5juIFYUuPhtRcE/exec';
 // Contoh: 'https://script.google.com/macros/s/AKfycb.../exec'
 
 /* ============================================================
@@ -1160,7 +1164,11 @@ async function processRecording() {
   resetRecordingUI();
   if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
   const d = res.data;
-  const warna = d.hasil === 'benar' ? 'var(--leaf)' : d.hasil === 'hampir_benar' ? 'var(--sunshine-dark)' : 'var(--coral)';
+  // === DEBUG — hapus setelah selesai ===
+  console.log('=== DEBUG LANJUTKAN ===');
+  console.log('Transkripsi Gemini:', d.transkripsi || '(kosong)');
+  console.log('Hasil:', d.hasil, '| Skor:', d.skor);
+  // =====================================
   document.getElementById('micSkor').textContent    = d.skor + ' / 100';
   document.getElementById('micSkor').style.color    = warna;
   document.getElementById('micEmoji').textContent   = d.emoji || '🎙️';
@@ -1168,6 +1176,16 @@ async function processRecording() {
   document.getElementById('micFeedback').textContent = d.feedback;
   document.getElementById('micTajwid').textContent  = d.catatan_tajwid ? '📝 ' + d.catatan_tajwid : '';
   document.getElementById('micResult').style.display = 'block';
+
+  // Tampilkan transkripsi untuk verifikasi
+  const tEl = document.getElementById('micTranskripsi');
+  if (d.transkripsi) {
+    tEl.textContent = '🎧 Gemini mendengar: ' + d.transkripsi;
+    tEl.style.display = 'block';
+    console.log('[DEBUG] Transkripsi Gemini:', d.transkripsi);
+  } else {
+    tEl.style.display = 'none';
+  }
 }
 
 function resetRecordingUI() {
@@ -1408,6 +1426,11 @@ async function processMurojaahRecording() {
   if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
 
   const d     = res.data;
+  // === DEBUG — hapus setelah selesai ===
+  console.log('=== DEBUG MUROJAAH ===');
+  console.log('Transkripsi Gemini:', d.transkripsi || '(kosong)');
+  console.log('Lulus:', d.lulus, '| Skor:', d.skor, '| Ayat terbaca:', d.ayat_terbaca);
+  // =====================================
   const warna = d.lulus ? 'var(--leaf-dark)' : 'var(--coral-dark)';
   document.getElementById('murojaahSkor').textContent    = d.skor + ' / 100';
   document.getElementById('murojaahSkor').style.color    = warna;
@@ -1417,9 +1440,44 @@ async function processMurojaahRecording() {
   document.getElementById('murojaahFeedback').textContent = d.feedback;
   document.getElementById('murojaahResult').style.display = 'block';
 
+  // Tampilkan transkripsi untuk verifikasi
+  const tEl = document.getElementById('murojaahTranskripsi');
+  if (d.transkripsi) {
+    tEl.textContent = '🎧 Gemini mendengar: ' + d.transkripsi;
+    tEl.style.display = 'block';
+    console.log('[DEBUG] Transkripsi Gemini:', d.transkripsi);
+  } else {
+    tEl.style.display = 'none';
+  }
+
   const jU = document.getElementById('murojaahJadwalUlang');
   if (jU && d.next && d.next.jadwal_ulang && !d.lulus) jU.style.display = 'block';
   if (jU && d.lulus) jU.style.display = 'none';
+}
+// ===== DEBUG — hapus setelah diagnosa =====
+async function debugUploadAudio() {
+  if (!MS.audioChunks || MS.audioChunks.length === 0) {
+    showToast('Rekam dulu sebelum debug!'); return;
+  }
+  showToast('Mengupload audio ke Drive...');
+  const blob   = new Blob(MS.audioChunks, { type: MS.mimeType });
+  const base64 = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+  const result = await api({ action: 'debugAudio', audio_base64: base64, mime_type: MS.mimeType });
+  if (result.success) {
+    showToast('✅ ' + result.size_kb + ' — buka console untuk URL');
+    console.log('=== DEBUG AUDIO ===');
+    console.log('MIME type :', result.mime_type);
+    console.log('Ukuran    :', result.size_kb);
+    console.log('Drive URL :', result.url);
+    console.log('Direct URL:', result.direct_url);
+  } else {
+    showToast('❌ ' + result.message);
+  }
 }
 
 </script>
