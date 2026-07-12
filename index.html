@@ -1429,6 +1429,7 @@ async function processMurojaahRecording() {
   // === DEBUG — hapus setelah selesai ===
   console.log('=== DEBUG MUROJAAH ===');
   console.log('Transkripsi Gemini:', d.transkripsi || '(kosong)');
+  console.log('Server error     :', d._debug && d._debug.error ? d._debug.error : '(tidak ada)');
   console.log('Lulus:', d.lulus, '| Skor:', d.skor, '| Ayat terbaca:', d.ayat_terbaca);
   // =====================================
   const warna = d.lulus ? 'var(--leaf-dark)' : 'var(--coral-dark)';
