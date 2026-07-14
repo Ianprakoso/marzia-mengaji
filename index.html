@@ -1147,44 +1147,60 @@ function stopRecording() {
 
 async function processRecording() {
   const blob = new Blob(S.audioChunks, { type: S.mimeType });
-  const base64 = await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-  document.getElementById('micHint').textContent = 'Menilai bacaan...';
-  const res = await api({
-    action:       'nilaiRekaman',
-    audio_base64: base64,
-    mime_type:    S.mimeType,
-    surah_number: S.lanjutSurahNumber,
-    ayat_number:  S.lanjutAyatNumber,
-  });
-  resetRecordingUI();
-  if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
-  const d = res.data;
-  // === DEBUG — hapus setelah selesai ===
-  console.log('=== DEBUG LANJUTKAN ===');
-  console.log('Transkripsi Gemini:', d.transkripsi || '(kosong)');
-  console.log('Hasil:', d.hasil, '| Skor:', d.skor);
-  // =====================================
-  document.getElementById('micSkor').textContent    = d.skor + ' / 100';
-  document.getElementById('micSkor').style.color    = warna;
-  document.getElementById('micEmoji').textContent   = d.emoji || '🎙️';
-  document.getElementById('micHasil').textContent   = d.hasil.replace('_',' ').toUpperCase();
-  document.getElementById('micFeedback').textContent = d.feedback;
-  document.getElementById('micTajwid').textContent  = d.catatan_tajwid ? '📝 ' + d.catatan_tajwid : '';
-  document.getElementById('micResult').style.display = 'block';
 
-  // Tampilkan transkripsi untuk verifikasi
-  const tEl = document.getElementById('micTranskripsi');
-  if (d.transkripsi) {
-    tEl.textContent = '🎧 Gemini mendengar: ' + d.transkripsi;
-    tEl.style.display = 'block';
-    console.log('[DEBUG] Transkripsi Gemini:', d.transkripsi);
-  } else {
-    tEl.style.display = 'none';
+  document.getElementById('micHint').textContent = 'Mengupload audio...';
+
+  try {
+    // Step 1: Minta upload URL dari GAS
+    const sessionRes = await api({ action: 'getUploadUrl', mime_type: S.mimeType });
+    if (!sessionRes.success) throw new Error(sessionRes.message);
+
+    // Step 2: Upload audio binary langsung dari browser ke Gemini Files API
+    // Tidak melalui GAS — tidak ada base64, tidak ada konversi
+    const uploadRes = await fetch(sessionRes.data.uploadUrl, {
+      method:  'POST',
+      headers: {
+        'Content-Type':          S.mimeType,
+        'X-Goog-Upload-Offset':  '0',
+        'X-Goog-Upload-Command': 'upload, finalize',
+      },
+      body: blob
+    });
+
+    if (!uploadRes.ok) throw new Error('Upload audio gagal: ' + uploadRes.status);
+    const uploadData = await uploadRes.json();
+    const fileUri    = uploadData.file?.uri;
+    if (!fileUri) throw new Error('Gagal mendapat fileUri dari Gemini.');
+
+    document.getElementById('micHint').textContent = 'Menilai bacaan...';
+
+    // Step 3: Kirim fileUri ke GAS untuk dievaluasi
+    const res = await api({
+      action:       'nilaiRekaman',
+      file_uri:     fileUri,
+      mime_type:    S.mimeType,
+      surah_number: S.lanjutSurahNumber,
+      ayat_number:  S.lanjutAyatNumber,
+    });
+
+    resetRecordingUI();
+    if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
+
+    const d     = res.data;
+    console.log('[DEBUG Lanjutkan] Transkripsi:', d.transkripsi, '| Error:', d._debug?.error);
+    const warna = d.hasil === 'benar' ? 'var(--leaf)' : d.hasil === 'hampir_benar' ? 'var(--sunshine-dark)' : 'var(--coral)';
+    document.getElementById('micSkor').textContent    = d.skor + ' / 100';
+    document.getElementById('micSkor').style.color    = warna;
+    document.getElementById('micEmoji').textContent   = d.emoji || '🎙️';
+    document.getElementById('micHasil').textContent   = d.hasil ? d.hasil.replace('_', ' ').toUpperCase() : '—';
+    document.getElementById('micFeedback').textContent = d.feedback;
+    document.getElementById('micTajwid').textContent  = d.catatan_tajwid ? '📝 ' + d.catatan_tajwid : '';
+    document.getElementById('micResult').style.display = 'block';
+
+  } catch(e) {
+    resetRecordingUI();
+    showToast('Error: ' + e.message);
+    console.error('[processRecording]', e);
   }
 }
 
@@ -1402,82 +1418,70 @@ function stopMurojaahRecording() {
 
 async function processMurojaahRecording() {
   const blob   = new Blob(MS.audioChunks, { type: MS.mimeType });
-  const base64 = await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-
-  const res = await api({
-    action:       'rekamanMurojaah',
-    audio_base64: base64,
-    mime_type:    MS.mimeType,
-    surah_number: MS.surahNumber,
-    schedule_id:  MS.scheduleId,
-    ayat_awal:    MS.ayatAwal,
-    ayat_akhir:   MS.ayatAkhir,
-  });
-
   const micBtn = document.getElementById('murojaahMicBtn');
-  if (micBtn) { micBtn.textContent = '🎤'; micBtn.classList.remove('recording'); }
-  document.getElementById('murojaahHint').textContent = 'Sentuh mikrofon untuk rekam ulang';
 
-  if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
+  document.getElementById('murojaahHint').textContent = 'Mengupload audio...';
+  if (micBtn) { micBtn.textContent = '⏳'; micBtn.classList.remove('recording'); }
 
-  const d     = res.data;
-  // === DEBUG — hapus setelah selesai ===
-  console.log('=== DEBUG MUROJAAH ===');
-  console.log('Transkripsi Gemini:', d.transkripsi || '(kosong)');
-  console.log('Server error     :', d._debug && d._debug.error ? d._debug.error : '(tidak ada)');
-  console.log('Lulus:', d.lulus, '| Skor:', d.skor, '| Ayat terbaca:', d.ayat_terbaca);
-  // =====================================
-  const warna = d.lulus ? 'var(--leaf-dark)' : 'var(--coral-dark)';
-  document.getElementById('murojaahSkor').textContent    = d.skor + ' / 100';
-  document.getElementById('murojaahSkor').style.color    = warna;
-  document.getElementById('murojaahEmoji').textContent   = d.emoji || '🎙️';
-  document.getElementById('murojaahBadge').textContent   = d.lulus ? '✅ LULUS' : '❌ Belum Lulus';
-  document.getElementById('murojaahBadge').className     = 'res-badge ' + (d.lulus ? 'lulus' : 'belum');
-  document.getElementById('murojaahFeedback').textContent = d.feedback;
-  document.getElementById('murojaahResult').style.display = 'block';
+  try {
+    // Step 1: Minta upload URL dari GAS
+    const sessionRes = await api({ action: 'getUploadUrl', mime_type: MS.mimeType });
+    if (!sessionRes.success) throw new Error(sessionRes.message);
 
-  // Tampilkan transkripsi untuk verifikasi
-  const tEl = document.getElementById('murojaahTranskripsi');
-  if (d.transkripsi) {
-    tEl.textContent = '🎧 Gemini mendengar: ' + d.transkripsi;
-    tEl.style.display = 'block';
-    console.log('[DEBUG] Transkripsi Gemini:', d.transkripsi);
-  } else {
-    tEl.style.display = 'none';
-  }
+    // Step 2: Upload audio binary langsung dari browser ke Gemini Files API
+    const uploadRes = await fetch(sessionRes.data.uploadUrl, {
+      method:  'POST',
+      headers: {
+        'Content-Type':          MS.mimeType,
+        'X-Goog-Upload-Offset':  '0',
+        'X-Goog-Upload-Command': 'upload, finalize',
+      },
+      body: blob
+    });
 
-  const jU = document.getElementById('murojaahJadwalUlang');
-  if (jU && d.next && d.next.jadwal_ulang && !d.lulus) jU.style.display = 'block';
-  if (jU && d.lulus) jU.style.display = 'none';
-}
-// ===== DEBUG — hapus setelah diagnosa =====
-async function debugUploadAudio() {
-  if (!MS.audioChunks || MS.audioChunks.length === 0) {
-    showToast('Rekam dulu sebelum debug!'); return;
-  }
-  showToast('Mengupload audio ke Drive...');
-  const blob   = new Blob(MS.audioChunks, { type: MS.mimeType });
-  const base64 = await new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload  = () => res(r.result.split(',')[1]);
-    r.onerror = rej;
-    r.readAsDataURL(blob);
-  });
-  const result = await api({ action: 'debugAudio', audio_base64: base64, mime_type: MS.mimeType });
-  if (result.success) {
-    showToast('✅ ' + result.size_kb + ' — buka console untuk URL');
-    console.log('=== DEBUG AUDIO ===');
-    console.log('MIME type :', result.mime_type);
-    console.log('Ukuran    :', result.size_kb);
-    console.log('Drive URL :', result.url);
-    console.log('Direct URL:', result.direct_url);
-  } else {
-    showToast('❌ ' + result.message);
+    if (!uploadRes.ok) throw new Error('Upload audio gagal: ' + uploadRes.status);
+    const uploadData = await uploadRes.json();
+    const fileUri    = uploadData.file?.uri;
+    if (!fileUri) throw new Error('Gagal mendapat fileUri dari Gemini.');
+
+    document.getElementById('murojaahHint').textContent = 'Menilai bacaanmu...';
+
+    // Step 3: Kirim fileUri ke GAS untuk dievaluasi
+    const res = await api({
+      action:       'rekamanMurojaah',
+      file_uri:     fileUri,
+      mime_type:    MS.mimeType,
+      surah_number: MS.surahNumber,
+      schedule_id:  MS.scheduleId,
+      ayat_awal:    MS.ayatAwal,
+      ayat_akhir:   MS.ayatAkhir,
+    });
+
+    if (micBtn) micBtn.textContent = '🎤';
+    document.getElementById('murojaahHint').textContent = 'Sentuh mikrofon untuk rekam ulang';
+
+    if (!res.success) { showToast(res.message || 'Gagal menilai rekaman.'); return; }
+
+    const d     = res.data;
+    console.log('[DEBUG Murojaah] Transkripsi:', d.transkripsi, '| Error:', d._debug?.error);
+    const warna = d.lulus ? 'var(--leaf-dark)' : 'var(--coral-dark)';
+    document.getElementById('murojaahSkor').textContent     = d.skor + ' / 100';
+    document.getElementById('murojaahSkor').style.color     = warna;
+    document.getElementById('murojaahEmoji').textContent    = d.emoji || '🎙️';
+    document.getElementById('murojaahBadge').textContent    = d.lulus ? '✅ LULUS' : '❌ Belum Lulus';
+    document.getElementById('murojaahBadge').className      = 'res-badge ' + (d.lulus ? 'lulus' : 'belum');
+    document.getElementById('murojaahFeedback').textContent = d.feedback;
+    document.getElementById('murojaahResult').style.display = 'block';
+
+    const jU = document.getElementById('murojaahJadwalUlang');
+    if (jU && d.next && d.next.jadwal_ulang && !d.lulus) jU.style.display = 'block';
+    if (jU && d.lulus) jU.style.display = 'none';
+
+  } catch(e) {
+    if (micBtn) micBtn.textContent = '🎤';
+    document.getElementById('murojaahHint').textContent = 'Sentuh mikrofon untuk rekam ulang';
+    showToast('Error: ' + e.message);
+    console.error('[processMurojaahRecording]', e);
   }
 }
 
