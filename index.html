@@ -189,6 +189,71 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .lanjut-soal-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 18px 0; }
 .coming-soon-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--gray-island); color: var(--ink-soft); border-radius: 99px; padding: 6px 14px; font-size: 11px; font-weight: 700; margin-top: 14px; }
 
+/* ── REWARD SYSTEM ─────────────────────────────────────────── */
+.reward-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.35); border-radius: 12px;
+  padding: 6px 10px; margin-top: 10px; position: relative; z-index: 1;
+}
+.reward-stars { font-family: 'Baloo 2', sans-serif; font-size: 13px; font-weight: 700; color: var(--ink); }
+.reward-level { font-size: 10px; font-weight: 700; color: var(--ink-soft); flex-grow: 1; }
+.reward-streak { font-size: 12px; font-weight: 700; color: var(--coral-dark); }
+
+/* Panel reward di beranda */
+.reward-panel {
+  background: white; border-radius: 28px; padding: 20px;
+  box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10);
+  margin-bottom: 20px;
+}
+.reward-panel-title {
+  font-family: 'Baloo 2', sans-serif; font-size: 14px; font-weight: 700;
+  color: var(--ink-soft); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.level-display {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+}
+.level-icon { font-size: 42px; }
+.level-name { font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); }
+.level-stars { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin-top: 2px; }
+.level-progress-track { height: 10px; border-radius: 99px; background: var(--gray-island); overflow: hidden; margin-top: 8px; }
+.level-progress-fill  { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--sunshine), var(--coral)); transition: width 0.8s ease; }
+.level-next { font-size: 10px; color: var(--ink-soft); font-weight: 600; margin-top: 4px; text-align: right; }
+
+/* Lencana surah */
+.badges-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: var(--cream); border-radius: 14px; padding: 10px 12px;
+  min-width: 60px; text-align: center;
+}
+.badge-item.earned { background: linear-gradient(135deg, #FFF8DC, #FFE3A0); border: 1px solid var(--sunshine); }
+.badge-icon  { font-size: 22px; }
+.badge-name  { font-size: 9px; font-weight: 700; color: var(--ink-soft); }
+.badge-item.earned .badge-name { color: var(--sunshine-dark); }
+
+/* Streak card */
+.streak-card {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, #FFF0EE, #FFE8E6);
+  border-radius: 18px; padding: 14px 16px; margin-top: 14px;
+  border: 1px solid rgba(255,107,91,0.2);
+}
+.streak-fire { font-size: 32px; }
+.streak-count { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; color: var(--coral-dark); line-height: 1; }
+.streak-label { font-size: 10px; font-weight: 700; color: var(--coral); text-transform: uppercase; letter-spacing: 0.05em; }
+.streak-msg   { font-size: 11px; color: var(--ink-soft); font-weight: 600; margin-top: 2px; }
+
+/* Toast reward khusus */
+.reward-toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--sunshine), var(--coral));
+  color: white; padding: 12px 24px; border-radius: 99px;
+  font-family: 'Quicksand', sans-serif; font-size: 13px; font-weight: 700;
+  z-index: 9999; box-shadow: 0 8px 24px rgba(255,107,91,0.4);
+  opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+}
+
 /* ── MUROJA'AH ─────────────────────────────────────────────── */
 .sched-card { background: white; border-radius: 22px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 6px 16px -8px rgba(63,190,114,0.18); margin-bottom: 12px; border-left: 5px solid var(--leaf); }
 .sched-card.tinggi { border-left-color: var(--leaf-dark); box-shadow: 0 6px 16px -6px rgba(63,190,114,0.35); }
@@ -286,6 +351,11 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             <div class="progress-track">
               <div class="progress-fill" id="hdr-pbar" style="width:0%"></div>
             </div>
+            <div class="reward-bar">
+              <span class="reward-stars">⭐ <span id="hdr-stars">0</span></span>
+              <span class="reward-level" id="hdr-level">Santri Pemula</span>
+              <span class="reward-streak">🔥 <span id="hdr-streak">0</span> hari</span>
+            </div>
           </div>
         </div>
         <nav class="nav">
@@ -310,6 +380,38 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <div>
             <h3>Yuk, Kumpulkan Bintang!</h3>
             <p>Tandai setiap ayat yang sudah berhasil kamu hafal untuk menerangi pulau-pulau di peta petualanganmu.</p>
+          </div>
+        </div>
+
+        <!-- REWARD PANEL -->
+        <div class="reward-panel">
+          <div class="reward-panel-title">🎖️ Pencapaianmu</div>
+          <div class="level-display">
+            <div class="level-icon" id="reward-level-icon">🌱</div>
+            <div style="flex-grow:1">
+              <div class="level-name" id="reward-level-name">Santri Pemula</div>
+              <div class="level-stars" id="reward-level-stars">0 / 50 bintang menuju level berikutnya</div>
+              <div class="level-progress-track">
+                <div class="level-progress-fill" id="reward-level-bar" style="width:0%"></div>
+              </div>
+              <div class="level-next" id="reward-level-next"></div>
+            </div>
+          </div>
+
+          <div class="reward-panel-title" style="margin-top:4px;">🏅 Lencana Surah</div>
+          <div class="badges-grid" id="badgesGrid">
+            <div style="font-size:12px;color:var(--ink-soft);font-weight:600;">Hafal surah penuh untuk dapatkan lencana!</div>
+          </div>
+
+          <div class="streak-card">
+            <div class="streak-fire">🔥</div>
+            <div>
+              <div class="streak-count" id="streak-count">0</div>
+              <div class="streak-label">Hari Berturut</div>
+            </div>
+            <div style="margin-left:4px;">
+              <div class="streak-msg" id="streak-msg">Mulai muroja'ah hari ini!</div>
+            </div>
           </div>
         </div>
         <div class="section-title">🗺️ Pulau Petualangan Juz 30</div>
@@ -397,7 +499,10 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
     <button class="bottom-nav-item" onclick="doLogout()"><span class="bn-icon">🚪</span>Keluar</button>
   </div>
 
-  <!-- MODAL SELF ASSESSMENT MUROJA'AH -->
+  <!-- REWARD TOAST -->
+  <div class="reward-toast" id="rewardToast"></div>
+
+</div><!-- end pg-app -->
   <div class="modal-overlay" id="murojaahModal">
     <div class="modal-box">
       <h3 id="modalSurahName">—</h3>
@@ -450,7 +555,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 
 <script>
 /* ── KONFIGURASI ───────────────────────────────────────────── */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby6wVjKJUCqaJ3GciFXrVQT2yo861TBvV1aPWRXEsqy3O8md71JqZv-52ls1Tag/exec';
+const GAS_URL = 'GANTI_DENGAN_URL_DEPLOY_GAS_KAMU';
 
 /* ── STATE GLOBAL ──────────────────────────────────────────── */
 const S = {
@@ -465,15 +570,14 @@ const S = {
   currentAyatList: [],
   autoplayAudio:   null,
   qari:            'misyari',
-  lanjutSoalAudio: null,
-  lanjutSurahNumber: null,
-  lanjutAyatNumber:  null,
+  lanjutSoalAudio:     null,
+  lanjutSurahNumber:   null,
+  lanjutAyatNumber:    null,
   tebakSoal:       null,
   tebakJawabanIdx: null,
   tebakAnswered:   false,
   tebakNo:         0,
-  // Muroja'ah modal
-  murojaahScheduleId: null,
+  murojaahScheduleId:  null,
   murojaahSurahNumber: null,
 };
 
@@ -500,12 +604,15 @@ async function submitAuth() {
   const password = document.getElementById('auth-password').value;
   const btn      = document.getElementById('auth-submit');
   if (!username || !password) { showAuthError('Isi username dan password dulu ya!'); return; }
-  btn.disabled = true;
+  btn.disabled    = true;
   btn.textContent = authMode === 'login' ? 'Masuk...' : 'Mendaftar...';
   try {
     const res = await api({ action: authMode, username, password });
     if (!res.success) { showAuthError(res.message); return; }
-    if (authMode === 'register') { showAuthError('Pendaftaran berhasil! Silakan masuk.', true); setAuthMode('login'); return; }
+    if (authMode === 'register') {
+      showAuthError('Pendaftaran berhasil! Silakan masuk.', true);
+      setAuthMode('login'); return;
+    }
     S.token    = res.token;
     S.username = res.username;
     localStorage.setItem('mm_token',    S.token);
@@ -514,14 +621,14 @@ async function submitAuth() {
   } catch(e) {
     showAuthError('Gagal terhubung ke server. Coba lagi.');
   } finally {
-    btn.disabled = false;
+    btn.disabled    = false;
     btn.textContent = authMode === 'login' ? 'Masuk' : 'Daftar';
   }
 }
 
 function showAuthError(msg, isSuccess = false) {
   const el = document.getElementById('auth-error');
-  el.textContent  = msg;
+  el.textContent   = msg;
   el.style.display = 'block';
   el.style.background = isSuccess ? '#EEFBF3' : '#FFE8E6';
   el.style.color      = isSuccess ? 'var(--leaf-dark)' : 'var(--coral-dark)';
@@ -551,18 +658,19 @@ async function enterApp() {
 async function loadInitialData() {
   const res = await api({ action: 'getInitialData' });
   if (!res.success) { showToast('Gagal memuat data: ' + res.message); return; }
-  const d        = res.data;
-  S.surahList    = d.surahList;
-  S.ayatList     = d.ayatList;
-  S.progressMap  = d.progressMap;
-  S.totalHafal   = d.totalHafal;
-  S.username     = d.username;
+  const d       = res.data;
+  S.surahList   = d.surahList;
+  S.ayatList    = d.ayatList;
+  S.progressMap = d.progressMap;
+  S.totalHafal  = d.totalHafal;
+  S.username    = d.username;
   document.getElementById('hdr-name').textContent     = d.username;
   document.getElementById('hdr-prog-val').textContent = d.totalHafal + ' / ' + d.totalAyat + ' Ayat';
   document.getElementById('hdr-pbar').style.width     = Math.round(d.totalHafal / d.totalAyat * 100) + '%';
   renderBeranda();
   renderSurahList();
   autoSetupLanjut();
+  updateRewardUI(); // ← reward system
 }
 
 /* ── TAB SWITCHING ─────────────────────────────────────────── */
@@ -602,9 +710,10 @@ function switchTab(tab) {
 }
 
 function initNavColors() {
-  const bn = document.querySelector('.bottom-nav-item[data-tab="beranda"]');
-  const an = document.querySelector('.nav-item[data-tab="beranda"]');
-  [bn, an].forEach(el => { if (el) { el.style.background = NAV_GRADIENT.beranda; el.style.color = 'white'; el.style.boxShadow = '0 6px 14px -4px rgba(0,0,0,0.2)'; } });
+  ['.bottom-nav-item[data-tab="beranda"]', '.nav-item[data-tab="beranda"]'].forEach(sel => {
+    const el = document.querySelector(sel);
+    if (el) { el.style.background = NAV_GRADIENT.beranda; el.style.color = 'white'; el.style.boxShadow = '0 6px 14px -4px rgba(0,0,0,0.2)'; }
+  });
 }
 
 /* ── BERANDA ───────────────────────────────────────────────── */
@@ -615,10 +724,10 @@ function renderBeranda() {
   const sorted    = [...S.surahList].sort((a, b) => Number(b.surah_number) - Number(a.surah_number));
   const nextSurah = [...S.surahList].sort((a, b) => Number(a.surah_number) - Number(b.surah_number)).find(s => s.status !== 'hafal');
   sorted.forEach((s, idx) => {
-    const row    = document.createElement('div');
+    const row     = document.createElement('div');
     row.className = `island-row ${idx % 2 === 0 ? 'left' : 'right'}`;
-    const isNext = nextSurah && Number(s.surah_number) === Number(nextSurah.surah_number);
-    const icon   = s.status === 'hafal' ? '👑' : s.status === 'sedang' ? '📝' : '🔒';
+    const isNext  = nextSurah && Number(s.surah_number) === Number(nextSurah.surah_number);
+    const icon    = s.status === 'hafal' ? '👑' : s.status === 'sedang' ? '📝' : '🔒';
     row.innerHTML = `
       <div class="island ${s.status}${isNext ? ' next' : ''}" onclick="openSurahDetail(${s.surah_number})">
         <div class="island-badge">${s.surah_number}<div class="island-status-icon">${icon}</div></div>
@@ -664,13 +773,9 @@ function renderSurahList() {
   const c = document.getElementById('surahListContainer');
   c.innerHTML = '';
   if (!S.surahList.length) { c.innerHTML = '<div class="loading-state" style="grid-column:1/-1">Belum ada data.</div>'; return; }
-  const numGrad = {
-    hafal:  'linear-gradient(135deg,var(--leaf),var(--leaf-dark))',
-    sedang: 'linear-gradient(135deg,var(--sky),var(--sky-dark))',
-    belum:  'linear-gradient(135deg,#C9C3DE,#B3ACCB)',
-  };
+  const numGrad = { hafal: 'linear-gradient(135deg,var(--leaf),var(--leaf-dark))', sedang: 'linear-gradient(135deg,var(--sky),var(--sky-dark))', belum: 'linear-gradient(135deg,#C9C3DE,#B3ACCB)' };
   [...S.surahList].sort((a, b) => Number(b.surah_number) - Number(a.surah_number)).forEach(s => {
-    const card  = document.createElement('div');
+    const card = document.createElement('div');
     card.className = 'surah-card';
     card.onclick   = () => openSurahDetail(s.surah_number);
     card.innerHTML = `
@@ -717,15 +822,19 @@ function renderAyatDetail() {
 }
 
 async function updateStatus(ayatIdx, newStatus, btn) {
-  const a   = S.currentAyatList[ayatIdx];
-  const key = String(a.surah_number) + '_' + String(a.ayat_number);
+  const a    = S.currentAyatList[ayatIdx];
+  const key  = String(a.surah_number) + '_' + String(a.ayat_number);
   const card = document.getElementById(`ayat-card-${ayatIdx}`);
   card.className = `ayat-card ${newStatus}`;
   card.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  const prevStars    = S.totalHafal;
   S.progressMap[key] = newStatus;
+
   const res = await api({ action: 'updateProgress', surah_number: a.surah_number, ayat_number: a.ayat_number, status: newStatus });
   if (!res.success) { showToast('Gagal menyimpan: ' + res.message); return; }
+
+  // Update surah stats
   const surah = S.surahList.find(s => Number(s.surah_number) === Number(a.surah_number));
   if (surah) {
     const ayatS = S.ayatList.filter(x => Number(x.surah_number) === Number(a.surah_number));
@@ -738,9 +847,17 @@ async function updateStatus(ayatIdx, newStatus, btn) {
     surah.pct    = Math.round(hafal / surah.jumlah_ayat * 100);
     surah.status = hafal === surah.jumlah_ayat ? 'hafal' : hafal > 0 || sedang > 0 ? 'sedang' : 'belum';
   }
+
   S.totalHafal = Object.values(S.progressMap).filter(v => v === 'hafal').length;
   document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
   document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
+
+  // Reward: cek level up & lencana baru
+  if (newStatus === 'hafal') {
+    checkLevelUp(prevStars, S.totalHafal);
+    if (surah && surah.status === 'hafal') checkBadgeUnlock(a.surah_number);
+  }
+  updateRewardUI();
   renderBeranda();
 }
 
@@ -781,7 +898,7 @@ function playAyatByIdx(idx) {
     if (card) card.classList.remove('playing');
     if (autoplayOn) {
       const next = idx + 1;
-      if (next < S.currentAyatList.length) { playAyatByIdx(next); }
+      if (next < S.currentAyatList.length) playAyatByIdx(next);
       else { stopAutoplay(); document.getElementById('autoplay-status').textContent = 'Selesai! Semua ayat sudah diputar.'; }
     }
   };
@@ -814,10 +931,10 @@ async function loadTebakSoal() {
       <button onclick="loadTebakSoal()" style="margin-top:10px;padding:10px 20px;border-radius:14px;border:none;background:var(--pink);color:white;font-weight:700;cursor:pointer;">Coba Lagi</button></div>`;
     return;
   }
-  const d = res.data;
-  S.tebakSoal       = d.soal;
+  const d         = res.data;
+  S.tebakSoal     = d.soal;
   S.tebakJawabanIdx = d.jawaban_index;
-  const soalAudio   = S.qari === 'misyari' ? (d.soal.audio_misyari || d.soal.audio_ibrahim) : (d.soal.audio_ibrahim || d.soal.audio_misyari);
+  const soalAudio = S.qari === 'misyari' ? (d.soal.audio_misyari || d.soal.audio_ibrahim) : (d.soal.audio_ibrahim || d.soal.audio_misyari);
   c.innerHTML = `
     <div class="quiz-card">
       <div class="quiz-progress">Soal ke-${S.tebakNo}</div>
@@ -826,7 +943,7 @@ async function loadTebakSoal() {
         <div class="quiz-arabic" dir="rtl" style="margin:0">${d.soal.teks_arab}</div>
         ${soalAudio ? `<button class="audio-mini-btn" onclick="playAudioUrl('${soalAudio}')">▶</button>` : ''}
       </div>
-      <div class="quiz-options" id="quizOptions">
+      <div class="quiz-options">
         ${d.pilihan.map((p, i) => {
           const pAudio = S.qari === 'misyari' ? (p.audio_misyari || p.audio_ibrahim) : (p.audio_ibrahim || p.audio_misyari);
           return `<div class="quiz-option" dir="rtl" id="qopt-${i}" onclick="jawabTebak(${i})">
@@ -860,7 +977,8 @@ function autoSetupLanjut() {
   const target = S.surahList.filter(s => s.status === 'sedang' || s.status === 'hafal')
     .sort((a, b) => Number(a.surah_number) - Number(b.surah_number))
     .find(s => s.status === 'sedang') ||
-    S.surahList.filter(s => s.status === 'hafal').sort((a, b) => Number(b.surah_number) - Number(a.surah_number))[0];
+    S.surahList.filter(s => s.status === 'hafal')
+    .sort((a, b) => Number(b.surah_number) - Number(a.surah_number))[0];
   if (target) setupLanjutSoal(target.surah_number);
 }
 
@@ -873,11 +991,11 @@ function setupLanjutSoal(surahNumber) {
     if (S.progressMap[key] === 'hafal' || S.progressMap[key] === 'sedang') soalAyat = a;
   }
   const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
-  S.lanjutSoalAudio    = getAudioUrl(soalAyat);
-  S.lanjutSurahNumber  = surahNumber;
-  S.lanjutAyatNumber   = soalAyat.ayat_number;
-  document.getElementById('lanjut-surah-tag').textContent  = (surah ? surah.nama_latin : 'Surah ' + surahNumber) + ' • Ayat ' + soalAyat.ayat_number;
-  document.getElementById('lanjut-soal-arab').textContent  = soalAyat.teks_arab;
+  S.lanjutSoalAudio   = getAudioUrl(soalAyat);
+  S.lanjutSurahNumber = surahNumber;
+  S.lanjutAyatNumber  = soalAyat.ayat_number;
+  document.getElementById('lanjut-surah-tag').textContent = (surah ? surah.nama_latin : 'Surah ' + surahNumber) + ' • Ayat ' + soalAyat.ayat_number;
+  document.getElementById('lanjut-soal-arab').textContent = soalAyat.teks_arab;
 }
 
 /* ── MUROJA'AH ─────────────────────────────────────────────── */
@@ -897,7 +1015,7 @@ async function loadMurojaah() {
     return;
   }
   c.innerHTML = jadwal.map(j => {
-    const tgl  = new Date(j.tanggal_jadwal);
+    const tgl   = new Date(j.tanggal_jadwal);
     const surah = S.surahList.find(s => Number(s.surah_number) === Number(j.surah_number));
     const nama  = surah ? surah.nama_latin : 'Surah ' + j.surah_number;
     const isAvailable = j.tanggal_jadwal <= today;
@@ -921,11 +1039,10 @@ async function loadMurojaah() {
 
 function openMurojaahModal(scheduleId, surahNumber) {
   const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
-  const nama  = surah ? surah.nama_latin : 'Surah ' + surahNumber;
   S.murojaahScheduleId  = scheduleId;
   S.murojaahSurahNumber = surahNumber;
-  document.getElementById('modalSurahName').textContent = nama;
-  document.getElementById('modalSurahTag').textContent  = (surah ? surah.jumlah_ayat + ' Ayat' : '');
+  document.getElementById('modalSurahName').textContent = surah ? surah.nama_latin : 'Surah ' + surahNumber;
+  document.getElementById('modalSurahTag').textContent  = surah ? surah.jumlah_ayat + ' Ayat' : '';
   document.getElementById('assessGrid').style.display   = '';
   document.getElementById('modalResult').style.display  = 'none';
   document.getElementById('modalResultJadwal').style.display = 'none';
@@ -938,37 +1055,32 @@ function closeMurojaahModal() {
 }
 
 async function submitSelfAssess(penilaian) {
-  // Sembunyikan tombol pilihan, tampilkan loading
   document.getElementById('assessGrid').style.display = 'none';
-
-  const res = await api({
-    action:      'selesaiMurojaah',
-    schedule_id: S.murojaahScheduleId,
-    surah_number: S.murojaahSurahNumber,
-    penilaian
-  });
-
+  const res = await api({ action: 'selesaiMurojaah', schedule_id: S.murojaahScheduleId, surah_number: S.murojaahSurahNumber, penilaian });
   if (!res.success) { showToast('Gagal menyimpan: ' + res.message); document.getElementById('assessGrid').style.display = ''; return; }
 
-  const d       = res.data;
-  const config  = {
-    lancar:        { emoji: '🌟', label: 'Lulus', badgeClass: 'badge-lulus', msg: 'Masyaallah, hafalanmu lancar sekali! Terus pertahankan ya!' },
-    hampir:        { emoji: '⚠️', label: 'Hampir Lancar', badgeClass: 'badge-hampir', msg: 'Bagus! Masih ada yang perlu dilatih sedikit lagi. Semangat!' },
-    perlu_diulang: { emoji: '💪', label: 'Perlu Diulang', badgeClass: 'badge-perlu',  msg: 'Tidak apa-apa! Hafalan butuh waktu. Status ayat sudah diperbarui agar kamu bisa fokus mengulang.' },
+  const config = {
+    lancar:        { emoji: '🌟', label: 'Lulus',          badgeClass: 'badge-lulus',  msg: 'Masyaallah, hafalanmu lancar sekali! Terus pertahankan ya!' },
+    hampir:        { emoji: '⚠️', label: 'Hampir Lancar',  badgeClass: 'badge-hampir', msg: 'Bagus! Masih ada yang perlu dilatih sedikit lagi. Semangat!' },
+    perlu_diulang: { emoji: '💪', label: 'Perlu Diulang',  badgeClass: 'badge-perlu',  msg: 'Tidak apa-apa! Hafalan butuh waktu. Status ayat sudah diperbarui.' },
   };
-  const cf = config[penilaian] || config.lancar;
+  const cf = config[penilaian];
+  document.getElementById('modalResultEmoji').textContent = cf.emoji;
+  document.getElementById('modalResultBadge').textContent = cf.label;
+  document.getElementById('modalResultBadge').className   = 'modal-result-badge ' + cf.badgeClass;
+  document.getElementById('modalResultMsg').textContent   = cf.msg;
+  document.getElementById('modalResult').style.display    = 'block';
 
-  document.getElementById('modalResultEmoji').textContent    = cf.emoji;
-  document.getElementById('modalResultBadge').textContent    = cf.label;
-  document.getElementById('modalResultBadge').className      = 'modal-result-badge ' + cf.badgeClass;
-  document.getElementById('modalResultMsg').textContent      = cf.msg;
-  document.getElementById('modalResult').style.display       = 'block';
-
-  if (d.next && d.next.jadwal_ulang) {
+  if (res.data.next && res.data.next.jadwal_ulang) {
     document.getElementById('modalResultJadwal').style.display = 'block';
   }
 
-  // Reload progress jika perlu_diulang (ada ayat yang turun ke sedang)
+  // Reward: streak saat muroja'ah selesai (lancar atau hampir)
+  if (penilaian === 'lancar' || penilaian === 'hampir') {
+    incrementStreak();
+  }
+
+  // Reload progress jika ada perubahan ayat
   if (penilaian === 'perlu_diulang') {
     const freshData = await api({ action: 'getInitialData' });
     if (freshData.success) {
@@ -977,8 +1089,113 @@ async function submitSelfAssess(penilaian) {
       S.totalHafal  = freshData.data.totalHafal;
       document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
       document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
+      updateRewardUI();
     }
   }
+}
+
+/* ── REWARD SYSTEM ─────────────────────────────────────────── */
+const LEVELS = [
+  { min: 0,   max: 50,  icon: '🌱', name: 'Santri Pemula' },
+  { min: 50,  max: 150, icon: '📖', name: 'Penghafal Muda' },
+  { min: 150, max: 300, icon: '🌙', name: 'Penjaga Quran' },
+  { min: 300, max: 564, icon: '⭐', name: 'Hafidz Cilik' },
+  { min: 564, max: 999, icon: '👑', name: 'Hafidz Juz 30' },
+];
+
+function getCurrentLevel(stars) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (stars >= LEVELS[i].min) return { ...LEVELS[i], index: i };
+  }
+  return { ...LEVELS[0], index: 0 };
+}
+
+function updateRewardUI() {
+  const stars  = S.totalHafal;
+  const level  = getCurrentLevel(stars);
+  const nextLvl = LEVELS[level.index + 1];
+
+  document.getElementById('hdr-stars').textContent = stars;
+  document.getElementById('hdr-level').textContent = level.name;
+  document.getElementById('reward-level-icon').textContent = level.icon;
+  document.getElementById('reward-level-name').textContent = level.name;
+
+  if (nextLvl) {
+    const pct = Math.round((stars - level.min) / (nextLvl.min - level.min) * 100);
+    document.getElementById('reward-level-stars').textContent = stars + ' / ' + nextLvl.min + ' bintang menuju ' + nextLvl.name;
+    document.getElementById('reward-level-bar').style.width   = Math.min(pct, 100) + '%';
+    document.getElementById('reward-level-next').textContent  = (nextLvl.min - stars) + ' bintang lagi!';
+  } else {
+    document.getElementById('reward-level-stars').textContent = 'Semua ' + stars + ' ayat sudah dihafal! 🎉';
+    document.getElementById('reward-level-bar').style.width   = '100%';
+    document.getElementById('reward-level-next').textContent  = '';
+  }
+
+  renderBadges();
+  updateStreak();
+}
+
+function renderBadges() {
+  const grid = document.getElementById('badgesGrid');
+  const hafalSurah = S.surahList.filter(s => s.status === 'hafal')
+    .sort((a, b) => Number(b.surah_number) - Number(a.surah_number));
+  if (!hafalSurah.length) {
+    grid.innerHTML = '<div style="font-size:12px;color:var(--ink-soft);font-weight:600;">Hafal surah penuh untuk dapatkan lencana!</div>';
+    return;
+  }
+  grid.innerHTML = hafalSurah.map(s => `
+    <div class="badge-item earned" title="${s.nama_latin}">
+      <div class="badge-icon">🏅</div>
+      <div class="badge-name">${s.nama_latin}</div>
+    </div>`).join('');
+}
+
+function updateStreak() {
+  const today  = new Date().toISOString().split('T')[0];
+  const stored = JSON.parse(localStorage.getItem('mm_streak') || '{"count":0,"last":""}');
+  let streak   = stored.count;
+  if (stored.last) {
+    const diff = Math.floor((new Date(today) - new Date(stored.last)) / 86400000);
+    if (diff > 1) {
+      streak = 0;
+      localStorage.setItem('mm_streak', JSON.stringify({ count: 0, last: '' }));
+    }
+  }
+  document.getElementById('streak-count').textContent = streak;
+  document.getElementById('hdr-streak').textContent   = streak;
+  const msgs = ['Mulai muroja\'ah hari ini!','Luar biasa, terus pertahankan!','Kamu konsisten sekali!','Semangat terus setiap hari!'];
+  document.getElementById('streak-msg').textContent = streak === 0 ? msgs[0] : streak < 3 ? msgs[1] : streak < 7 ? msgs[2] : msgs[3];
+}
+
+function incrementStreak() {
+  const today  = new Date().toISOString().split('T')[0];
+  const stored = JSON.parse(localStorage.getItem('mm_streak') || '{"count":0,"last":""}');
+  if (stored.last === today) return;
+  const diff  = stored.last ? Math.floor((new Date(today) - new Date(stored.last)) / 86400000) : 1;
+  const count = diff <= 1 ? stored.count + 1 : 1;
+  localStorage.setItem('mm_streak', JSON.stringify({ count, last: today }));
+  document.getElementById('streak-count').textContent = count;
+  document.getElementById('hdr-streak').textContent   = count;
+  if (count > 1) showRewardToast('🔥 Streak ' + count + ' hari! Luar biasa!');
+}
+
+function checkLevelUp(prevStars, newStars) {
+  const prev = getCurrentLevel(prevStars);
+  const next = getCurrentLevel(newStars);
+  if (next.index > prev.index) showRewardToast(next.icon + ' Level baru: ' + next.name + '!');
+}
+
+function checkBadgeUnlock(surahNumber) {
+  const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
+  if (surah) showRewardToast('🏅 Lencana baru: ' + surah.nama_latin + '!');
+}
+
+function showRewardToast(msg) {
+  const t = document.getElementById('rewardToast');
+  t.textContent   = msg;
+  t.style.opacity = '1';
+  clearTimeout(window._rewardTimer);
+  window._rewardTimer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
 }
 
 /* ── TOAST ─────────────────────────────────────────────────── */
@@ -987,11 +1204,11 @@ function showToast(msg) {
   if (!t) {
     t = document.createElement('div'); t.id = '_toast';
     Object.assign(t.style, {
-      position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
-      background: 'var(--ink)', color: 'white', padding: '10px 20px', borderRadius: '99px',
-      fontSize: '12px', fontWeight: '700', fontFamily: "'Quicksand',sans-serif",
-      zIndex: '9999', boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
-      transition: 'opacity 0.3s ease', pointerEvents: 'none',
+      position:'fixed', bottom:'24px', left:'50%', transform:'translateX(-50%)',
+      background:'var(--ink)', color:'white', padding:'10px 20px', borderRadius:'99px',
+      fontSize:'12px', fontWeight:'700', fontFamily:"'Quicksand',sans-serif",
+      zIndex:'9999', boxShadow:'0 6px 20px rgba(0,0,0,0.25)',
+      transition:'opacity 0.3s ease', pointerEvents:'none',
     });
     document.body.appendChild(t);
   }
@@ -1008,7 +1225,7 @@ window.addEventListener('load', async () => {
     S.token    = savedToken;
     S.username = localStorage.getItem('mm_username');
     const res  = await api({ action: 'getUserProgress' }).catch(() => null);
-    if (res && res.success) { enterApp(); }
+    if (res && res.success) enterApp();
     else { localStorage.removeItem('mm_token'); localStorage.removeItem('mm_username'); }
   }
 });
