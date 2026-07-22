@@ -96,6 +96,21 @@ body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: va
 .loading-spinner { width: 36px; height: 36px; border: 4px solid var(--gray-island); border-top-color: var(--sunshine); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── TOKO BINTANG ──────────────────────────────────────────── */
+.shop-card { background: white; border-radius: 22px; padding: 16px; text-align: center; box-shadow: 0 6px 16px -8px rgba(61,44,95,0.12); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; border: 2px solid transparent; transition: all 0.15s; }
+.shop-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -8px rgba(61,44,95,0.18); }
+.shop-card.owned { border-color: var(--leaf); }
+.shop-card.equipped { border-color: var(--sunshine-dark); background: var(--sunshine-light); }
+.shop-icon-wrap { font-size: 42px; margin: 8px 0; background: var(--cream); border-radius: 16px; padding: 10px; }
+.shop-card.equipped .shop-icon-wrap { background: white; }
+.shop-info h4 { font-family: 'Baloo 2', sans-serif; font-size: 14px; color: var(--ink); line-height: 1.2; margin-bottom: 4px; }
+.shop-info p { font-size: 11px; font-weight: 700; color: var(--sunshine-dark); }
+.shop-btn { width: 100%; padding: 10px; border-radius: 12px; border: none; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.shop-btn.buy { background: linear-gradient(135deg, var(--sunshine), var(--coral)); color: white; }
+.shop-btn.buy:disabled { opacity: 0.5; cursor: not-allowed; }
+.shop-btn.equip { background: var(--leaf); color: white; }
+.shop-btn.unequip { background: var(--coral); color: white; }
+
 /* ── BERANDA — JALUR PULAU ─────────────────────────────────── */
 .welcome-card { background: white; border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10); margin-bottom: 28px; }
 .welcome-icon { font-size: 40px; flex-shrink: 0; }
@@ -336,7 +351,11 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <div class="cloud c2"></div>
           <div class="hero-top">
             <div class="hero-user">
-              <div class="avatar">👧</div>
+              <div style="position:relative; width:48px; height:48px; flex-shrink:0;">
+                <div class="avatar" id="av-base" style="width:100%; height:100%; position:absolute; z-index:1;">👧</div>
+                <div id="av-acc" style="position:absolute; top:-6px; right:-6px; font-size:20px; z-index:2;"></div>
+                <div id="av-pet" style="position:absolute; bottom:-6px; left:-8px; font-size:20px; z-index:3;"></div>
+              </div>
               <div>
                 <div class="hero-greet">Assalamu'alaikum</div>
                 <div class="hero-name" id="hdr-name">—</div>
@@ -362,6 +381,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <div class="nav-title">Menu Petualangan</div>
           <button class="nav-item active" data-tab="beranda"  onclick="switchTab('beranda')"><div class="nav-icon">🏠</div> Beranda Peta</button>
           <button class="nav-item" data-tab="hafal"    onclick="switchTab('hafal')"><div class="nav-icon">📖</div> Hafal Ayat</button>
+          <button class="nav-item" data-tab="toko"     onclick="switchTab('toko')"><div class="nav-icon">🛍️</div> Toko Bintang</button>
           <button class="nav-item" data-tab="tebak"    onclick="switchTab('tebak')"><div class="nav-icon">✨</div> Tebak Ayat</button>
           <button class="nav-item" data-tab="lanjut"   onclick="switchTab('lanjut')"><div class="nav-icon">🎙️</div> Lanjutkan</button>
           <button class="nav-item" data-tab="murojaah" onclick="switchTab('murojaah')"><div class="nav-icon">📅</div> Muroja'ah</button>
@@ -457,6 +477,21 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
         </div>
       </div>
 
+      <!-- TOKO BINTANG -->
+      <div class="tab-page" id="page-toko">
+        <div class="welcome-card" style="margin-bottom:20px;">
+          <div class="welcome-icon">🛍️</div>
+          <div>
+            <h3>Toko Bintang Marzia</h3>
+            <p>Tukarkan bintang hafalanmu dengan avatar, pakaian, dan teman petualangan baru!</p>
+          </div>
+        </div>
+        <div class="section-title">✨ Katalog Barang</div>
+        <div class="grid-2" id="shopContainer">
+          <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div>Memuat toko...</div>
+        </div>
+      </div>
+
       <!-- TEBAK AYAT -->
       <div class="tab-page" id="page-tebak">
         <div class="section-title">✨ Tebak Lanjutan Ayat</div>
@@ -493,16 +528,16 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
   <div class="bottom-nav" id="bottomNav">
     <button class="bottom-nav-item active" data-tab="beranda"  onclick="switchTab('beranda')"><span class="bn-icon">🏠</span>Beranda</button>
     <button class="bottom-nav-item" data-tab="hafal"    onclick="switchTab('hafal')"><span class="bn-icon">📖</span>Hafal</button>
+    <button class="bottom-nav-item" data-tab="toko"     onclick="switchTab('toko')"><span class="bn-icon">🛍️</span>Toko</button>
     <button class="bottom-nav-item" data-tab="tebak"    onclick="switchTab('tebak')"><span class="bn-icon">✨</span>Tebak</button>
     <button class="bottom-nav-item" data-tab="lanjut"   onclick="switchTab('lanjut')"><span class="bn-icon">🎙️</span>Lanjut</button>
     <button class="bottom-nav-item" data-tab="murojaah" onclick="switchTab('murojaah')"><span class="bn-icon">📅</span>Muroja'ah</button>
-    <button class="bottom-nav-item" onclick="doLogout()"><span class="bn-icon">🚪</span>Keluar</button>
   </div>
 
   <!-- REWARD TOAST -->
   <div class="reward-toast" id="rewardToast"></div>
 
-</div><!-- end pg-app -->
+  <!-- MUROJA'AH MODAL -->
   <div class="modal-overlay" id="murojaahModal">
     <div class="modal-box">
       <h3 id="modalSurahName">—</h3>
@@ -555,7 +590,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 
 <script>
 /* ── KONFIGURASI ───────────────────────────────────────────── */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby6wVjKJUCqaJ3GciFXrVQT2yo861TBvV1aPWRXEsqy3O8md71JqZv-52ls1Tag/exec';
+const GAS_URL = 'GANTI_DENGAN_URL_DEPLOY_GAS_KAMU';
 
 /* ── STATE GLOBAL ──────────────────────────────────────────── */
 const S = {
@@ -570,15 +605,29 @@ const S = {
   currentAyatList: [],
   autoplayAudio:   null,
   qari:            'misyari',
-  lanjutSoalAudio:     null,
-  lanjutSurahNumber:   null,
-  lanjutAyatNumber:    null,
+  lanjutSoalAudio: null,
+  lanjutSurahNumber: null,
+  lanjutAyatNumber: null,
   tebakSoal:       null,
   tebakJawabanIdx: null,
   tebakAnswered:   false,
   tebakNo:         0,
-  murojaahScheduleId:  null,
+  murojaahScheduleId: null,
   murojaahSurahNumber: null,
+  
+  // Fitur Toko & Avatar
+  starBalance:     0,
+  unlockedItems:   [],
+  equippedAvatar:  { avatar: 'avatar_default', acc: null, pet: null },
+  shopCatalog: [
+    { id: 'avatar_default', name: 'Santri Ceria', price: 0, icon: '👧', type: 'avatar' },
+    { id: 'avatar_hijab', name: 'Hijab Pink', price: 15, icon: '🧕', type: 'avatar' },
+    { id: 'avatar_koko', name: 'Peci & Koko', price: 15, icon: '👳‍♂️', type: 'avatar' },
+    { id: 'acc_flower', name: 'Bunga Cantik', price: 20, icon: '🌸', type: 'acc' },
+    { id: 'acc_crown', name: 'Mahkota Putri', price: 35, icon: '👑', type: 'acc' },
+    { id: 'pet_cat', name: 'Kucing Putih', price: 50, icon: '🐱', type: 'pet' },
+    { id: 'pet_bird', name: 'Burung Nuri', price: 60, icon: '🦜', type: 'pet' }
+  ]
 };
 
 /* ── API ───────────────────────────────────────────────────── */
@@ -664,13 +713,22 @@ async function loadInitialData() {
   S.progressMap = d.progressMap;
   S.totalHafal  = d.totalHafal;
   S.username    = d.username;
+  
+  // Data Toko & Avatar
+  S.starBalance    = d.star_balance !== undefined ? d.star_balance : d.totalHafal;
+  S.unlockedItems  = d.unlocked_items || ['avatar_default'];
+  S.equippedAvatar = d.equipped_avatar || { avatar: 'avatar_default', acc: null, pet: null };
+
   document.getElementById('hdr-name').textContent     = d.username;
   document.getElementById('hdr-prog-val').textContent = d.totalHafal + ' / ' + d.totalAyat + ' Ayat';
   document.getElementById('hdr-pbar').style.width     = Math.round(d.totalHafal / d.totalAyat * 100) + '%';
+  
+  updateAvatarUI();
+  renderShop();
   renderBeranda();
   renderSurahList();
   autoSetupLanjut();
-  updateRewardUI(); // ← reward system
+  updateRewardUI();
 }
 
 /* ── TAB SWITCHING ─────────────────────────────────────────── */
@@ -678,6 +736,7 @@ const HERO_GRADIENT = {
   beranda:        ['#FFE3A0','#FFC857'],
   hafal:          ['#A7E9F2','#4ECDE6'],
   'hafal-detail': ['#A7E9F2','#4ECDE6'],
+  toko:           ['#FFE8E6','#FF8FAE'],
   tebak:          ['#FBC4D4','#FF8FAE'],
   lanjut:         ['#D7CFFC','#9B8AFB'],
   murojaah:       ['#B8EFCB','#5FD38D'],
@@ -685,6 +744,7 @@ const HERO_GRADIENT = {
 const NAV_GRADIENT = {
   beranda: 'linear-gradient(135deg,#FFC857,#FF6B5B)',
   hafal:   'linear-gradient(135deg,#4ECDE6,#2FB6CF)',
+  toko:    'linear-gradient(135deg,#FF8FAE,#E5503F)',
   tebak:   'linear-gradient(135deg,#FF8FAE,#E5503F)',
   lanjut:  'linear-gradient(135deg,#9B8AFB,#7C68E8)',
   murojaah:'linear-gradient(135deg,#5FD38D,#3FBE72)',
@@ -713,6 +773,86 @@ function initNavColors() {
   ['.bottom-nav-item[data-tab="beranda"]', '.nav-item[data-tab="beranda"]'].forEach(sel => {
     const el = document.querySelector(sel);
     if (el) { el.style.background = NAV_GRADIENT.beranda; el.style.color = 'white'; el.style.boxShadow = '0 6px 14px -4px rgba(0,0,0,0.2)'; }
+  });
+}
+
+/* ── TOKO & AVATAR ─────────────────────────────────────────── */
+function updateAvatarUI() {
+  const av = S.shopCatalog.find(i => i.id === S.equippedAvatar.avatar);
+  const ac = S.shopCatalog.find(i => i.id === S.equippedAvatar.acc);
+  const pt = S.shopCatalog.find(i => i.id === S.equippedAvatar.pet);
+  
+  document.getElementById('av-base').textContent = av ? av.icon : '👧';
+  document.getElementById('av-acc').textContent  = ac ? ac.icon : '';
+  document.getElementById('av-pet').textContent  = pt ? pt.icon : '';
+}
+
+function renderShop() {
+  const c = document.getElementById('shopContainer');
+  if (!c) return;
+  c.innerHTML = '';
+  S.shopCatalog.forEach(item => {
+    const isOwned    = S.unlockedItems.includes(item.id);
+    const isEquipped = S.equippedAvatar[item.type] === item.id;
+    
+    const card = document.createElement('div');
+    card.className = `shop-card ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''}`;
+    
+    let btnHTML = '';
+    if (!isOwned) {
+      const canBuy = S.starBalance >= item.price;
+      btnHTML = `<button class="shop-btn buy" ${canBuy ? '' : 'disabled'} onclick="buyShopItem('${item.id}')">Beli (${item.price} ⭐)</button>`;
+    } else if (isEquipped) {
+      if (item.type === 'avatar') {
+        btnHTML = `<button class="shop-btn" disabled style="background:transparent; color:var(--ink-soft);">Sedang Dipakai</button>`;
+      } else {
+        btnHTML = `<button class="shop-btn unequip" onclick="equipShopItem('${item.id}', '${item.type}')">Lepas</button>`;
+      }
+    } else {
+      btnHTML = `<button class="shop-btn equip" onclick="equipShopItem('${item.id}', '${item.type}')">Pakai</button>`;
+    }
+
+    card.innerHTML = `
+      <div>
+        <div class="shop-icon-wrap">${item.icon}</div>
+        <div class="shop-info">
+          <h4>${item.name}</h4>
+          <p>${isOwned ? 'Milikmu' : item.price + ' Bintang'}</p>
+        </div>
+      </div>
+      <div>${btnHTML}</div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+async function buyShopItem(id) {
+  const item = S.shopCatalog.find(i => i.id === id);
+  if (!item || S.starBalance < item.price) return;
+  
+  S.starBalance -= item.price;
+  S.unlockedItems.push(id);
+  updateRewardUI();
+  renderShop();
+  showRewardToast('🎉 Berhasil membeli ' + item.name + '!');
+
+  await api({ action: 'buyStoreItem', item_id: id, price: item.price }).catch(() => {
+    showToast('Gagal sinkronisasi toko ke server.');
+  });
+}
+
+async function equipShopItem(id, type) {
+  if (S.equippedAvatar[type] === id) {
+    S.equippedAvatar[type] = null;
+  } else {
+    S.equippedAvatar[type] = id;
+  }
+  
+  updateAvatarUI();
+  renderShop();
+
+  await api({ action: 'equipStoreItem', equipped_avatar: S.equippedAvatar }).catch(() => {
+    showToast('Gagal sinkronisasi avatar ke server.');
   });
 }
 
@@ -829,12 +969,16 @@ async function updateStatus(ayatIdx, newStatus, btn) {
   card.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const prevStars    = S.totalHafal;
+  
+  const prevStatus = S.progressMap[key] || 'belum';
   S.progressMap[key] = newStatus;
+  
+  if (prevStatus !== 'hafal' && newStatus === 'hafal') S.starBalance++;
+  else if (prevStatus === 'hafal' && newStatus !== 'hafal') S.starBalance--;
 
   const res = await api({ action: 'updateProgress', surah_number: a.surah_number, ayat_number: a.ayat_number, status: newStatus });
   if (!res.success) { showToast('Gagal menyimpan: ' + res.message); return; }
 
-  // Update surah stats
   const surah = S.surahList.find(s => Number(s.surah_number) === Number(a.surah_number));
   if (surah) {
     const ayatS = S.ayatList.filter(x => Number(x.surah_number) === Number(a.surah_number));
@@ -852,12 +996,12 @@ async function updateStatus(ayatIdx, newStatus, btn) {
   document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
   document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
 
-  // Reward: cek level up & lencana baru
   if (newStatus === 'hafal') {
     checkLevelUp(prevStars, S.totalHafal);
     if (surah && surah.status === 'hafal') checkBadgeUnlock(a.surah_number);
   }
   updateRewardUI();
+  renderShop();
   renderBeranda();
 }
 
@@ -1075,12 +1219,10 @@ async function submitSelfAssess(penilaian) {
     document.getElementById('modalResultJadwal').style.display = 'block';
   }
 
-  // Reward: streak saat muroja'ah selesai (lancar atau hampir)
   if (penilaian === 'lancar' || penilaian === 'hampir') {
     incrementStreak();
   }
 
-  // Reload progress jika ada perubahan ayat
   if (penilaian === 'perlu_diulang') {
     const freshData = await api({ action: 'getInitialData' });
     if (freshData.success) {
@@ -1115,16 +1257,16 @@ function updateRewardUI() {
   const level  = getCurrentLevel(stars);
   const nextLvl = LEVELS[level.index + 1];
 
-  document.getElementById('hdr-stars').textContent = stars;
+  document.getElementById('hdr-stars').textContent = S.starBalance;
   document.getElementById('hdr-level').textContent = level.name;
   document.getElementById('reward-level-icon').textContent = level.icon;
   document.getElementById('reward-level-name').textContent = level.name;
 
   if (nextLvl) {
     const pct = Math.round((stars - level.min) / (nextLvl.min - level.min) * 100);
-    document.getElementById('reward-level-stars').textContent = stars + ' / ' + nextLvl.min + ' bintang menuju ' + nextLvl.name;
+    document.getElementById('reward-level-stars').textContent = stars + ' / ' + nextLvl.min + ' ayat menuju ' + nextLvl.name;
     document.getElementById('reward-level-bar').style.width   = Math.min(pct, 100) + '%';
-    document.getElementById('reward-level-next').textContent  = (nextLvl.min - stars) + ' bintang lagi!';
+    document.getElementById('reward-level-next').textContent  = (nextLvl.min - stars) + ' ayat lagi!';
   } else {
     document.getElementById('reward-level-stars').textContent = 'Semua ' + stars + ' ayat sudah dihafal! 🎉';
     document.getElementById('reward-level-bar').style.width   = '100%';
