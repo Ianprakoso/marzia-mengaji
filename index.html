@@ -1139,17 +1139,37 @@ function autoSetupLanjut() {
 function setupLanjutSoal(surahNumber) {
   const ayatSurah = S.ayatList.filter(a => Number(a.surah_number) === Number(surahNumber));
   if (!ayatSurah.length) return;
-  let soalAyat = ayatSurah[0];
-  for (const a of ayatSurah) {
-    const key = String(a.surah_number) + '_' + String(a.ayat_number);
-    if (S.progressMap[key] === 'hafal' || S.progressMap[key] === 'sedang') soalAyat = a;
-  }
+  
   const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
-  S.lanjutSoalAudio   = getAudioUrl(soalAyat);
+  const maxAyat = surah ? Number(surah.jumlah_ayat) : ayatSurah.length;
+
+  // Filter: HANYA ambil ayat yang BUKAN ayat terakhir surahnya (karena butuh kelanjutan N+1)
+  const kandidat = ayatSurah.filter(a => Number(a.ayat_number) < maxAyat);
+  if (!kandidat.length) {
+    document.getElementById('lanjut-surah-tag').textContent = 'Surah ini habis';
+    document.getElementById('lanjut-soal-arab').textContent = '⚠️ Surah ini tidak memiliki kelanjutan karena merupakan ayat terakhir.';
+    S.lanjutAyatNumber = null;
+    return;
+  }
+
+  let soalAyat = kandidat[0];
+  for (const a of kandidat) {
+    const key = String(a.surah_number) + '_' + String(a.ayat_number);
+    if (S.progressMap[key] === 'hafal' || S.progressMap[key] === 'sedang') {
+      soalAyat = a;
+    }
+  }
+
+  const targetAyatNumber = Number(soalAyat.ayat_number) + 1;
+  const jawabanAyat = ayatSurah.find(a => Number(a.ayat_number) === targetAyatNumber);
+  if (!jawabanAyat) return;
+
+  S.lanjutSoalAudio   = getAudioUrl(soalAyat); // Audio pancingan (ayat N)
   S.lanjutSurahNumber = surahNumber;
-  S.lanjutAyatNumber  = soalAyat.ayat_number;
-  document.getElementById('lanjut-surah-tag').textContent = (surah ? surah.nama_latin : 'Surah ' + surahNumber) + ' • Ayat ' + soalAyat.ayat_number;
-  document.getElementById('lanjut-soal-arab').textContent = soalAyat.teks_arab;
+  S.lanjutAyatNumber  = targetAyatNumber; // Ayat N+1 yang wajib dibaca dan dinilai AI!
+
+  document.getElementById('lanjut-surah-tag').textContent = (surah ? surah.nama_latin : 'Surah ' + surahNumber) + ' • Lanjutkan ayat setelah Ayat ' + soalAyat.ayat_number;
+  document.getElementById('lanjut-soal-arab').textContent = soalAyat.teks_arab; // Tampilkan ayat N sebagai pancingan
 }
 
 /* ── MUROJA'AH ─────────────────────────────────────────────── */
