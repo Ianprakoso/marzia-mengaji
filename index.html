@@ -509,7 +509,17 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             <div class="quiz-arabic" dir="rtl" id="lanjut-soal-arab" style="margin:0">—</div>
             <button class="audio-mini-btn" style="background:var(--lavender);" onclick="playAudioUrl(S.lanjutSoalAudio)">▶</button>
           </div>
-          <div class="coming-soon-badge">🚧 Fitur penilaian suara segera hadir</div>
+          <div id="record-ui" style="margin-top: 20px;">
+            <button id="btn-record" class="auth-btn" style="background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));" onclick="startRecording()">🎙️ Mulai Rekam (Maks 15 Detik)</button>
+            <div id="record-status" style="display: none; margin-top: 15px;">
+              <div style="font-weight: 700; color: var(--coral-dark); margin-bottom: 8px;">🔴 Merekam... <span id="record-timer">0</span> / 15 detik</div>
+              <div class="level-progress-track">
+                <div class="level-progress-fill" id="record-bar" style="width: 0%; background: var(--coral);"></div>
+              </div>
+              <button class="auth-btn" style="background: var(--coral); padding: 10px; font-size: 13px; margin-top: 14px;" onclick="stopRecording()">⏹️ Selesai & Kirim</button>
+            </div>
+          </div>
+          <div id="record-result" class="modal-result" style="display: none; margin-top: 15px; text-align: center; border: 2px solid var(--sky);"></div>
         </div>
       </div>
 
@@ -1371,6 +1381,129 @@ window.addEventListener('load', async () => {
     else { localStorage.removeItem('mm_token'); localStorage.removeItem('mm_username'); }
   }
 });
+
+  /* ── PENILAIAN SUARA AI ────────────────────────────────────── */
+let mediaRecorder;
+let audioChunks = [];
+let recordInterval;
+let secondsRecorded = 0;
+
+async function startRecording() {
+  if (!S.lanjutSurahNumber) {
+    showToast('Pilih ayat dulu di tab Hafal Ayat ya!');
+    return;
+  }
+  
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = event => {
+      if (event.data.size > 0) audioChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = processAudio;
+    mediaRecorder.start();
+
+    // Atur UI saat merekam
+    document.getElementById('btn-record').style.display = 'none';
+    document.getElementById('record-status').style.display = 'block';
+    document.getElementById('record-result').style.display = 'none';
+    
+    secondsRecorded = 0;
+    document.getElementById('record-timer').textContent = secondsRecorded;
+    document.getElementById('record-bar').style.width = '0%';
+
+    // Timer maksimal 15 detik
+    recordInterval = setInterval(() => {
+      secondsRecorded++;
+      document.getElementById('record-timer').textContent = secondsRecorded;
+      document.getElementById('record-bar').style.width = (secondsRecorded / 15 * 100) + '%';
+      
+      if (secondsRecorded >= 15) stopRecording();
+    }, 1000);
+
+  } catch (err) {
+    showToast('Gagal mengakses mikrofon. Pastikan izin diberikan.');
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    // Matikan akses mikrofon agar indikator merah di browser hilang
+    mediaRecorder.stream.getTracks().forEach(track => track.stop()); 
+  }
+  clearInterval(recordInterval);
+  
+  // Tampilkan animasi loading selagi menunggu AI
+  document.getElementById('record-status').innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner"></div>AI sedang mendengarkan dengan seksama...
+    </div>
+  `;
+}
+
+function processAudio() {
+  // Format webm adalah format standar rekaman audio di browser modern
+  const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); 
+  const reader = new FileReader();
+  
+  // Konversi Blob menjadi Base64
+  reader.readAsDataURL(audioBlob);
+  reader.onloadend = async () => {
+    // Hasil readAsDataURL memiliki prefix "data:audio/webm;base64,...", kita buang prefix-nya
+    const base64data = reader.result.split(',')[1]; 
+    
+    try {
+      const res = await api({
+        action: 'nilaiAudio',
+        surah_number: S.lanjutSurahNumber,
+        ayat_number: S.lanjutAyatNumber,
+        audio_base64: base64data
+      });
+
+      resetRecordUI();
+      const resultBox = document.getElementById('record-result');
+      resultBox.style.display = 'block';
+
+      if (res.success) {
+        resultBox.innerHTML = `
+          <div style="font-size: 32px; margin-bottom: 8px;">${res.data.lulus ? '🌟' : '💪'}</div>
+          <div style="font-weight: 700; font-size: 14px; color: var(--ink);">${res.data.feedback}</div>
+        `;
+        if (res.data.lulus) {
+          showToast('Hafalan luar biasa! Bintang ditambahkan!');
+          // Refresh progress untuk memunculkan update bintang/status
+          const freshData = await api({ action: 'getInitialData' });
+          if (freshData.success) {
+            S.progressMap = freshData.data.progressMap;
+            S.totalHafal  = freshData.data.totalHafal;
+            updateRewardUI();
+          }
+        }
+      } else {
+        resultBox.innerHTML = `<div style="color: var(--coral-dark); font-weight:700;">Gagal menilai: ${res.message}</div>`;
+      }
+    } catch (err) {
+      resetRecordUI();
+      showToast('Terjadi kesalahan jaringan.');
+    }
+  };
+}
+
+function resetRecordUI() {
+  document.getElementById('record-status').style.display = 'none';
+  document.getElementById('record-status').innerHTML = `
+    <div style="font-weight: 700; color: var(--coral-dark); margin-bottom: 8px;">🔴 Merekam... <span id="record-timer">0</span> / 15 detik</div>
+    <div class="level-progress-track">
+      <div class="level-progress-fill" id="record-bar" style="width: 0%; background: var(--coral);"></div>
+    </div>
+    <button class="auth-btn" style="background: var(--coral); padding: 10px; font-size: 13px; margin-top: 14px;" onclick="stopRecording()">⏹️ Selesai & Kirim</button>
+  `;
+  document.getElementById('btn-record').style.display = 'block';
+}
 </script>
 
 </body>
