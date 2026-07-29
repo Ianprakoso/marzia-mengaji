@@ -851,31 +851,56 @@ function renderShop() {
 async function buyShopItem(id) {
   const item = S.shopCatalog.find(i => i.id === id);
   if (!item || S.starBalance < item.price) return;
-  
+
+  // Simpan state sebelum diubah, untuk rollback kalau server menolak
+  const prevBalance  = S.starBalance;
+  const prevUnlocked = [...S.unlockedItems];
+
   S.starBalance -= item.price;
   S.unlockedItems.push(id);
   updateRewardUI();
   renderShop();
   showRewardToast('🎉 Berhasil membeli ' + item.name + '!');
 
-  await api({ action: 'buyStoreItem', item_id: id, price: item.price }).catch(() => {
-    showToast('Gagal sinkronisasi toko ke server.');
-  });
+  try {
+    const res = await api({ action: 'buyStoreItem', item_id: id, price: item.price });
+    if (!res.success) throw new Error(res.message || 'Pembelian ditolak server.');
+
+    // Samakan dengan nilai resmi dari server, jaga-jaga kalau berbeda
+    if (res.star_balance !== undefined) S.starBalance = res.star_balance;
+    if (res.unlocked_items) S.unlockedItems = res.unlocked_items;
+  } catch (err) {
+    // Server menolak / gagal terhubung → kembalikan UI seperti semula
+    S.starBalance   = prevBalance;
+    S.unlockedItems = prevUnlocked;
+    updateRewardUI();
+    renderShop();
+    showToast('Pembelian gagal: ' + (err.message || 'Terjadi kesalahan jaringan.'));
+  }
 }
 
 async function equipShopItem(id, type) {
+  const prevEquipped = { ...S.equippedAvatar };
+
   if (S.equippedAvatar[type] === id) {
     S.equippedAvatar[type] = null;
   } else {
     S.equippedAvatar[type] = id;
   }
-  
+
   updateAvatarUI();
   renderShop();
 
-  await api({ action: 'equipStoreItem', equipped_avatar: S.equippedAvatar }).catch(() => {
-    showToast('Gagal sinkronisasi avatar ke server.');
-  });
+  try {
+    const res = await api({ action: 'equipStoreItem', equipped_avatar: S.equippedAvatar });
+    if (!res.success) throw new Error(res.message || 'Gagal menyimpan pilihan.');
+  } catch (err) {
+    // Server menolak / gagal terhubung → kembalikan UI seperti semula
+    S.equippedAvatar = prevEquipped;
+    updateAvatarUI();
+    renderShop();
+    showToast('Gagal menyimpan: ' + (err.message || 'Terjadi kesalahan jaringan.'));
+  }
 }
 
 /* ── BERANDA ───────────────────────────────────────────────── */
