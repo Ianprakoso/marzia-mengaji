@@ -99,20 +99,17 @@ body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: va
 .loading-spinner { width: 36px; height: 36px; border: 4px solid var(--gray-island); border-top-color: var(--sunshine); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── TOKO BINTANG ──────────────────────────────────────────── */
-.shop-card { background: white; border-radius: 22px; padding: 16px; text-align: center; box-shadow: 0 6px 16px -8px rgba(61,44,95,0.12); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; border: 2px solid transparent; transition: all 0.15s; }
-.shop-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -8px rgba(61,44,95,0.18); }
-.shop-card.owned { border-color: var(--leaf); }
-.shop-card.equipped { border-color: var(--sunshine-dark); background: var(--sunshine-light); }
-.shop-icon-wrap { font-size: 42px; margin: 8px 0; background: var(--cream); border-radius: 16px; padding: 10px; }
-.shop-card.equipped .shop-icon-wrap { background: white; }
-.shop-info h4 { font-family: 'Baloo 2', sans-serif; font-size: 14px; color: var(--ink); line-height: 1.2; margin-bottom: 4px; }
-.shop-info p { font-size: 11px; font-weight: 700; color: var(--sunshine-dark); }
-.shop-btn { width: 100%; padding: 10px; border-radius: 12px; border: none; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.15s; }
-.shop-btn.buy { background: linear-gradient(135deg, var(--sunshine), var(--coral)); color: white; }
-.shop-btn.buy:disabled { opacity: 0.5; cursor: not-allowed; }
-.shop-btn.equip { background: var(--leaf); color: white; }
-.shop-btn.unequip { background: var(--coral); color: white; }
+/* ── AREA ORANG TUA (PIN) ──────────────────────────────────── */
+.pin-dots { display: flex; justify-content: center; gap: 12px; margin: 20px 0; }
+.pin-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--gray-island); transition: background 0.15s; }
+.pin-dot.filled { background: var(--ink); }
+.pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 260px; margin: 0 auto; }
+.pin-key { padding: 16px; border-radius: 16px; border: none; background: var(--cream); font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 18px; color: var(--ink); cursor: pointer; }
+.pin-key:hover { background: var(--gray-island); }
+.pin-key.wide { grid-column: span 1; font-size: 13px; }
+.ortu-card { background: white; border-radius: 24px; padding: 20px; box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10); margin-bottom: 16px; }
+.ortu-card h4 { font-family: 'Baloo 2', sans-serif; font-size: 15px; margin-bottom: 8px; }
+.ortu-card p { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 12px; }
 
 /* ── BERANDA — JALUR PULAU ─────────────────────────────────── */
 .welcome-card { background: white; border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10); margin-bottom: 28px; }
@@ -362,11 +359,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <div class="cloud c2"></div>
           <div class="hero-top">
             <div class="hero-user">
-              <div style="position:relative; width:48px; height:48px; flex-shrink:0;">
-                <div class="avatar" id="av-base" style="width:100%; height:100%; position:absolute; z-index:1;">👧</div>
-                <div id="av-acc" style="position:absolute; top:-6px; right:-6px; font-size:20px; z-index:2;"></div>
-                <div id="av-pet" style="position:absolute; bottom:-6px; left:-8px; font-size:20px; z-index:3;"></div>
-              </div>
+              <div class="avatar">👧</div>
               <div>
                 <div class="hero-greet">Assalamu'alaikum</div>
                 <div class="hero-name" id="hdr-name">—</div>
@@ -392,10 +385,9 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <div class="nav-title">Menu Petualangan</div>
           <button class="nav-item active" data-tab="beranda"  onclick="switchTab('beranda')"><div class="nav-icon">🏠</div> Beranda Peta</button>
           <button class="nav-item" data-tab="hafal"    onclick="switchTab('hafal')"><div class="nav-icon">📖</div> Hafal Ayat</button>
-          <button class="nav-item" data-tab="toko"     onclick="switchTab('toko')"><div class="nav-icon">🛍️</div> Toko Bintang</button>
-          <button class="nav-item" data-tab="tebak"    onclick="switchTab('tebak')"><div class="nav-icon">✨</div> Tebak Ayat</button>
           <button class="nav-item" data-tab="lanjut"   onclick="switchTab('lanjut')"><div class="nav-icon">🎙️</div> Lanjutkan</button>
           <button class="nav-item" data-tab="murojaah" onclick="switchTab('murojaah')"><div class="nav-icon">📅</div> Muroja'ah</button>
+          <button class="nav-item" data-tab="ortu"     onclick="openOrtuArea()"><div class="nav-icon">🔐</div> Area Orang Tua</button>
           <button class="logout-btn" onclick="doLogout()">🚪 Keluar</button>
         </nav>
       </div>
@@ -488,26 +480,19 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
         </div>
       </div>
 
-      <!-- TOKO BINTANG -->
-      <div class="tab-page" id="page-toko">
-        <div class="welcome-card" style="margin-bottom:20px;">
-          <div class="welcome-icon">🛍️</div>
-          <div>
-            <h3>Toko Bintang Marzia</h3>
-            <p>Tukarkan bintang hafalanmu dengan avatar, pakaian, dan teman petualangan baru!</p>
-          </div>
-        </div>
-        <div class="section-title">✨ Katalog Barang</div>
-        <div class="grid-2" id="shopContainer">
-          <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div>Memuat toko...</div>
-        </div>
-      </div>
+      <!-- AREA ORANG TUA -->
+      <div class="tab-page" id="page-ortu">
+        <div class="section-title">🔐 Area Orang Tua</div>
 
-      <!-- TEBAK AYAT -->
-      <div class="tab-page" id="page-tebak">
-        <div class="section-title">✨ Tebak Lanjutan Ayat</div>
-        <div id="tebakContainer">
-          <div class="loading-state"><div class="loading-spinner"></div>Menyiapkan soal...</div>
+        <div class="ortu-card">
+          <h4>👋 Selamat datang, Orang Tua</h4>
+          <p>Area ini terpisah dari layar anak. Koreksi manual hafalan dan pengaturan lain akan hadir di sini secara bertahap.</p>
+        </div>
+
+        <div class="ortu-card">
+          <h4 id="ortu-pin-title">Ubah PIN</h4>
+          <p>PIN ini menjaga area orang tua tetap terpisah dari layar anak.</p>
+          <button class="auth-btn" style="background:var(--lavender);" onclick="openPinModal('change')">Ubah PIN Sekarang</button>
         </div>
       </div>
 
@@ -549,10 +534,9 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
   <div class="bottom-nav" id="bottomNav">
     <button class="bottom-nav-item active" data-tab="beranda"  onclick="switchTab('beranda')"><span class="bn-icon">🏠</span>Beranda</button>
     <button class="bottom-nav-item" data-tab="hafal"    onclick="switchTab('hafal')"><span class="bn-icon">📖</span>Hafal</button>
-    <button class="bottom-nav-item" data-tab="toko"     onclick="switchTab('toko')"><span class="bn-icon">🛍️</span>Toko</button>
-    <button class="bottom-nav-item" data-tab="tebak"    onclick="switchTab('tebak')"><span class="bn-icon">✨</span>Tebak</button>
     <button class="bottom-nav-item" data-tab="lanjut"   onclick="switchTab('lanjut')"><span class="bn-icon">🎙️</span>Lanjut</button>
     <button class="bottom-nav-item" data-tab="murojaah" onclick="switchTab('murojaah')"><span class="bn-icon">📅</span>Muroja'ah</button>
+    <button class="bottom-nav-item" data-tab="ortu"     onclick="openOrtuArea()"><span class="bn-icon">🔐</span>Ortu</button>
   </div>
 
   <!-- REWARD TOAST -->
@@ -607,6 +591,31 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
     </div>
   </div>
 
+  <!-- MODAL PIN ORANG TUA -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal-box" style="text-align:center;">
+      <h3 id="pinModalTitle">Masukkan PIN</h3>
+      <span class="modal-surah-tag" id="pinModalSubtitle">Area ini khusus orang tua</span>
+      <div id="pinModalError" class="auth-error" style="display:none; margin-top:12px;"></div>
+      <div class="pin-dots" id="pinDots"></div>
+      <div class="pin-keypad" id="pinKeypad">
+        <button class="pin-key" onclick="pinPress('1')">1</button>
+        <button class="pin-key" onclick="pinPress('2')">2</button>
+        <button class="pin-key" onclick="pinPress('3')">3</button>
+        <button class="pin-key" onclick="pinPress('4')">4</button>
+        <button class="pin-key" onclick="pinPress('5')">5</button>
+        <button class="pin-key" onclick="pinPress('6')">6</button>
+        <button class="pin-key" onclick="pinPress('7')">7</button>
+        <button class="pin-key" onclick="pinPress('8')">8</button>
+        <button class="pin-key" onclick="pinPress('9')">9</button>
+        <button class="pin-key wide" onclick="closePinModal()">Batal</button>
+        <button class="pin-key" onclick="pinPress('0')">0</button>
+        <button class="pin-key wide" onclick="pinBackspace()">⌫</button>
+      </div>
+      <button class="btn-close-modal" style="margin-top:18px; display:none;" id="pinSubmitBtn" onclick="submitPinEntry()">Lanjutkan ✓</button>
+    </div>
+  </div>
+
 </div><!-- end pg-app -->
 
 <script>
@@ -629,26 +638,12 @@ const S = {
   lanjutSoalAudio: null,
   lanjutSurahNumber: null,
   lanjutAyatNumber: null,
-  tebakSoal:       null,
-  tebakJawabanIdx: null,
-  tebakAnswered:   false,
-  tebakNo:         0,
   murojaahScheduleId: null,
   murojaahSurahNumber: null,
-  
-  // Fitur Toko & Avatar
-  starBalance:     0,
-  unlockedItems:   [],
-  equippedAvatar:  { avatar: 'avatar_default', acc: null, pet: null },
-  shopCatalog: [
-    { id: 'avatar_default', name: 'Santri Ceria', price: 0, icon: '👧', type: 'avatar' },
-    { id: 'avatar_hijab', name: 'Hijab Pink', price: 15, icon: '🧕', type: 'avatar' },
-    { id: 'avatar_koko', name: 'Peci & Koko', price: 15, icon: '👳‍♂️', type: 'avatar' },
-    { id: 'acc_flower', name: 'Bunga Cantik', price: 20, icon: '🌸', type: 'acc' },
-    { id: 'acc_crown', name: 'Mahkota Putri', price: 35, icon: '👑', type: 'acc' },
-    { id: 'pet_cat', name: 'Kucing Putih', price: 50, icon: '🐱', type: 'pet' },
-    { id: 'pet_bird', name: 'Burung Nuri', price: 60, icon: '🦜', type: 'pet' }
-  ]
+
+  // Area Orang Tua (PIN)
+  hasParentPin: false,
+  parentToken:  null
 };
 
 /* ── API ───────────────────────────────────────────────────── */
@@ -735,18 +730,12 @@ async function loadInitialData() {
   S.progressMap = d.progressMap;
   S.totalHafal  = d.totalHafal;
   S.username    = d.username;
-  
-  // Data Toko & Avatar
-  S.starBalance    = d.star_balance !== undefined ? d.star_balance : d.totalHafal;
-  S.unlockedItems  = d.unlocked_items || ['avatar_default'];
-  S.equippedAvatar = d.equipped_avatar || { avatar: 'avatar_default', acc: null, pet: null };
+  S.hasParentPin = !!d.has_parent_pin;
 
   document.getElementById('hdr-name').textContent     = d.username;
   document.getElementById('hdr-prog-val').textContent = d.totalHafal + ' / ' + d.totalAyat + ' Ayat';
   document.getElementById('hdr-pbar').style.width     = Math.round(d.totalHafal / d.totalAyat * 100) + '%';
-  
-  updateAvatarUI();
-  renderShop();
+
   renderBeranda();
   renderSurahList();
   autoSetupLanjut();
@@ -758,18 +747,16 @@ const HERO_GRADIENT = {
   beranda:        ['#FFE3A0','#FFC857'],
   hafal:          ['#A7E9F2','#4ECDE6'],
   'hafal-detail': ['#A7E9F2','#4ECDE6'],
-  toko:           ['#FFE8E6','#FF8FAE'],
-  tebak:          ['#FBC4D4','#FF8FAE'],
   lanjut:         ['#D7CFFC','#9B8AFB'],
   murojaah:       ['#B8EFCB','#5FD38D'],
+  ortu:           ['#D9D2EE','#9B8AFB'],
 };
 const NAV_GRADIENT = {
   beranda: 'linear-gradient(135deg,#FFC857,#FF6B5B)',
   hafal:   'linear-gradient(135deg,#4ECDE6,#2FB6CF)',
-  toko:    'linear-gradient(135deg,#FF8FAE,#E5503F)',
-  tebak:   'linear-gradient(135deg,#FF8FAE,#E5503F)',
   lanjut:  'linear-gradient(135deg,#9B8AFB,#7C68E8)',
   murojaah:'linear-gradient(135deg,#5FD38D,#3FBE72)',
+  ortu:    'linear-gradient(135deg,#9B8AFB,#7C68E8)',
 };
 
 function switchTab(tab) {
@@ -786,7 +773,6 @@ function switchTab(tab) {
   const [f, t] = HERO_GRADIENT[tab] || HERO_GRADIENT.beranda;
   document.getElementById('appHero').style.background = `linear-gradient(160deg,${f} 0%,${t} 100%)`;
   if (tab === 'beranda')  setTimeout(drawConnectors, 50);
-  if (tab === 'tebak')    loadTebakSoal();
   if (tab === 'murojaah') loadMurojaah();
   if (tab !== 'hafal-detail' && autoplayOn) stopAutoplay();
 }
@@ -796,111 +782,6 @@ function initNavColors() {
     const el = document.querySelector(sel);
     if (el) { el.style.background = NAV_GRADIENT.beranda; el.style.color = 'white'; el.style.boxShadow = '0 6px 14px -4px rgba(0,0,0,0.2)'; }
   });
-}
-
-/* ── TOKO & AVATAR ─────────────────────────────────────────── */
-function updateAvatarUI() {
-  const av = S.shopCatalog.find(i => i.id === S.equippedAvatar.avatar);
-  const ac = S.shopCatalog.find(i => i.id === S.equippedAvatar.acc);
-  const pt = S.shopCatalog.find(i => i.id === S.equippedAvatar.pet);
-  
-  document.getElementById('av-base').textContent = av ? av.icon : '👧';
-  document.getElementById('av-acc').textContent  = ac ? ac.icon : '';
-  document.getElementById('av-pet').textContent  = pt ? pt.icon : '';
-}
-
-function renderShop() {
-  const c = document.getElementById('shopContainer');
-  if (!c) return;
-  c.innerHTML = '';
-  S.shopCatalog.forEach(item => {
-    const isOwned    = S.unlockedItems.includes(item.id);
-    const isEquipped = S.equippedAvatar[item.type] === item.id;
-    
-    const card = document.createElement('div');
-    card.className = `shop-card ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''}`;
-    
-    let btnHTML = '';
-    if (!isOwned) {
-      const canBuy = S.starBalance >= item.price;
-      btnHTML = `<button class="shop-btn buy" ${canBuy ? '' : 'disabled'} onclick="buyShopItem('${item.id}')">Beli (${item.price} ⭐)</button>`;
-    } else if (isEquipped) {
-      if (item.type === 'avatar') {
-        btnHTML = `<button class="shop-btn" disabled style="background:transparent; color:var(--ink-soft);">Sedang Dipakai</button>`;
-      } else {
-        btnHTML = `<button class="shop-btn unequip" onclick="equipShopItem('${item.id}', '${item.type}')">Lepas</button>`;
-      }
-    } else {
-      btnHTML = `<button class="shop-btn equip" onclick="equipShopItem('${item.id}', '${item.type}')">Pakai</button>`;
-    }
-
-    card.innerHTML = `
-      <div>
-        <div class="shop-icon-wrap">${item.icon}</div>
-        <div class="shop-info">
-          <h4>${item.name}</h4>
-          <p>${isOwned ? 'Milikmu' : item.price + ' Bintang'}</p>
-        </div>
-      </div>
-      <div>${btnHTML}</div>
-    `;
-    c.appendChild(card);
-  });
-}
-
-async function buyShopItem(id) {
-  const item = S.shopCatalog.find(i => i.id === id);
-  if (!item || S.starBalance < item.price) return;
-
-  // Simpan state sebelum diubah, untuk rollback kalau server menolak
-  const prevBalance  = S.starBalance;
-  const prevUnlocked = [...S.unlockedItems];
-
-  S.starBalance -= item.price;
-  S.unlockedItems.push(id);
-  updateRewardUI();
-  renderShop();
-  showRewardToast('🎉 Berhasil membeli ' + item.name + '!');
-
-  try {
-    const res = await api({ action: 'buyStoreItem', item_id: id, price: item.price });
-    if (!res.success) throw new Error(res.message || 'Pembelian ditolak server.');
-
-    // Samakan dengan nilai resmi dari server, jaga-jaga kalau berbeda
-    if (res.star_balance !== undefined) S.starBalance = res.star_balance;
-    if (res.unlocked_items) S.unlockedItems = res.unlocked_items;
-  } catch (err) {
-    // Server menolak / gagal terhubung → kembalikan UI seperti semula
-    S.starBalance   = prevBalance;
-    S.unlockedItems = prevUnlocked;
-    updateRewardUI();
-    renderShop();
-    showToast('Pembelian gagal: ' + (err.message || 'Terjadi kesalahan jaringan.'));
-  }
-}
-
-async function equipShopItem(id, type) {
-  const prevEquipped = { ...S.equippedAvatar };
-
-  if (S.equippedAvatar[type] === id) {
-    S.equippedAvatar[type] = null;
-  } else {
-    S.equippedAvatar[type] = id;
-  }
-
-  updateAvatarUI();
-  renderShop();
-
-  try {
-    const res = await api({ action: 'equipStoreItem', equipped_avatar: S.equippedAvatar });
-    if (!res.success) throw new Error(res.message || 'Gagal menyimpan pilihan.');
-  } catch (err) {
-    // Server menolak / gagal terhubung → kembalikan UI seperti semula
-    S.equippedAvatar = prevEquipped;
-    updateAvatarUI();
-    renderShop();
-    showToast('Gagal menyimpan: ' + (err.message || 'Terjadi kesalahan jaringan.'));
-  }
 }
 
 /* ── BERANDA ───────────────────────────────────────────────── */
@@ -1015,13 +896,9 @@ async function updateStatus(ayatIdx, newStatus, btn) {
   card.className = `ayat-card ${newStatus}`;
   card.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const prevStars    = S.totalHafal;
-  
+  const prevStars  = S.totalHafal;
   const prevStatus = S.progressMap[key] || 'belum';
   S.progressMap[key] = newStatus;
-  
-  if (prevStatus !== 'hafal' && newStatus === 'hafal') S.starBalance++;
-  else if (prevStatus === 'hafal' && newStatus !== 'hafal') S.starBalance--;
 
   const res = await api({ action: 'updateProgress', surah_number: a.surah_number, ayat_number: a.ayat_number, status: newStatus });
   if (!res.success) { showToast('Gagal menyimpan: ' + res.message); return; }
@@ -1048,7 +925,6 @@ async function updateStatus(ayatIdx, newStatus, btn) {
     if (surah && surah.status === 'hafal') checkBadgeUnlock(a.surah_number);
   }
   updateRewardUI();
-  renderShop();
   renderBeranda();
 }
 
@@ -1108,59 +984,6 @@ function stopAutoplay() {
   document.getElementById('autoplayToggle').classList.remove('on');
   document.getElementById('autoplay-status').textContent = 'Putar seluruh ayat secara berurutan';
   document.querySelectorAll('.ayat-card').forEach(c => c.classList.remove('playing'));
-}
-
-/* ── TEBAK AYAT ────────────────────────────────────────────── */
-async function loadTebakSoal() {
-  const c = document.getElementById('tebakContainer');
-  c.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Menyiapkan soal...</div>';
-  S.tebakAnswered = false;
-  S.tebakNo++;
-  const res = await api({ action: 'getTebakSoal' });
-  if (!res.success) {
-    c.innerHTML = `<div class="loading-state">😔 ${res.message}<br><br>
-      <button onclick="loadTebakSoal()" style="margin-top:10px;padding:10px 20px;border-radius:14px;border:none;background:var(--pink);color:white;font-weight:700;cursor:pointer;">Coba Lagi</button></div>`;
-    return;
-  }
-  const d         = res.data;
-  S.tebakSoal     = d.soal;
-  S.tebakJawabanIdx = d.jawaban_index;
-  const soalAudio = S.qari === 'misyari' ? (d.soal.audio_misyari || d.soal.audio_ibrahim) : (d.soal.audio_ibrahim || d.soal.audio_misyari);
-  c.innerHTML = `
-    <div class="quiz-card">
-      <div class="quiz-progress">Soal ke-${S.tebakNo}</div>
-      <p class="quiz-soal-label">Lanjutan ayat dari:</p>
-      <div class="quiz-soal-row">
-        <div class="quiz-arabic" dir="rtl" style="margin:0">${d.soal.teks_arab}</div>
-        ${soalAudio ? `<button class="audio-mini-btn" onclick="playAudioUrl('${soalAudio}')">▶</button>` : ''}
-      </div>
-      <div class="quiz-options">
-        ${d.pilihan.map((p, i) => {
-          const pAudio = S.qari === 'misyari' ? (p.audio_misyari || p.audio_ibrahim) : (p.audio_ibrahim || p.audio_misyari);
-          return `<div class="quiz-option" dir="rtl" id="qopt-${i}" onclick="jawabTebak(${i})">
-            <span>${p.teks_arab}</span>
-            ${pAudio ? `<button class="audio-mini-btn" onclick="event.stopPropagation();playAudioUrl('${pAudio}')">▶</button>` : ''}
-          </div>`;
-        }).join('')}
-      </div>
-      <div class="quiz-result-box" id="quizResult" style="display:none"></div>
-    </div>`;
-}
-
-async function jawabTebak(idx) {
-  if (S.tebakAnswered) return;
-  S.tebakAnswered = true;
-  document.querySelectorAll('.quiz-option').forEach(o => o.classList.add('answered'));
-  document.getElementById(`qopt-${S.tebakJawabanIdx}`).classList.add('correct');
-  if (idx !== S.tebakJawabanIdx) document.getElementById(`qopt-${idx}`).classList.add('incorrect');
-  const res  = await api({ action: 'jawabTebak', pilihan_index: idx, jawaban_index: S.tebakJawabanIdx, soal_surah: S.tebakSoal.surah_number, soal_ayat: S.tebakSoal.ayat_number });
-  const data = res.success ? res.data : { benar: idx === S.tebakJawabanIdx, pesan: '' };
-  const box  = document.getElementById('quizResult');
-  box.style.display = 'block';
-  box.innerHTML = `
-    <div class="result-emoji">${data.benar ? '🌟' : '💪'}</div>
-    <p>${data.pesan || (data.benar ? 'Jawaban benar!' : 'Jawaban kurang tepat.')}</p>
-    <button class="quiz-next-btn" onclick="loadTebakSoal()" style="margin-top:12px;">Soal Berikutnya →</button>`;
 }
 
 /* ── LANJUTKAN ─────────────────────────────────────────────── */
@@ -1338,7 +1161,7 @@ function updateRewardUI() {
   const level  = getCurrentLevel(stars);
   const nextLvl = LEVELS[level.index + 1];
 
-  document.getElementById('hdr-stars').textContent = S.starBalance;
+  document.getElementById('hdr-stars').textContent = S.totalHafal;
   document.getElementById('hdr-level').textContent = level.name;
   document.getElementById('reward-level-icon').textContent = level.icon;
   document.getElementById('reward-level-name').textContent = level.name;
@@ -1439,6 +1262,140 @@ function showToast(msg) {
   t.style.opacity = '1';
   clearTimeout(window._toastTimer);
   window._toastTimer = setTimeout(() => { t.style.opacity = '0'; }, 2200);
+}
+
+/* ── AREA ORANG TUA (PIN) ──────────────────────────────────── */
+let pinStep       = null; // 'verify' | 'new' | 'confirm'
+let pinBuffer     = '';
+let pinFirstEntry = null;
+const PIN_MIN_LEN = 4;
+const PIN_MAX_LEN = 6;
+
+function openOrtuArea() {
+  if (!S.hasParentPin) {
+    openPinModal('setup');
+  } else {
+    openPinModal('verify');
+  }
+}
+
+function openPinModal(mode) {
+  pinBuffer     = '';
+  pinFirstEntry = null;
+  pinStep       = mode === 'verify' ? 'verify' : 'new';
+  document.getElementById('pinModalError').style.display = 'none';
+  setPinModalTexts();
+  renderPinDots();
+  document.getElementById('pinModal').classList.add('open');
+}
+
+function closePinModal() {
+  document.getElementById('pinModal').classList.remove('open');
+  pinBuffer = ''; pinFirstEntry = null; pinStep = null;
+}
+
+function setPinModalTexts() {
+  const title = document.getElementById('pinModalTitle');
+  const sub   = document.getElementById('pinModalSubtitle');
+  if (pinStep === 'verify') {
+    title.textContent = 'Masukkan PIN';
+    sub.textContent   = 'PIN Orang Tua diperlukan untuk masuk ke area ini';
+  } else if (pinStep === 'new') {
+    title.textContent = S.hasParentPin ? 'Buat PIN Baru' : 'Buat PIN Orang Tua';
+    sub.textContent   = 'Masukkan 4-6 digit PIN';
+  } else if (pinStep === 'confirm') {
+    title.textContent = 'Konfirmasi PIN';
+    sub.textContent   = 'Masukkan ulang PIN yang sama';
+  }
+}
+
+function renderPinDots() {
+  const wrap = document.getElementById('pinDots');
+  wrap.innerHTML = '';
+  for (let i = 0; i < PIN_MAX_LEN; i++) {
+    const d = document.createElement('div');
+    d.className = 'pin-dot' + (i < pinBuffer.length ? ' filled' : '');
+    wrap.appendChild(d);
+  }
+  document.getElementById('pinSubmitBtn').style.display = pinBuffer.length >= PIN_MIN_LEN ? 'block' : 'none';
+}
+
+function showPinError(msg) {
+  const el = document.getElementById('pinModalError');
+  el.textContent   = msg;
+  el.style.display = 'block';
+}
+
+function pinPress(digit) {
+  if (pinBuffer.length >= PIN_MAX_LEN) return;
+  document.getElementById('pinModalError').style.display = 'none';
+  pinBuffer += digit;
+  renderPinDots();
+}
+
+function pinBackspace() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  renderPinDots();
+}
+
+async function submitPinEntry() {
+  if (pinBuffer.length < PIN_MIN_LEN) return;
+
+  if (pinStep === 'verify') {
+    const res = await api({ action: 'verifyParentPin', pin: pinBuffer });
+    if (!res.success) {
+      showPinError(res.message || 'PIN salah.');
+      pinBuffer = ''; renderPinDots();
+      return;
+    }
+    S.parentToken = res.parent_token;
+    closePinModal();
+    switchTab('ortu');
+    return;
+  }
+
+  if (pinStep === 'new') {
+    pinFirstEntry = pinBuffer;
+    pinBuffer     = '';
+    pinStep       = 'confirm';
+    setPinModalTexts();
+    renderPinDots();
+    return;
+  }
+
+  if (pinStep === 'confirm') {
+    if (pinBuffer !== pinFirstEntry) {
+      showPinError('PIN tidak cocok, coba lagi dari awal.');
+      pinBuffer = ''; pinFirstEntry = null; pinStep = 'new';
+      setPinModalTexts(); renderPinDots();
+      return;
+    }
+
+    const res = await api({ action: 'setParentPin', pin: pinBuffer, parent_token: S.parentToken });
+    if (!res.success) {
+      showPinError(res.message || 'Gagal menyimpan PIN.');
+      pinBuffer = ''; pinFirstEntry = null; pinStep = 'new';
+      setPinModalTexts(); renderPinDots();
+      return;
+    }
+
+    S.hasParentPin = true;
+
+    if (S.parentToken) {
+      // Ini alur "ubah PIN" dari dalam area orang tua yang sudah terbuka.
+      closePinModal();
+      showToast('PIN berhasil diubah.');
+    } else {
+      // Ini alur pembuatan PIN pertama kali — langsung masukkan ke area
+      // orang tua supaya orang tua tidak perlu memasukkan PIN dua kali.
+      const verifyRes = await api({ action: 'verifyParentPin', pin: pinBuffer });
+      closePinModal();
+      if (verifyRes.success) {
+        S.parentToken = verifyRes.parent_token;
+        switchTab('ortu');
+      }
+    }
+  }
 }
 
 /* ── INIT ──────────────────────────────────────────────────── */
