@@ -291,18 +291,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .modal-tip { font-size: 12px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 24px; background: var(--cream); border-radius: 14px; padding: 14px; text-align: left; }
 
 /* Self assessment buttons */
-.self-assess-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-.assess-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 18px; border: 2px solid var(--gray-island); background: white; cursor: pointer; font-family: 'Quicksand', sans-serif; transition: all 0.15s; text-align: left; }
-.assess-btn:hover { transform: translateY(-1px); }
-.assess-btn.lancar       { border-color: var(--leaf); }
-.assess-btn.lancar:hover { background: #EEFBF3; }
-.assess-btn.hampir       { border-color: var(--sunshine); }
-.assess-btn.hampir:hover { background: #FFF8EC; }
-.assess-btn.perlu        { border-color: var(--coral); }
-.assess-btn.perlu:hover  { background: #FFE8E6; }
-.assess-icon { font-size: 28px; flex-shrink: 0; }
-.assess-label { font-weight: 700; font-size: 14px; color: var(--ink); }
-.assess-desc  { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+.murojaah-record-wrap { margin-bottom: 16px; }
 
 /* Modal result */
 .modal-result { background: var(--cream); border-radius: 20px; padding: 18px; text-align: left; display: none; margin-bottom: 16px; }
@@ -548,32 +537,19 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       <h3 id="modalSurahName">—</h3>
       <span class="modal-surah-tag" id="modalSurahTag">—</span>
       <div class="modal-tip">
-        📖 Bacalah surah ini sendiri dari awal sampai akhir tanpa melihat teks.<br>
-        Kemudian nilai kejujuran hafalanmu:
+        📖 Bacalah surah ini dari awal sampai akhir tanpa melihat teks.<br>
+        AI akan mendengarkan dan menilai hafalanmu dengan jujur.
       </div>
 
-      <div class="self-assess-grid" id="assessGrid">
-        <button class="assess-btn lancar" onclick="submitSelfAssess('lancar')">
-          <span class="assess-icon">✅</span>
-          <div>
-            <div class="assess-label">Lancar</div>
-            <div class="assess-desc">Semua ayat terbaca tanpa lupa</div>
+      <div class="murojaah-record-wrap" id="murojaahRecordUI">
+        <button id="btn-record-murojaah" class="auth-btn" style="background:linear-gradient(135deg,var(--leaf),var(--leaf-dark));" onclick="startMurojaahRecording()">🎙️ Mulai Rekam Surah Penuh</button>
+        <div id="murojaah-record-status" style="display:none; margin-top:15px;">
+          <div style="font-weight:700; color:var(--coral-dark); margin-bottom:8px;">🔴 Merekam... <span id="murojaah-record-timer">0</span> / <span id="murojaah-record-max">60</span> detik</div>
+          <div class="level-progress-track">
+            <div class="level-progress-fill" id="murojaah-record-bar" style="width:0%; background:var(--coral);"></div>
           </div>
-        </button>
-        <button class="assess-btn hampir" onclick="submitSelfAssess('hampir')">
-          <span class="assess-icon">⚠️</span>
-          <div>
-            <div class="assess-label">Hampir</div>
-            <div class="assess-desc">Ada beberapa ayat yang sedikit lupa</div>
-          </div>
-        </button>
-        <button class="assess-btn perlu" onclick="submitSelfAssess('perlu_diulang')">
-          <span class="assess-icon">❌</span>
-          <div>
-            <div class="assess-label">Perlu Diulang</div>
-            <div class="assess-desc">Banyak yang lupa, perlu belajar lagi</div>
-          </div>
-        </button>
+          <button class="auth-btn" style="background:var(--coral); padding:10px; font-size:13px; margin-top:14px;" onclick="stopMurojaahRecording()">⏹️ Selesai & Kirim</button>
+        </div>
       </div>
 
       <div class="modal-result" id="modalResult">
@@ -1085,58 +1061,169 @@ async function loadMurojaah() {
   }).join('');
 }
 
+let murojaahMediaRecorder;
+let murojaahAudioChunks    = [];
+let murojaahRecordInterval;
+let murojaahSecondsRecorded = 0;
+let murojaahMaxSeconds      = 120;
+
 function openMurojaahModal(scheduleId, surahNumber) {
   const surah = S.surahList.find(s => Number(s.surah_number) === Number(surahNumber));
   S.murojaahScheduleId  = scheduleId;
   S.murojaahSurahNumber = surahNumber;
   document.getElementById('modalSurahName').textContent = surah ? surah.nama_latin : 'Surah ' + surahNumber;
   document.getElementById('modalSurahTag').textContent  = surah ? surah.jumlah_ayat + ' Ayat' : '';
-  document.getElementById('assessGrid').style.display   = '';
+
+  // Batas waktu rekam menyesuaikan panjang surah: ±8 detik per ayat,
+  // minimal 60 detik (surah pendek), maksimal 300 detik (surah terpanjang di Juz 30).
+  murojaahMaxSeconds = surah ? Math.min(300, Math.max(60, Number(surah.jumlah_ayat) * 8)) : 120;
+
+  resetMurojaahRecordUI();
   document.getElementById('modalResult').style.display  = 'none';
   document.getElementById('modalResultJadwal').style.display = 'none';
   document.getElementById('murojaahModal').classList.add('open');
 }
 
 function closeMurojaahModal() {
+  // Kalau modal ditutup di tengah rekaman, matikan mikrofon dulu —
+  // jangan biarkan indikator mic browser tetap menyala di belakang layar.
+  if (murojaahMediaRecorder && murojaahMediaRecorder.state !== 'inactive') {
+    try {
+      murojaahMediaRecorder.stop();
+      murojaahMediaRecorder.stream.getTracks().forEach(track => track.stop());
+    } catch (e) {}
+    clearInterval(murojaahRecordInterval);
+  }
   document.getElementById('murojaahModal').classList.remove('open');
   loadMurojaah();
 }
 
-async function submitSelfAssess(penilaian) {
-  document.getElementById('assessGrid').style.display = 'none';
-  const res = await api({ action: 'selesaiMurojaah', schedule_id: S.murojaahScheduleId, surah_number: S.murojaahSurahNumber, penilaian });
-  if (!res.success) { showToast('Gagal menyimpan: ' + res.message); document.getElementById('assessGrid').style.display = ''; return; }
+async function startMurojaahRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    murojaahMediaRecorder = new MediaRecorder(stream);
+    murojaahAudioChunks   = [];
 
-  const config = {
-    lancar:        { emoji: '🌟', label: 'Lulus',          badgeClass: 'badge-lulus',  msg: 'Masyaallah, hafalanmu lancar sekali! Terus pertahankan ya!' },
-    hampir:        { emoji: '⚠️', label: 'Hampir Lancar',  badgeClass: 'badge-hampir', msg: 'Bagus! Masih ada yang perlu dilatih sedikit lagi. Semangat!' },
-    perlu_diulang: { emoji: '💪', label: 'Perlu Diulang',  badgeClass: 'badge-perlu',  msg: 'Tidak apa-apa! Hafalan butuh waktu. Status ayat sudah diperbarui.' },
+    murojaahMediaRecorder.ondataavailable = event => {
+      if (event.data.size > 0) murojaahAudioChunks.push(event.data);
+    };
+    murojaahMediaRecorder.onstop = processMurojaahAudio;
+    murojaahMediaRecorder.start();
+
+    document.getElementById('btn-record-murojaah').style.display = 'none';
+    document.getElementById('murojaah-record-status').style.display = 'block';
+
+    murojaahSecondsRecorded = 0;
+    document.getElementById('murojaah-record-timer').textContent = murojaahSecondsRecorded;
+    document.getElementById('murojaah-record-max').textContent   = murojaahMaxSeconds;
+    document.getElementById('murojaah-record-bar').style.width   = '0%';
+
+    murojaahRecordInterval = setInterval(() => {
+      murojaahSecondsRecorded++;
+      document.getElementById('murojaah-record-timer').textContent = murojaahSecondsRecorded;
+      document.getElementById('murojaah-record-bar').style.width   = (murojaahSecondsRecorded / murojaahMaxSeconds * 100) + '%';
+      if (murojaahSecondsRecorded >= murojaahMaxSeconds) stopMurojaahRecording();
+    }, 1000);
+
+  } catch (err) {
+    showToast('Gagal mengakses mikrofon. Pastikan izin diberikan.');
+  }
+}
+
+function stopMurojaahRecording() {
+  if (murojaahMediaRecorder && murojaahMediaRecorder.state !== 'inactive') {
+    murojaahMediaRecorder.stop();
+    murojaahMediaRecorder.stream.getTracks().forEach(track => track.stop());
+  }
+  clearInterval(murojaahRecordInterval);
+
+  document.getElementById('murojaah-record-status').innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner"></div>AI sedang mendengarkan bacaanmu dengan seksama...
+    </div>
+  `;
+}
+
+function processMurojaahAudio() {
+  const audioBlob = new Blob(murojaahAudioChunks, { type: 'audio/webm' });
+  const reader     = new FileReader();
+
+  reader.readAsDataURL(audioBlob);
+  reader.onloadend = async () => {
+    const base64data = reader.result.split(',')[1];
+
+    try {
+      const res = await api({
+        action: 'selesaiMurojaah',
+        surah_number: S.murojaahSurahNumber,
+        schedule_id: S.murojaahScheduleId,
+        audio_base64: base64data
+      });
+
+      resetMurojaahRecordUI();
+
+      if (!res.success) {
+        showToast('Gagal menilai: ' + res.message);
+        return;
+      }
+
+      renderMurojaahResult(res.data);
+
+    } catch (err) {
+      resetMurojaahRecordUI();
+      showToast('Terjadi kesalahan jaringan.');
+    }
   };
-  const cf = config[penilaian];
+}
+
+function resetMurojaahRecordUI() {
+  document.getElementById('murojaah-record-status').style.display = 'none';
+  document.getElementById('murojaah-record-status').innerHTML = `
+    <div style="font-weight: 700; color: var(--coral-dark); margin-bottom: 8px;">🔴 Merekam... <span id="murojaah-record-timer">0</span> / <span id="murojaah-record-max">${murojaahMaxSeconds}</span> detik</div>
+    <div class="level-progress-track">
+      <div class="level-progress-fill" id="murojaah-record-bar" style="width: 0%; background: var(--coral);"></div>
+    </div>
+    <button class="auth-btn" style="background: var(--coral); padding: 10px; font-size: 13px; margin-top: 14px;" onclick="stopMurojaahRecording()">⏹️ Selesai & Kirim</button>
+  `;
+  document.getElementById('btn-record-murojaah').style.display = 'block';
+}
+
+function renderMurojaahResult(data) {
+  const config = {
+    lancar:        { emoji: '🌟', label: 'Lulus',         badgeClass: 'badge-lulus'  },
+    hampir:        { emoji: '⚠️', label: 'Hampir Lancar', badgeClass: 'badge-hampir' },
+    perlu_diulang: { emoji: '💪', label: 'Perlu Diulang', badgeClass: 'badge-perlu'  },
+  };
+  const cf = config[data.hasil] || config.perlu_diulang;
+
   document.getElementById('modalResultEmoji').textContent = cf.emoji;
   document.getElementById('modalResultBadge').textContent = cf.label;
   document.getElementById('modalResultBadge').className   = 'modal-result-badge ' + cf.badgeClass;
-  document.getElementById('modalResultMsg').textContent   = cf.msg;
+  document.getElementById('modalResultMsg').textContent   = data.feedback || '';
   document.getElementById('modalResult').style.display    = 'block';
 
-  if (res.data.next && res.data.next.jadwal_ulang) {
+  if (data.next && data.next.jadwal_ulang) {
     document.getElementById('modalResultJadwal').style.display = 'block';
   }
 
-  if (penilaian === 'lancar' || penilaian === 'hampir') {
+  if (data.hasil === 'lancar' || data.hasil === 'hampir') {
     incrementStreak();
   }
 
-  if (penilaian === 'perlu_diulang') {
-    const freshData = await api({ action: 'getInitialData' });
-    if (freshData.success) {
-      S.progressMap = freshData.data.progressMap;
-      S.surahList   = freshData.data.surahList;
-      S.totalHafal  = freshData.data.totalHafal;
-      document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
-      document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
-      updateRewardUI();
-    }
+  if (data.hasil === 'perlu_diulang') {
+    refreshProgressAfterMurojaah();
+  }
+}
+
+async function refreshProgressAfterMurojaah() {
+  const freshData = await api({ action: 'getInitialData' });
+  if (freshData.success) {
+    S.progressMap = freshData.data.progressMap;
+    S.surahList   = freshData.data.surahList;
+    S.totalHafal  = freshData.data.totalHafal;
+    document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
+    document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
+    updateRewardUI();
   }
 }
 
