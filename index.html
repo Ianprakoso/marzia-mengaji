@@ -110,6 +110,10 @@ body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: va
 .ortu-card { background: white; border-radius: 24px; padding: 20px; box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10); margin-bottom: 16px; }
 .ortu-card h4 { font-family: 'Baloo 2', sans-serif; font-size: 15px; margin-bottom: 8px; }
 .ortu-card p { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 12px; }
+.ortu-status-btn { padding: 7px 10px; border-radius: 10px; border: 2px solid var(--gray-island); background: white; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 11px; color: var(--ink-soft); cursor: pointer; }
+.ortu-status-btn.active-hafal  { background: var(--leaf); border-color: var(--leaf); color: white; }
+.ortu-status-btn.active-sedang { background: var(--sky); border-color: var(--sky); color: white; }
+.ortu-status-btn.active-belum  { background: var(--gray-island); border-color: var(--gray-island); color: var(--ink); }
 
 /* ── BERANDA — JALUR PULAU ─────────────────────────────────── */
 .welcome-card { background: white; border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10); margin-bottom: 28px; }
@@ -174,12 +178,10 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .play-btn { display: flex; align-items: center; gap: 6px; background: var(--sky); color: white; border: none; padding: 7px 14px; border-radius: 99px; font-weight: 700; font-size: 11px; cursor: pointer; font-family: 'Quicksand', sans-serif; }
 .arabic-text { font-size: 26px; text-align: right; line-height: 1.9; color: var(--ink); margin: 8px 0; }
 .translation  { font-size: 12px; color: var(--ink-soft); font-style: italic; margin-bottom: 14px; line-height: 1.6; }
-.status-btns { display: flex; gap: 8px; }
-.status-btn { flex: 1; padding: 10px; border-radius: 14px; font-size: 11px; font-weight: 700; border: 2px solid; cursor: pointer; background: white; font-family: 'Quicksand', sans-serif; transition: all 0.15s; }
-.status-btn.hafal         { border-color: var(--leaf); color: var(--leaf-dark); }
-.status-btn.hafal.active  { background: var(--leaf); color: white; }
-.status-btn.sedang        { border-color: var(--sky); color: var(--sky-dark); }
-.status-btn.sedang.active { background: var(--sky); color: white; }
+.status-badge-readonly { text-align: center; padding: 10px; border-radius: 14px; font-size: 12px; font-weight: 700; }
+.status-badge-readonly.hafal  { background: var(--leaf-light, #E5F7EC); color: var(--leaf-dark); }
+.status-badge-readonly.sedang { background: var(--sky-light, #E5F6FB); color: var(--sky-dark); }
+.status-badge-readonly.belum  { background: var(--gray-island); color: var(--ink-soft); }
 
 /* ── TEBAK AYAT ────────────────────────────────────────────── */
 .quiz-card { background: white; border-radius: 28px; padding: 24px; text-align: center; box-shadow: 0 10px 24px -10px rgba(61,44,95,0.18); }
@@ -479,6 +481,15 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
         </div>
 
         <div class="ortu-card">
+          <h4>✏️ Koreksi Hafalan Manual</h4>
+          <p>Status hafalan normalnya ditentukan AI. Gunakan ini hanya kalau kamu yakin AI keliru menilai — setiap koreksi tercatat sebagai perubahan manual, terpisah dari penilaian AI.</p>
+          <select id="ortu-surah-select" class="auth-input" onchange="renderOrtuAyatList()" style="margin-bottom:12px;">
+            <option value="">Pilih surah...</option>
+          </select>
+          <div id="ortu-ayat-list"></div>
+        </div>
+
+        <div class="ortu-card">
           <h4 id="ortu-pin-title">Ubah PIN</h4>
           <p>PIN ini menjaga area orang tua tetap terpisah dari layar anak.</p>
           <button class="auth-btn" style="background:linear-gradient(135deg,var(--pink),var(--coral-dark));" onclick="openPinModal('setup')">Ubah PIN Sekarang</button>
@@ -750,6 +761,7 @@ function switchTab(tab) {
   document.getElementById('appHero').style.background = `linear-gradient(160deg,${f} 0%,${t} 100%)`;
   if (tab === 'beranda')  setTimeout(drawConnectors, 50);
   if (tab === 'murojaah') loadMurojaah();
+  if (tab === 'ortu')     renderOrtuSurahOptions();
   if (tab !== 'hafal-detail' && autoplayOn) stopAutoplay();
 }
 
@@ -857,51 +869,11 @@ function renderAyatDetail() {
       </div>
       <div class="arabic-text" dir="rtl">${a.teks_arab}</div>
       <div class="translation">"${a.terjemahan_id}"</div>
-      <div class="status-btns">
-        <button class="status-btn hafal ${status === 'hafal' ? 'active' : ''}" onclick="updateStatus(${idx},'hafal',this)">✓ HAFAL</button>
-        <button class="status-btn sedang ${status === 'sedang' ? 'active' : ''}" onclick="updateStatus(${idx},'sedang',this)">⏳ ULANG</button>
+      <div class="status-badge-readonly ${status}">
+        ${status === 'hafal' ? '✓ Hafal (dinilai AI)' : status === 'sedang' ? '⏳ Sedang Dihafal' : '○ Belum Dimulai'}
       </div>`;
     c.appendChild(div);
   });
-}
-
-async function updateStatus(ayatIdx, newStatus, btn) {
-  const a    = S.currentAyatList[ayatIdx];
-  const key  = String(a.surah_number) + '_' + String(a.ayat_number);
-  const card = document.getElementById(`ayat-card-${ayatIdx}`);
-  card.className = `ayat-card ${newStatus}`;
-  card.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const prevStars  = S.totalHafal;
-  const prevStatus = S.progressMap[key] || 'belum';
-  S.progressMap[key] = newStatus;
-
-  const res = await api({ action: 'updateProgress', surah_number: a.surah_number, ayat_number: a.ayat_number, status: newStatus });
-  if (!res.success) { showToast('Gagal menyimpan: ' + res.message); return; }
-
-  const surah = S.surahList.find(s => Number(s.surah_number) === Number(a.surah_number));
-  if (surah) {
-    const ayatS = S.ayatList.filter(x => Number(x.surah_number) === Number(a.surah_number));
-    let hafal = 0, sedang = 0;
-    ayatS.forEach(x => {
-      const st = S.progressMap[x.surah_number + '_' + x.ayat_number] || 'belum';
-      if (st === 'hafal') hafal++; else if (st === 'sedang') sedang++;
-    });
-    surah.hafal  = hafal; surah.sedang = sedang;
-    surah.pct    = Math.round(hafal / surah.jumlah_ayat * 100);
-    surah.status = hafal === surah.jumlah_ayat ? 'hafal' : hafal > 0 || sedang > 0 ? 'sedang' : 'belum';
-  }
-
-  S.totalHafal = Object.values(S.progressMap).filter(v => v === 'hafal').length;
-  document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
-  document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
-
-  if (newStatus === 'hafal') {
-    checkLevelUp(prevStars, S.totalHafal);
-    if (surah && surah.status === 'hafal') checkBadgeUnlock(a.surah_number);
-  }
-  updateRewardUI();
-  renderBeranda();
 }
 
 /* ── QARI & AUDIO ──────────────────────────────────────────── */
@@ -1486,6 +1458,85 @@ async function submitPinEntry() {
   }
 }
 
+/* ── KOREKSI HAFALAN MANUAL (Area Orang Tua) ─────────────────── */
+function renderOrtuSurahOptions() {
+  const sel = document.getElementById('ortu-surah-select');
+  if (!sel || !S.surahList) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Pilih surah...</option>' +
+    S.surahList.map(s => `<option value="${s.surah_number}">${s.nama_latin} (${s.hafal}/${s.jumlah_ayat} ayat)</option>`).join('');
+  sel.value = current;
+  renderOrtuAyatList();
+}
+
+function renderOrtuAyatList() {
+  const sel  = document.getElementById('ortu-surah-select');
+  const wrap = document.getElementById('ortu-ayat-list');
+  if (!sel || !wrap) return;
+
+  const surahNumber = sel.value;
+  if (!surahNumber) { wrap.innerHTML = ''; return; }
+
+  const ayatSurah = S.ayatList.filter(a => Number(a.surah_number) === Number(surahNumber));
+  wrap.innerHTML = ayatSurah.map(a => {
+    const key    = String(a.surah_number) + '_' + String(a.ayat_number);
+    const status = S.progressMap[key] || 'belum';
+    return `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 0; border-bottom:1px solid var(--gray-island);">
+        <span style="font-size:12.5px; font-weight:700; color:var(--ink);">Ayat ${a.ayat_number}</span>
+        <div style="display:flex; gap:6px;">
+          <button class="ortu-status-btn ${status === 'hafal'  ? 'active-hafal'  : ''}" onclick="overrideProgress(${a.surah_number},${a.ayat_number},'hafal')">Hafal</button>
+          <button class="ortu-status-btn ${status === 'sedang' ? 'active-sedang' : ''}" onclick="overrideProgress(${a.surah_number},${a.ayat_number},'sedang')">Sedang</button>
+          <button class="ortu-status-btn ${status === 'belum'  ? 'active-belum'  : ''}" onclick="overrideProgress(${a.surah_number},${a.ayat_number},'belum')">Belum</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function overrideProgress(surahNumber, ayatNumber, status) {
+  if (!S.parentToken) {
+    showToast('Sesi Area Orang Tua sudah berakhir. Masukkan PIN lagi.');
+    openPinModal('verify');
+    return;
+  }
+
+  const res = await api({
+    action: 'overrideProgress',
+    surah_number: surahNumber,
+    ayat_number:  ayatNumber,
+    status:       status,
+    parent_token: S.parentToken
+  });
+
+  if (!res.success) {
+    if (res.message && res.message.indexOf('PIN') !== -1) {
+      showToast('Sesi Area Orang Tua sudah berakhir. Masukkan PIN lagi.');
+      S.parentToken = null;
+      openPinModal('verify');
+    } else {
+      showToast('Gagal menyimpan: ' + res.message);
+    }
+    return;
+  }
+
+  const key = String(surahNumber) + '_' + String(ayatNumber);
+  S.progressMap[key] = status;
+
+  const freshData = await api({ action: 'getInitialData' });
+  if (freshData.success) {
+    S.surahList  = freshData.data.surahList;
+    S.totalHafal = freshData.data.totalHafal;
+    document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
+    document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
+    updateRewardUI();
+  }
+
+  renderOrtuSurahOptions();
+  document.getElementById('ortu-surah-select').value = surahNumber;
+  renderOrtuAyatList();
+  showToast('Status ayat ' + ayatNumber + ' diperbarui.');
+}
+
 /* ── INIT ──────────────────────────────────────────────────── */
 // DOMContentLoaded (bukan 'load') supaya tidak nunggu semua gambar/font
 // selesai dimuat — status login bisa langsung dicek begitu DOM siap.
@@ -1611,12 +1662,19 @@ function processAudio() {
         `;
         if (res.data.lulus) {
           showToast('Hafalan luar biasa! Bintang ditambahkan!');
+          const prevStars = S.totalHafal;
+
           // Refresh progress untuk memunculkan update bintang/status
           const freshData = await api({ action: 'getInitialData' });
           if (freshData.success) {
             S.progressMap = freshData.data.progressMap;
+            S.surahList   = freshData.data.surahList;
             S.totalHafal  = freshData.data.totalHafal;
             updateRewardUI();
+
+            checkLevelUp(prevStars, S.totalHafal);
+            const surah = S.surahList.find(s => Number(s.surah_number) === Number(S.lanjutSurahNumber));
+            if (surah && surah.status === 'hafal') checkBadgeUnlock(S.lanjutSurahNumber);
           }
         }
       } else {
