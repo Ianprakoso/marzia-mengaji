@@ -29,6 +29,7 @@
 body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: var(--ink); min-height: 100vh; }
 
 /* ── SPLASH (default saat halaman baru dibuka, sebelum status login diketahui) ── */
+#pg-splash, #pg-auth, #pg-app { transition: opacity 0.28s ease; }
 #pg-splash { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: linear-gradient(160deg, var(--sunshine-light) 0%, var(--sunshine) 100%); }
 
 /* ── AUTH ──────────────────────────────────────────────────── */
@@ -93,7 +94,17 @@ body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: va
 /* ── MAIN ──────────────────────────────────────────────────── */
 .main { flex-grow: 1; min-width: 0; }
 .tab-page { display: none; }
-.tab-page.active { display: block; }
+.tab-page.active { display: block; animation: tabFadeIn 0.22s ease; }
+@keyframes tabFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── FEEDBACK SENTUH — konsisten di seluruh elemen yang bisa ditekan ── */
+.auth-btn:active, .status-start-btn:active { transform: scale(0.97); }
+.nav-item:active, .bottom-nav-item:active { transform: scale(0.95); }
+.island:active { transform: scale(0.97); }
+.sched-start-btn { transition: transform 0.12s ease; }
+.sched-start-btn:active { transform: scale(0.92); }
+.play-btn, .ortu-status-btn, .pin-key { transition: transform 0.12s ease; }
+.play-btn:active, .ortu-status-btn:active, .pin-key:active { transform: scale(0.93); }
 .section-title { font-family: 'Baloo 2', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink-soft); margin: 0 0 18px 4px; display: flex; align-items: center; gap: 8px; }
 .loading-state { text-align: center; padding: 40px 20px; color: var(--ink-soft); font-weight: 600; font-size: 14px; }
 .loading-spinner { width: 36px; height: 36px; border: 4px solid var(--gray-island); border-top-color: var(--sunshine); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 12px; }
@@ -116,10 +127,17 @@ body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: va
 .ortu-status-btn.active-belum  { background: var(--gray-island); border-color: var(--gray-island); color: var(--ink); }
 
 /* ── BERANDA — JALUR PULAU ─────────────────────────────────── */
-.welcome-card { background: white; border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px -8px rgba(61,44,95,0.10); margin-bottom: 28px; }
-.welcome-icon { font-size: 40px; flex-shrink: 0; }
-.welcome-card h3 { font-family: 'Baloo 2', sans-serif; font-size: 17px; margin-bottom: 4px; }
-.welcome-card p  { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
+.cta-card { border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 10px 26px -10px rgba(61,44,95,0.28); margin-bottom: 28px; color: white; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.cta-card.cta-murojaah { background: linear-gradient(135deg, var(--sky), var(--sky-dark)); }
+.cta-card.cta-lanjut   { background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); }
+.cta-card.cta-done     { background: linear-gradient(135deg, var(--sunshine), var(--coral)); }
+.cta-icon  { font-size: 36px; flex-shrink: 0; }
+.cta-body  { flex-grow: 1; min-width: 0; }
+.cta-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.85; margin-bottom: 2px; }
+.cta-title { font-family: 'Baloo 2', sans-serif; font-size: 17px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cta-btn   { flex-shrink: 0; background: rgba(255,255,255,0.92); color: var(--ink); border: none; border-radius: 16px; padding: 12px 18px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; transition: transform 0.12s ease; }
+.cta-btn:active { transform: scale(0.94); }
+.cta-card:active { transform: scale(0.99); }
 .path-wrap { position: relative; }
 svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .islands { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 8px; }
@@ -285,9 +303,10 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .sched-start-btn.done { background: linear-gradient(135deg, #C9C3DE, #B3ACCB); cursor: default; }
 
 /* ── MODAL MUROJA'AH ───────────────────────────────────────── */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(61,44,95,0.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.open { display: flex; }
-.modal-box { background: white; border-radius: 32px; padding: 28px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 50px -16px rgba(61,44,95,0.4); }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(61,44,95,0.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.2s ease; }
+.modal-overlay.open { display: flex; opacity: 1; }
+.modal-box { background: white; border-radius: 32px; padding: 28px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 50px -16px rgba(61,44,95,0.4); transform: scale(0.94) translateY(8px); transition: transform 0.2s ease; }
+.modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
 .modal-box h3 { font-family: 'Baloo 2', sans-serif; font-size: 20px; margin-bottom: 4px; }
 .modal-surah-tag { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin-bottom: 16px; display: block; }
 .modal-tip { font-size: 12px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 24px; background: var(--cream); border-radius: 14px; padding: 14px; text-align: left; }
@@ -389,12 +408,13 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 
       <!-- BERANDA -->
       <div class="tab-page active" id="page-beranda">
-        <div class="welcome-card">
-          <div class="welcome-icon">⭐</div>
-          <div>
-            <h3>Yuk, Kumpulkan Bintang!</h3>
-            <p>Tandai setiap ayat yang sudah berhasil kamu hafal untuk menerangi pulau-pulau di peta petualanganmu.</p>
+        <div class="cta-card" id="ctaCard">
+          <div class="cta-icon" id="cta-icon">🌟</div>
+          <div class="cta-body">
+            <div class="cta-label" id="cta-label">Menyiapkan sesi hari ini...</div>
+            <div class="cta-title" id="cta-title">&nbsp;</div>
           </div>
+          <button class="cta-btn" id="cta-btn">Mulai →</button>
         </div>
 
         <!-- REWARD PANEL -->
@@ -503,7 +523,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <div class="ayat-tag" id="lanjut-surah-tag">Pilih surah di tab Hafal Ayat</div>
           <div class="lanjut-soal-row">
             <div class="quiz-arabic" dir="rtl" id="lanjut-soal-arab" style="margin:0">—</div>
-            <button class="audio-mini-btn" style="background:var(--lavender);" onclick="playAudioUrl(S.lanjutSoalAudio)">▶</button>
+            <button class="audio-mini-btn" id="lanjut-audio-btn" style="background:var(--lavender);" onclick="playAudioUrl(S.lanjutSoalAudio)">▶</button>
           </div>
           <div id="record-ui" style="margin-top: 20px;">
             <button id="btn-record" class="auth-btn" style="background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));" onclick="startRecording()">🎙️ Mulai Rekam (Maks 15 Detik)</button>
@@ -626,6 +646,7 @@ const S = {
   lanjutSurahNumber: null,
   lanjutAyatNumber: null,
   murojaahScheduleId: null,
+  murojaahSchedule: [],
   murojaahSurahNumber: null,
 
   // Area Orang Tua (PIN)
@@ -686,26 +707,47 @@ function showAuthError(msg, isSuccess = false) {
   el.style.color      = isSuccess ? 'var(--leaf-dark)' : 'var(--coral-dark)';
 }
 
+/* ── TRANSISI ANTAR LAYAR ─────────────────────────────────────
+   Splash / Auth / App saling bertukar dengan fade halus, bukan
+   display:none/block mentah yang terasa "meloncat". */
+function showScreen(id) {
+  ['pg-splash', 'pg-auth', 'pg-app'].forEach(s => {
+    const el = document.getElementById(s);
+    if (!el) return;
+    if (s === id) {
+      el.style.display = (id === 'pg-app') ? 'block' : 'flex';
+      el.style.opacity = '0';
+      requestAnimationFrame(() => requestAnimationFrame(() => { el.style.opacity = '1'; }));
+    } else if (el.style.display !== 'none') {
+      el.style.opacity = '0';
+      setTimeout(() => { el.style.display = 'none'; }, 280);
+    }
+  });
+}
+
 async function doLogout() {
   await api({ action: 'logout' }).catch(() => {});
   localStorage.removeItem('mm_token');
   localStorage.removeItem('mm_username');
   S.token = null;
-  document.getElementById('pg-app').style.display  = 'none';
-  document.getElementById('pg-auth').style.display = 'flex';
+  showScreen('pg-auth');
 }
 
 /* ── APP INIT ──────────────────────────────────────────────── */
 async function enterApp() {
-  document.getElementById('pg-splash').style.display = 'none';
-  document.getElementById('pg-auth').style.display = 'none';
-  document.getElementById('pg-app').style.display  = 'block';
+  showScreen('pg-app');
   initNavColors();
   await loadInitialData();
   const jadwalRes = await api({ action: 'getMurojaahSchedule' });
-  if (jadwalRes.success && jadwalRes.data.filter(j => j.status === 'terjadwal').length === 0) {
-    await api({ action: 'initJadwal' });
+  if (jadwalRes.success) {
+    S.murojaahSchedule = jadwalRes.data;
+    if (jadwalRes.data.filter(j => j.status === 'terjadwal').length === 0) {
+      await api({ action: 'initJadwal' });
+      const refreshed = await api({ action: 'getMurojaahSchedule' });
+      if (refreshed.success) S.murojaahSchedule = refreshed.data;
+    }
   }
+  renderBerandaCTA();
 }
 
 async function loadInitialData() {
@@ -759,7 +801,7 @@ function switchTab(tab) {
   });
   const [f, t] = HERO_GRADIENT[tab] || HERO_GRADIENT.beranda;
   document.getElementById('appHero').style.background = `linear-gradient(160deg,${f} 0%,${t} 100%)`;
-  if (tab === 'beranda')  setTimeout(drawConnectors, 50);
+  if (tab === 'beranda')  { renderBerandaCTA(); setTimeout(drawConnectors, 50); }
   if (tab === 'murojaah') loadMurojaah();
   if (tab === 'ortu')     renderOrtuSurahOptions();
   if (tab !== 'hafal-detail' && autoplayOn) stopAutoplay();
@@ -773,9 +815,59 @@ function initNavColors() {
 }
 
 /* ── BERANDA ───────────────────────────────────────────────── */
+function renderBerandaCTA() {
+  const iconEl  = document.getElementById('cta-icon');
+  const labelEl = document.getElementById('cta-label');
+  const titleEl = document.getElementById('cta-title');
+  const btnEl   = document.getElementById('cta-btn');
+  const cardEl  = document.getElementById('ctaCard');
+  if (!iconEl || !S.surahList.length) return;
+
+  btnEl.style.display = '';
+
+  // Prioritas 1: ada muroja'ah yang jadwalnya hari ini atau sudah lewat.
+  const today = new Date().toISOString().split('T')[0];
+  const due = (S.murojaahSchedule || [])
+    .filter(j => j.status === 'terjadwal' && j.tanggal_jadwal <= today)
+    .sort((a, b) => a.tanggal_jadwal.localeCompare(b.tanggal_jadwal))[0];
+
+  if (due) {
+    const surah = S.surahList.find(s => Number(s.surah_number) === Number(due.surah_number));
+    cardEl.className    = 'cta-card cta-murojaah';
+    iconEl.textContent  = '📅';
+    labelEl.textContent = 'Muroja\u2019ah menunggu';
+    titleEl.textContent = surah ? surah.nama_latin : ('Surah ' + due.surah_number);
+    btnEl.onclick = () => {
+      switchTab('murojaah');
+      setTimeout(() => openMurojaahModal(due.schedule_id, due.surah_number), 200);
+    };
+    return;
+  }
+
+  // Prioritas 2: sesi Lanjutkan — surah sedang dipelajari, atau surah baru,
+  // atau (kalau semua sudah hafal) mode pengulangan ingatan.
+  const target = _pickLanjutTarget();
+  if (target) {
+    cardEl.className    = 'cta-card cta-lanjut';
+    iconEl.textContent  = target.status === 'belum' ? '🌱' : target.status === 'sedang' ? '🎙️' : '🔁';
+    labelEl.textContent = target.status === 'belum' ? 'Surah baru menanti' : target.status === 'sedang' ? 'Lanjutkan hafalanmu' : 'Uji ingatanmu';
+    titleEl.textContent = target.nama_latin;
+    btnEl.onclick = () => { setupLanjutSoal(target.surah_number); switchTab('lanjut'); };
+    return;
+  }
+
+  // Kasus langka: tidak ada apa pun untuk disarankan (data belum termuat).
+  cardEl.className    = 'cta-card cta-done';
+  iconEl.textContent  = '🌟';
+  labelEl.textContent = 'Kerja bagus';
+  titleEl.textContent = 'Buka menu untuk mulai belajar';
+  btnEl.style.display = 'none';
+}
+
 function renderBeranda() {
   const c = document.getElementById('islandsContainer');
   c.innerHTML = '';
+  renderBerandaCTA();
   if (!S.surahList.length) { c.innerHTML = '<div class="loading-state">Belum ada data surah.</div>'; return; }
   const sorted    = [...S.surahList].sort((a, b) => Number(b.surah_number) - Number(a.surah_number));
   const nextSurah = [...S.surahList].sort((a, b) => Number(a.surah_number) - Number(b.surah_number)).find(s => s.status !== 'hafal');
@@ -936,61 +1028,105 @@ function stopAutoplay() {
 
 /* ── LANJUTKAN ─────────────────────────────────────────────── */
 function autoSetupLanjut() {
-  const target = S.surahList.filter(s => s.status === 'sedang' || s.status === 'hafal')
-    .sort((a, b) => Number(a.surah_number) - Number(b.surah_number))
-    .find(s => s.status === 'sedang') ||
-    S.surahList.filter(s => s.status === 'hafal')
-    .sort((a, b) => Number(b.surah_number) - Number(a.surah_number))[0];
+  // Prioritas: lanjutkan surah yang SEDANG dipelajari (progress paling
+  // relevan untuk dilanjutkan), baru surah yang belum pernah disentuh sama
+  // sekali (mulai baru), baru surah yang sudah 100% hafal (mode mengulang
+  // ingatan). Ini urutan yang sama dipakai tombol "Mulai" di Beranda.
+  const target = _pickLanjutTarget();
   if (target) setupLanjutSoal(target.surah_number);
 }
 
-function setupLanjutSoal(forcedSurahNumber) {
-  // 1. Saring HANYA surah yang SELURUH ayatnya berstatus 'hafal'
-  const fullyHafalSurahs = S.surahList.filter(s => {
-    const sNum = Number(s.surah_number);
-    const maxAyat = Number(s.jumlah_ayat);
-    for (let i = 1; i <= maxAyat; i++) {
-      const key = sNum + '_' + i;
-      if (S.progressMap[key] !== 'hafal') {
-        return false; // Jika ada satu saja ayat yang belum hafal, surah ini dilewati
-      }
-    }
-    return true; // Surah ini 100% hafal!
-  });
+function _pickLanjutTarget() {
+  const sedang = S.surahList.filter(s => s.status === 'sedang')
+    .sort((a, b) => Number(a.surah_number) - Number(b.surah_number))[0];
+  if (sedang) return sedang;
 
-  // Jika belum ada satupun surah yang tuntas 100%
-  if (fullyHafalSurahs.length === 0) {
-    document.getElementById('lanjut-surah-tag').textContent = 'Belum ada surah yang hafal seluruhnya';
-    document.getElementById('lanjut-soal-arab').textContent = '🌟 Selesaikan hafalan 1 surah penuh terlebih dahulu di tab "Hafal Ayat" untuk membuka latihan sambung ayat ini ya!';
-    S.lanjutAyatNumber = null;
+  const belum = S.surahList.filter(s => s.status === 'belum')
+    .sort((a, b) => Number(a.surah_number) - Number(b.surah_number))[0];
+  if (belum) return belum;
+
+  return S.surahList.filter(s => s.status === 'hafal')
+    .sort((a, b) => Number(b.surah_number) - Number(a.surah_number))[0] || null;
+}
+
+function setupLanjutSoal(forcedSurahNumber) {
+  const audioBtn = document.getElementById('lanjut-audio-btn');
+  let surah = forcedSurahNumber
+    ? S.surahList.find(s => Number(s.surah_number) === Number(forcedSurahNumber))
+    : null;
+
+  if (!surah) {
+    const target = _pickLanjutTarget();
+    if (!target) {
+      document.getElementById('lanjut-surah-tag').textContent = 'Belum ada surah untuk dilatih';
+      document.getElementById('lanjut-soal-arab').textContent = '🌟 Mulai dari tab "Hafal Ayat" untuk membuka latihan sambung ayat ini ya!';
+      S.lanjutAyatNumber = null;
+      if (audioBtn) audioBtn.style.display = 'none';
+      return;
+    }
+    surah = target;
+  }
+
+  const surahNumber = Number(surah.surah_number);
+  const maxAyat      = Number(surah.jumlah_ayat);
+  const ayatSurah    = S.ayatList.filter(a => Number(a.surah_number) === surahNumber);
+
+  // ── Surah belum pernah disentuh sama sekali: mulai dari Ayat 1,
+  //    tidak ada ayat pancingan karena belum ada yang bisa dijadikan acuan.
+  if (surah.status === 'belum') {
+    const ayat1 = ayatSurah.find(a => Number(a.ayat_number) === 1);
+    if (!ayat1) return;
+    S.lanjutSoalAudio   = null;
+    S.lanjutSurahNumber = surahNumber;
+    S.lanjutAyatNumber  = 1;
+    document.getElementById('lanjut-surah-tag').textContent = surah.nama_latin + ' • Ayat pertama, mulai dari sini!';
+    document.getElementById('lanjut-soal-arab').textContent = '🌱 Surah baru! Coba baca Ayat 1 dari hafalanmu, lalu rekam di bawah.';
+    if (audioBtn) audioBtn.style.display = 'none';
     return;
   }
 
-  // 2. Pilih surah secara acak dari daftar surah yang sudah 100% hafal
-  const randomSurahIndex = Math.floor(Math.random() * fullyHafalSurahs.length);
-  const chosenSurah = fullyHafalSurahs[randomSurahIndex];
-  const surahNumber = Number(chosenSurah.surah_number);
+  // ── Surah sedang dipelajari: lanjutkan persis dari ayat setelah "batas
+  //    hafal" terakhir yang berurutan sejak ayat 1 (bukan ayat acak).
+  if (surah.status === 'sedang') {
+    let lastHafal = 0;
+    for (let i = 1; i <= maxAyat; i++) {
+      if (S.progressMap[surahNumber + '_' + i] === 'hafal') lastHafal = i; else break;
+    }
+    const targetAyatNumber = lastHafal + 1;
+    const jawabanAyat = ayatSurah.find(a => Number(a.ayat_number) === targetAyatNumber);
+    if (!jawabanAyat) return;
 
-  const ayatSurah = S.ayatList.filter(a => Number(a.surah_number) === surahNumber);
-  const maxAyat = Number(chosenSurah.jumlah_ayat);
+    if (lastHafal === 0) {
+      S.lanjutSoalAudio = null;
+      document.getElementById('lanjut-soal-arab').textContent = '🌱 Coba baca Ayat 1 dari hafalanmu, lalu rekam di bawah.';
+      if (audioBtn) audioBtn.style.display = 'none';
+    } else {
+      const soalAyat = ayatSurah.find(a => Number(a.ayat_number) === lastHafal);
+      S.lanjutSoalAudio = getAudioUrl(soalAyat);
+      document.getElementById('lanjut-soal-arab').textContent = soalAyat.teks_arab;
+      if (audioBtn) audioBtn.style.display = '';
+    }
 
-  // 3. Ambil kandidat ayat (kecuali ayat terakhir surah karena butuh N+1)
+    S.lanjutSurahNumber = surahNumber;
+    S.lanjutAyatNumber  = targetAyatNumber;
+    document.getElementById('lanjut-surah-tag').textContent = surah.nama_latin + ' • Lanjutkan ke Ayat ' + targetAyatNumber;
+    return;
+  }
+
+  // ── Surah sudah 100% hafal: mode pengulangan/reinforcement, uji ingatan
+  //    di titik acak dalam surah (perilaku lama, dipertahankan).
   const kandidat = ayatSurah.filter(a => Number(a.ayat_number) < maxAyat);
   if (!kandidat.length) return;
-
-  // 4. Pilih ayat pancingan secara acak dari surah tersebut
-  const randomAyatIndex = Math.floor(Math.random() * kandidat.length);
-  const soalAyat = kandidat[randomAyatIndex];
-
+  const soalAyat = kandidat[Math.floor(Math.random() * kandidat.length)];
   const targetAyatNumber = Number(soalAyat.ayat_number) + 1;
   const jawabanAyat = ayatSurah.find(a => Number(a.ayat_number) === targetAyatNumber);
   if (!jawabanAyat) return;
 
-  S.lanjutSoalAudio   = getAudioUrl(soalAyat); // Audio pancingan (ayat N)
+  S.lanjutSoalAudio   = getAudioUrl(soalAyat);
   S.lanjutSurahNumber = surahNumber;
-  S.lanjutAyatNumber  = targetAyatNumber; // Ayat N+1 yang wajib dibaca dan dinilai AI
-
-  document.getElementById('lanjut-surah-tag').textContent = chosenSurah.nama_latin + ' (Hafal 100% 🌟) • Lanjutkan ayat setelah Ayat ' + soalAyat.ayat_number;
+  S.lanjutAyatNumber  = targetAyatNumber;
+  if (audioBtn) audioBtn.style.display = '';
+  document.getElementById('lanjut-surah-tag').textContent = surah.nama_latin + ' (Hafal 100% 🌟) • Lanjutkan ayat setelah Ayat ' + soalAyat.ayat_number;
   document.getElementById('lanjut-soal-arab').textContent = soalAyat.teks_arab;
 }
   
@@ -1002,6 +1138,8 @@ async function loadMurojaah() {
   c.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Memuat jadwal...</div>';
   const res = await api({ action: 'getMurojaahSchedule' });
   if (!res.success) { c.innerHTML = '<div class="loading-state">Gagal memuat jadwal.</div>'; return; }
+  S.murojaahSchedule = res.data;
+  renderBerandaCTA();
   const today  = new Date().toISOString().split('T')[0];
   const jadwal = res.data.filter(j => j.status === 'terjadwal')
     .sort((a, b) => new Date(a.tanggal_jadwal) - new Date(b.tanggal_jadwal))
@@ -1564,9 +1702,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function showAuthScreen() {
-  document.getElementById('pg-splash').style.display = 'none';
-  document.getElementById('pg-app').style.display    = 'none';
-  document.getElementById('pg-auth').style.display   = 'flex';
+  showScreen('pg-auth');
 }
 
   /* ── PENILAIAN SUARA AI ────────────────────────────────────── */
