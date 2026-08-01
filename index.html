@@ -1163,7 +1163,8 @@ function processMurojaahAudio() {
       resetMurojaahRecordUI();
 
       if (!res.success) {
-        showToast('Gagal menilai: ' + res.message);
+        console.log('Detail gagal nilaiMurojaah:', res.message);
+        showToast('Rekaman belum bisa dinilai, coba rekam ulang ya! 🎙️');
         return;
       }
 
