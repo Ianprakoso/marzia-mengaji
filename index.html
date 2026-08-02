@@ -870,7 +870,7 @@ function renderBeranda() {
   renderBerandaCTA();
   if (!S.surahList.length) { c.innerHTML = '<div class="loading-state">Belum ada data surah.</div>'; return; }
   const sorted    = [...S.surahList].sort((a, b) => Number(b.surah_number) - Number(a.surah_number));
-  const nextSurah = [...S.surahList].sort((a, b) => Number(a.surah_number) - Number(b.surah_number)).find(s => s.status !== 'hafal');
+  const nextSurah = _pickLanjutTarget();
   sorted.forEach((s, idx) => {
     const row     = document.createElement('div');
     row.className = `island-row ${idx % 2 === 0 ? 'left' : 'right'}`;
@@ -1037,12 +1037,14 @@ function autoSetupLanjut() {
 }
 
 function _pickLanjutTarget() {
+  // Urutan hafalan Juz 30 untuk anak konvensinya dimulai dari surah
+  // terpendek (An-Nas, 114) menurun ke An-Naba (78) — bukan menaik.
   const sedang = S.surahList.filter(s => s.status === 'sedang')
-    .sort((a, b) => Number(a.surah_number) - Number(b.surah_number))[0];
+    .sort((a, b) => Number(b.surah_number) - Number(a.surah_number))[0];
   if (sedang) return sedang;
 
   const belum = S.surahList.filter(s => s.status === 'belum')
-    .sort((a, b) => Number(a.surah_number) - Number(b.surah_number))[0];
+    .sort((a, b) => Number(b.surah_number) - Number(a.surah_number))[0];
   if (belum) return belum;
 
   return S.surahList.filter(s => s.status === 'hafal')
