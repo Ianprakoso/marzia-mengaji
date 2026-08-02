@@ -127,15 +127,12 @@ body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: va
 .ortu-status-btn.active-belum  { background: var(--gray-island); border-color: var(--gray-island); color: var(--ink); }
 
 /* ── BERANDA — JALUR PULAU ─────────────────────────────────── */
-.cta-card { border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 10px 26px -10px rgba(61,44,95,0.28); margin-bottom: 28px; color: white; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-.cta-card.cta-murojaah { background: linear-gradient(135deg, var(--sky), var(--sky-dark)); }
-.cta-card.cta-lanjut   { background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); }
-.cta-card.cta-done     { background: linear-gradient(135deg, var(--sunshine), var(--coral)); }
+.cta-card { border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 10px 26px -10px rgba(61,44,95,0.28); margin-bottom: 28px; color: var(--ink); background: linear-gradient(135deg, #FFE3A0, #FFC857); transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .cta-icon  { font-size: 36px; flex-shrink: 0; }
 .cta-body  { flex-grow: 1; min-width: 0; }
-.cta-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.85; margin-bottom: 2px; }
+.cta-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.7; margin-bottom: 2px; }
 .cta-title { font-family: 'Baloo 2', sans-serif; font-size: 17px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cta-btn   { flex-shrink: 0; background: rgba(255,255,255,0.92); color: var(--ink); border: none; border-radius: 16px; padding: 12px 18px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; transition: transform 0.12s ease; }
+.cta-btn   { flex-shrink: 0; background: rgba(255,255,255,0.85); color: var(--ink); border: none; border-radius: 16px; padding: 12px 18px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; transition: transform 0.12s ease; }
 .cta-btn:active { transform: scale(0.94); }
 .cta-card:active { transform: scale(0.99); }
 .path-wrap { position: relative; }
@@ -526,7 +523,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             <button class="audio-mini-btn" id="lanjut-audio-btn" style="background:var(--lavender);" onclick="playAudioUrl(S.lanjutSoalAudio)">▶</button>
           </div>
           <div id="record-ui" style="margin-top: 20px;">
-            <button id="btn-record" class="auth-btn" style="background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));" onclick="startRecording()">🎙️ Mulai Rekam (Maks 15 Detik)</button>
+            <button id="btn-record" class="auth-btn" style="background: linear-gradient(135deg, var(--lavender), var(--lavender-dark));" onclick="startRecording()">🎙️ Mulai Rekam (Maks 15 Detik)</button>
             <div id="record-status" style="display: none; margin-top: 15px;">
               <div style="font-weight: 700; color: var(--coral-dark); margin-bottom: 8px;">🔴 Merekam... <span id="record-timer">0</span> / 15 detik</div>
               <div class="level-progress-track">
@@ -833,7 +830,7 @@ function renderBerandaCTA() {
 
   if (due) {
     const surah = S.surahList.find(s => Number(s.surah_number) === Number(due.surah_number));
-    cardEl.className    = 'cta-card cta-murojaah';
+    cardEl.className    = 'cta-card';
     iconEl.textContent  = '📅';
     labelEl.textContent = 'Muroja\u2019ah menunggu';
     titleEl.textContent = surah ? surah.nama_latin : ('Surah ' + due.surah_number);
@@ -848,7 +845,7 @@ function renderBerandaCTA() {
   // atau (kalau semua sudah hafal) mode pengulangan ingatan.
   const target = _pickLanjutTarget();
   if (target) {
-    cardEl.className    = 'cta-card cta-lanjut';
+    cardEl.className    = 'cta-card';
     iconEl.textContent  = target.status === 'belum' ? '🌱' : target.status === 'sedang' ? '🎙️' : '🔁';
     labelEl.textContent = target.status === 'belum' ? 'Surah baru menanti' : target.status === 'sedang' ? 'Lanjutkan hafalanmu' : 'Uji ingatanmu';
     titleEl.textContent = target.nama_latin;
@@ -857,7 +854,7 @@ function renderBerandaCTA() {
   }
 
   // Kasus langka: tidak ada apa pun untuk disarankan (data belum termuat).
-  cardEl.className    = 'cta-card cta-done';
+  cardEl.className    = 'cta-card';
   iconEl.textContent  = '🌟';
   labelEl.textContent = 'Kerja bagus';
   titleEl.textContent = 'Buka menu untuk mulai belajar';
