@@ -1700,6 +1700,29 @@ function renderOrtuAyatList() {
   }).join('');
 }
 
+/**
+ * Versi client dari computeSurahStats() di DB.gs — hitung ulang hafal/
+ * sedang/pct/status per surah dari S.ayatList + S.progressMap yang sudah
+ * ada di memori, tanpa perlu fetch ulang ke server. Dipakai setelah
+ * koreksi manual supaya UI langsung update tanpa nunggu round-trip berat.
+ */
+function computeSurahStatsClient() {
+  return S.surahList.map(s => {
+    let hafal = 0, sedang = 0;
+    S.ayatList
+      .filter(a => Number(a.surah_number) === Number(s.surah_number))
+      .forEach(a => {
+        const st = S.progressMap[String(s.surah_number) + '_' + String(a.ayat_number)] || 'belum';
+        if (st === 'hafal') hafal++; else if (st === 'sedang') sedang++;
+      });
+    return {
+      ...s, hafal, sedang,
+      pct:    Math.round((hafal / s.jumlah_ayat) * 100),
+      status: hafal === s.jumlah_ayat ? 'hafal' : (hafal > 0 || sedang > 0 ? 'sedang' : 'belum')
+    };
+  });
+}
+
 async function overrideProgress(surahNumber, ayatNumber, status) {
   if (!S.parentToken) {
     showToast('Sesi Area Orang Tua sudah berakhir. Masukkan PIN lagi.');
@@ -1729,14 +1752,15 @@ async function overrideProgress(surahNumber, ayatNumber, status) {
   const key = String(surahNumber) + '_' + String(ayatNumber);
   S.progressMap[key] = status;
 
-  const freshData = await api({ action: 'getInitialData' });
-  if (freshData.success) {
-    S.surahList  = freshData.data.surahList;
-    S.totalHafal = freshData.data.totalHafal;
-    document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
-    document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
-    updateRewardUI();
-  }
+  // Dulu di sini fetch ulang getInitialData() lengkap (seluruh 564 ayat +
+  // hitung ulang 37 surah) cuma untuk update 2 angka header — berat dan
+  // bikin lag. Sekarang dihitung ulang di client dari data yang sudah ada
+  // (S.ayatList, S.progressMap sudah diperbarui di atas), tanpa fetch.
+  S.surahList  = computeSurahStatsClient();
+  S.totalHafal = Object.values(S.progressMap).filter(v => v === 'hafal').length;
+  document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
+  document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
+  updateRewardUI();
 
   renderOrtuSurahOptions();
   document.getElementById('ortu-surah-select').value = surahNumber;
