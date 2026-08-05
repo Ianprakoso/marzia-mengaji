@@ -126,6 +126,20 @@ body { background: var(--cream); font-family: 'Quicksand', sans-serif; color: va
 .ortu-status-btn.active-sedang { background: var(--sky); border-color: var(--sky); color: white; }
 .ortu-status-btn.active-belum  { background: var(--gray-island); border-color: var(--gray-island); color: var(--ink); }
 
+/* ── RIWAYAT PENILAIAN (Area Orang Tua) ────────────────────── */
+.log-list      { display: flex; flex-direction: column; gap: 10px; max-height: 440px; overflow-y: auto; }
+.history-item  { padding: 12px 14px; border-radius: 16px; background: var(--cream); }
+.history-top   { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.history-date  { font-size: 10.5px; color: var(--ink-soft); font-weight: 700; }
+.history-title { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.history-note  { font-size: 11.5px; color: var(--ink-soft); margin-top: 5px; line-height: 1.5; }
+.history-item { padding: 10px 0; border-bottom: 1px solid var(--gray-island); }
+.history-item:last-child { border-bottom: none; }
+.history-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+.history-date { font-size: 11px; font-weight: 700; color: var(--ink-soft); white-space: nowrap; }
+.history-title { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.history-note { font-size: 11.5px; color: var(--ink-soft); margin-top: 3px; line-height: 1.5; }
+
 /* ── BERANDA — JALUR PULAU ─────────────────────────────────── */
 .cta-card { border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 10px 26px -10px rgba(61,44,95,0.28); margin-bottom: 28px; color: var(--ink); background: linear-gradient(135deg, #FFE3A0, #FFC857); transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .cta-icon  { font-size: 36px; flex-shrink: 0; }
@@ -480,7 +494,15 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 
         <div class="ortu-card">
           <h4>👋 Selamat datang, Orang Tua</h4>
-          <p>Area ini terpisah dari layar anak. Koreksi manual hafalan dan pengaturan lain akan hadir di sini secara bertahap.</p>
+          <p>Area ini terpisah dari layar anak — untuk memantau riwayat penilaian dan mengoreksi hafalan bila diperlukan.</p>
+        </div>
+
+        <div class="ortu-card">
+          <h4>📜 Riwayat Penilaian</h4>
+          <p>Semua penilaian AI (setor ayat & muroja'ah) dan koreksi manual yang pernah terjadi, terbaru dulu.</p>
+          <div class="log-list" id="ortu-history-list">
+            <div class="loading-state"><div class="loading-spinner"></div>Memuat riwayat...</div>
+          </div>
         </div>
 
         <div class="ortu-card">
@@ -786,7 +808,7 @@ function switchTab(tab) {
   document.getElementById('appHero').style.background = `linear-gradient(160deg,${f} 0%,${t} 100%)`;
   if (tab === 'beranda')  { renderBerandaCTA(); setTimeout(drawConnectors, 50); }
   if (tab === 'murojaah') loadMurojaah();
-  if (tab === 'ortu')     renderOrtuSurahOptions();
+  if (tab === 'ortu')     { renderOrtuSurahOptions(); loadOrtuHistory(); }
   if (tab !== 'hafal-detail' && autoplayOn) stopAutoplay();
 }
 
@@ -1580,6 +1602,69 @@ async function submitPinEntry() {
   }
 }
 
+/* ── RIWAYAT PENILAIAN (Area Orang Tua) ──────────────────────── */
+const HASIL_BADGE = {
+  lulus:         { label: 'Lulus',         cls: 'badge-lulus'  },
+  lancar:        { label: 'Lancar',        cls: 'badge-lulus'  },
+  hafal:         { label: 'Hafal',         cls: 'badge-lulus'  },
+  hampir:        { label: 'Hampir Lancar', cls: 'badge-hampir' },
+  sedang:        { label: 'Sedang',        cls: 'badge-hampir' },
+  gagal:         { label: 'Gagal',         cls: 'badge-perlu'  },
+  perlu_diulang: { label: 'Perlu Diulang', cls: 'badge-perlu'  },
+  belum:         { label: 'Belum',         cls: 'badge-perlu'  }
+};
+
+async function loadOrtuHistory() {
+  const wrap = document.getElementById('ortu-history-list');
+  if (!wrap) return;
+
+  if (!S.parentToken) {
+    wrap.innerHTML = '<div style="font-size:12px;color:var(--ink-soft);font-weight:600;">Sesi Area Orang Tua sudah berakhir. Masukkan PIN lagi untuk lihat riwayat.</div>';
+    return;
+  }
+
+  wrap.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Memuat riwayat...</div>';
+
+  const res = await api({ action: 'getAssessmentLog', parent_token: S.parentToken });
+  if (!res.success) {
+    if (res.message && res.message.indexOf('PIN') !== -1) {
+      S.parentToken = null;
+      wrap.innerHTML = '<div style="font-size:12px;color:var(--ink-soft);font-weight:600;">Sesi berakhir, masukkan PIN lagi untuk lihat riwayat.</div>';
+    } else {
+      wrap.innerHTML = '<div style="font-size:12px;color:var(--ink-soft);font-weight:600;">Gagal memuat riwayat.</div>';
+    }
+    return;
+  }
+
+  renderOrtuHistory(res.data);
+}
+
+function renderOrtuHistory(logs) {
+  const wrap = document.getElementById('ortu-history-list');
+  if (!wrap) return;
+  if (!logs.length) {
+    wrap.innerHTML = '<div style="font-size:12px;color:var(--ink-soft);font-weight:600;">Belum ada riwayat penilaian.</div>';
+    return;
+  }
+  wrap.innerHTML = logs.map(l => {
+    const surah     = S.surahList.find(s => Number(s.surah_number) === Number(l.surah_number));
+    const namaSurah = surah ? surah.nama_latin : ('Surah ' + l.surah_number);
+    const ayatTxt   = Number(l.ayat_number) > 0 ? (' • Ayat ' + l.ayat_number) : '';
+    const bd        = HASIL_BADGE[l.hasil] || { label: l.hasil, cls: 'badge-perlu' };
+    const tgl       = new Date(l.created_at);
+    const tglTxt    = String(tgl.getDate()).padStart(2, '0') + ' ' + BULAN[tgl.getMonth()] + ' ' + tgl.getFullYear();
+    return `
+      <div class="history-item">
+        <div class="history-top">
+          <span class="history-date">${tglTxt}</span>
+          <span class="modal-result-badge ${bd.cls}">${bd.label}</span>
+        </div>
+        <div class="history-title">${l.fitur_label} — ${namaSurah}${ayatTxt}</div>
+        ${l.catatan ? `<div class="history-note">${l.catatan}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
 /* ── KOREKSI HAFALAN MANUAL (Area Orang Tua) ─────────────────── */
 function renderOrtuSurahOptions() {
   const sel = document.getElementById('ortu-surah-select');
@@ -1656,6 +1741,7 @@ async function overrideProgress(surahNumber, ayatNumber, status) {
   renderOrtuSurahOptions();
   document.getElementById('ortu-surah-select').value = surahNumber;
   renderOrtuAyatList();
+  loadOrtuHistory();
   showToast('Status ayat ' + ayatNumber + ' diperbarui.');
 }
 
