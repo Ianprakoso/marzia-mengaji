@@ -684,6 +684,7 @@ const S = {
 
   // Area Orang Tua (PIN)
   hasParentPin: false,
+  streak:       0,
   parentToken:  null
 };
 
@@ -793,6 +794,7 @@ async function loadInitialData() {
   S.totalHafal  = d.totalHafal;
   S.username    = d.username;
   S.hasParentPin = !!d.has_parent_pin;
+  S.streak       = d.streak || 0;
   if (d.default_qari) setQari(d.default_qari);
 
   document.getElementById('hdr-name').textContent     = d.username;
@@ -1353,7 +1355,10 @@ function renderMurojaahResult(data) {
   }
 
   if (data.hasil === 'lancar' || data.hasil === 'hampir') {
-    incrementStreak();
+    const naik = data.streak > (S.streak || 0);
+    S.streak = data.streak || 0;
+    renderStreak();
+    if (naik && S.streak > 1) showRewardToast('🔥 Streak ' + S.streak + ' hari! Luar biasa!');
   }
 
   if (data.hasil === 'perlu_diulang') {
@@ -1411,7 +1416,7 @@ function updateRewardUI() {
   }
 
   renderBadges();
-  updateStreak();
+  renderStreak();
 }
 
 function renderBadges() {
@@ -1429,33 +1434,12 @@ function renderBadges() {
     </div>`).join('');
 }
 
-function updateStreak() {
-  const today  = new Date().toISOString().split('T')[0];
-  const stored = JSON.parse(localStorage.getItem('mm_streak') || '{"count":0,"last":""}');
-  let streak   = stored.count;
-  if (stored.last) {
-    const diff = Math.floor((new Date(today) - new Date(stored.last)) / 86400000);
-    if (diff > 1) {
-      streak = 0;
-      localStorage.setItem('mm_streak', JSON.stringify({ count: 0, last: '' }));
-    }
-  }
+function renderStreak() {
+  const streak = S.streak || 0;
   document.getElementById('streak-count').textContent = streak;
   document.getElementById('hdr-streak').textContent   = streak;
   const msgs = ['Mulai muroja\'ah hari ini!','Luar biasa, terus pertahankan!','Kamu konsisten sekali!','Semangat terus setiap hari!'];
   document.getElementById('streak-msg').textContent = streak === 0 ? msgs[0] : streak < 3 ? msgs[1] : streak < 7 ? msgs[2] : msgs[3];
-}
-
-function incrementStreak() {
-  const today  = new Date().toISOString().split('T')[0];
-  const stored = JSON.parse(localStorage.getItem('mm_streak') || '{"count":0,"last":""}');
-  if (stored.last === today) return;
-  const diff  = stored.last ? Math.floor((new Date(today) - new Date(stored.last)) / 86400000) : 1;
-  const count = diff <= 1 ? stored.count + 1 : 1;
-  localStorage.setItem('mm_streak', JSON.stringify({ count, last: today }));
-  document.getElementById('streak-count').textContent = count;
-  document.getElementById('hdr-streak').textContent   = count;
-  if (count > 1) showRewardToast('🔥 Streak ' + count + ' hari! Luar biasa!');
 }
 
 function checkLevelUp(prevStars, newStars) {
