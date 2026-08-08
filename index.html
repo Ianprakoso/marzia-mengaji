@@ -172,6 +172,31 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .island.belum  { border-color: var(--gray-island); }
 .island.next   { animation: pulseIsland 1.8s infinite ease-in-out; }
 @keyframes pulseIsland { 0%,100%{box-shadow:0 8px 18px -6px rgba(78,205,230,0.35);} 50%{box-shadow:0 8px 26px -2px rgba(78,205,230,0.65);} }
+
+/* ── PERAYAAN HASIL (Lanjutkan & Muroja'ah lulus) ────────────── */
+@keyframes celebrateFlash { 0%{opacity:0;} 15%{opacity:1;} 100%{opacity:0;} }
+.celebrate-flash {
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  background: radial-gradient(circle at 50% 40%, rgba(255,200,87,0.55), rgba(255,200,87,0) 70%);
+  animation: celebrateFlash 0.7s ease-out forwards;
+}
+@keyframes emojiPop {
+  0%   { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+  55%  { transform: scale(1.25) rotate(6deg); opacity: 1; }
+  75%  { transform: scale(0.95) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.emoji-pop { display: inline-block; animation: emojiPop 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes confettiBurst {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.4) rotate(var(--rot)); opacity: 0; }
+}
+.confetti-piece {
+  position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; border-radius: 2px;
+  animation: confettiBurst 0.9s ease-out forwards; pointer-events: none;
+}
+@keyframes nextUpFade { from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+.next-up-hint { margin-top: 10px; font-size: 11px; font-weight: 700; color: var(--ink-soft); animation: nextUpFade 0.4s ease-out 0.6s both; }
 .island-badge { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px; color: white; flex-shrink: 0; position: relative; }
 .island.hafal  .island-badge { background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); }
 .island.sedang .island-badge { background: linear-gradient(135deg, var(--sky),  var(--sky-dark)); }
@@ -717,8 +742,10 @@ async function submitAuth() {
     const res = await api({ action: authMode, username, password });
     if (!res.success) { showAuthError(res.message); return; }
     if (authMode === 'register') {
-      showAuthError('Pendaftaran berhasil! Silakan masuk.', true);
-      setAuthMode('login'); return;
+      setAuthMode('login');
+      document.getElementById('auth-password').value = '';
+      showAuthError('Pendaftaran berhasil! Silakan masuk dengan akun barumu.', true);
+      return;
     }
     S.token    = res.token;
     S.username = res.username;
@@ -1355,6 +1382,8 @@ function renderMurojaahResult(data) {
   }
 
   if (data.hasil === 'lancar' || data.hasil === 'hampir') {
+    celebrateSuccess(document.getElementById('modalResultEmoji'));
+    playSuccessChime();
     const naik = data.streak > (S.streak || 0);
     S.streak = data.streak || 0;
     renderStreak();
@@ -1366,16 +1395,22 @@ function renderMurojaahResult(data) {
   }
 }
 
-async function refreshProgressAfterMurojaah() {
-  const freshData = await api({ action: 'getInitialData' });
-  if (freshData.success) {
-    S.progressMap = freshData.data.progressMap;
-    S.surahList   = freshData.data.surahList;
-    S.totalHafal  = freshData.data.totalHafal;
-    document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
-    document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
-    updateRewardUI();
-  }
+function refreshProgressAfterMurojaah() {
+  // Server men-downgrade semua ayat 'hafal' di surah ini jadi 'sedang'
+  // (lihat Main.gs case 'selesaiMurojaah'). Kita tiru persis logikanya
+  // di sini secara lokal — tidak perlu fetch ulang seluruh data.
+  S.ayatList
+    .filter(a => Number(a.surah_number) === Number(S.murojaahSurahNumber))
+    .forEach(a => {
+      const key = String(a.surah_number) + '_' + String(a.ayat_number);
+      if (S.progressMap[key] === 'hafal') S.progressMap[key] = 'sedang';
+    });
+
+  S.surahList  = computeSurahStatsClient();
+  S.totalHafal = Object.values(S.progressMap).filter(v => v === 'hafal').length;
+  document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
+  document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
+  updateRewardUI();
 }
 
 /* ── REWARD SYSTEM ─────────────────────────────────────────── */
@@ -1849,6 +1884,63 @@ let audioChunks = [];
 let recordInterval;
 let secondsRecorded = 0;
 
+/**
+ * Efek perayaan saat AI menyatakan lulus — flash layar singkat + confetti
+ * meletus dari titik tengah elemen tertentu. Dipanggil dari hasil
+ * 'Lanjutkan' dan muroja'ah lulus. Murni visual, tidak menyentuh state.
+ */
+function celebrateSuccess(anchorEl) {
+  const flash = document.createElement('div');
+  flash.className = 'celebrate-flash';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 700);
+
+  if (!anchorEl) return;
+  const rect = anchorEl.getBoundingClientRect();
+  const colors = ['#FFC857', '#FF6B5B', '#4ECDE6', '#5FD38D', '#9B8AFB', '#FF8FAE'];
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `position:fixed; left:${rect.left}px; top:${rect.top}px; width:${rect.width}px; height:${rect.height}px; z-index:9999; pointer-events:none;`;
+  for (let i = 0; i < 18; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const angle = (Math.PI * 2 * i) / 18 + Math.random() * 0.4;
+    const dist  = 60 + Math.random() * 50;
+    piece.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+    piece.style.setProperty('--dy', (Math.sin(angle) * dist) + 'px');
+    piece.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDelay = (Math.random() * 0.08) + 's';
+    wrap.appendChild(piece);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 1100);
+}
+
+/**
+ * Nada "ding" pendek untuk penanda lulus — disintesis langsung lewat Web
+ * Audio API (2 nada naik), bukan file audio eksternal, supaya tidak
+ * bergantung pada aset/lisensi tambahan dan tetap ringan.
+ */
+function playSuccessChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 783.99]; // C5 lalu G5
+    notes.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const start = ctx.currentTime + i * 0.12;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.18, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.36);
+    });
+  } catch (e) { /* browser tidak mendukung Web Audio — abaikan diam-diam */ }
+}
+
 async function startRecording() {
   if (!S.lanjutSurahNumber) {
     showToast('Pilih ayat dulu di tab Hafal Ayat ya!');
@@ -1931,25 +2023,37 @@ function processAudio() {
 
       if (res.success) {
         resultBox.innerHTML = `
-          <div style="font-size: 32px; margin-bottom: 8px;">${res.data.lulus ? '🌟' : '💪'}</div>
+          <div class="${res.data.lulus ? 'emoji-pop' : ''}" style="font-size: 32px; margin-bottom: 8px;">${res.data.lulus ? '🌟' : '💪'}</div>
           <div style="font-weight: 700; font-size: 14px; color: var(--ink);">${res.data.feedback}</div>
         `;
         if (res.data.lulus) {
+          celebrateSuccess(resultBox);
+          playSuccessChime();
           showToast('Hafalan luar biasa! Bintang ditambahkan!');
           const prevStars = S.totalHafal;
 
-          // Refresh progress untuk memunculkan update bintang/status
-          const freshData = await api({ action: 'getInitialData' });
-          if (freshData.success) {
-            S.progressMap = freshData.data.progressMap;
-            S.surahList   = freshData.data.surahList;
-            S.totalHafal  = freshData.data.totalHafal;
-            updateRewardUI();
+          // Update ringan di client (bukan fetch ulang getInitialData yang
+          // berat) — ayat ini sudah pasti "hafal" di server, jadi cukup
+          // cerminkan di S.progressMap lalu hitung ulang stats lokal.
+          // Ini juga yang bikin auto-lanjut ke ayat berikutnya terasa instan.
+          S.progressMap[String(S.lanjutSurahNumber) + '_' + String(S.lanjutAyatNumber)] = 'hafal';
+          S.surahList  = computeSurahStatsClient();
+          S.totalHafal = Object.values(S.progressMap).filter(v => v === 'hafal').length;
+          document.getElementById('hdr-prog-val').textContent = S.totalHafal + ' / ' + S.totalAyat + ' Ayat';
+          document.getElementById('hdr-pbar').style.width     = Math.round(S.totalHafal / S.totalAyat * 100) + '%';
+          updateRewardUI();
 
-            checkLevelUp(prevStars, S.totalHafal);
-            const surah = S.surahList.find(s => Number(s.surah_number) === Number(S.lanjutSurahNumber));
-            if (surah && surah.status === 'hafal') checkBadgeUnlock(S.lanjutSurahNumber);
-          }
+          checkLevelUp(prevStars, S.totalHafal);
+          const surah = S.surahList.find(s => Number(s.surah_number) === Number(S.lanjutSurahNumber));
+          if (surah && surah.status === 'hafal') checkBadgeUnlock(S.lanjutSurahNumber);
+
+          // Otomatis siapkan ayat berikutnya setelah animasi perayaan
+          // selesai — tidak perlu anak tap manual lagi tiap kali lulus.
+          resultBox.insertAdjacentHTML('beforeend', '<div class="next-up-hint">✨ Lanjut ke ayat berikutnya...</div>');
+          setTimeout(() => {
+            resultBox.style.display = 'none';
+            autoSetupLanjut();
+          }, 1800);
         }
       } else {
         resultBox.innerHTML = `<div style="color: var(--coral-dark); font-weight:700;">Gagal menilai: ${res.message}</div>`;
