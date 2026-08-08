@@ -263,9 +263,17 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
   background: rgba(255,255,255,0.35); border-radius: 12px;
   padding: 6px 10px; margin-top: 10px; position: relative; z-index: 1;
 }
-.reward-stars { font-family: 'Baloo 2', sans-serif; font-size: 13px; font-weight: 700; color: var(--ink); }
-.reward-level { font-size: 10px; font-weight: 700; color: var(--ink-soft); flex-grow: 1; }
 .reward-streak { font-size: 12px; font-weight: 700; color: var(--coral-dark); }
+
+/* Baris ringkas tappable pengganti card Pencapaian penuh */
+.achieve-summary {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  background: white; border: none; border-radius: 16px; padding: 12px 16px;
+  margin: 14px 0; cursor: pointer; box-shadow: 0 4px 14px -8px rgba(61,44,95,0.15);
+  font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 12.5px; color: var(--ink);
+}
+.achieve-chevron { color: var(--ink-soft); font-size: 11px; transition: transform 0.2s ease; }
+.achieve-summary.open .achieve-chevron { transform: rotate(180deg); }
 
 /* Panel reward di beranda */
 .reward-panel {
@@ -301,17 +309,6 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
 .badge-item.earned .badge-name { color: var(--sunshine-dark); }
 
 /* Streak card */
-.streak-card {
-  display: flex; align-items: center; gap: 12px;
-  background: linear-gradient(135deg, #FFF0EE, #FFE8E6);
-  border-radius: 18px; padding: 14px 16px; margin-top: 14px;
-  border: 1px solid rgba(255,107,91,0.2);
-}
-.streak-fire { font-size: 32px; }
-.streak-count { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; color: var(--coral-dark); line-height: 1; }
-.streak-label { font-size: 10px; font-weight: 700; color: var(--coral); text-transform: uppercase; letter-spacing: 0.05em; }
-.streak-msg   { font-size: 11px; color: var(--ink-soft); font-weight: 600; margin-top: 2px; }
-
 /* Toast reward khusus */
 .reward-toast {
   position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
@@ -418,9 +415,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
               <div class="progress-fill" id="hdr-pbar" style="width:0%"></div>
             </div>
             <div class="reward-bar">
-              <span class="reward-stars">⭐ <span id="hdr-stars">0</span></span>
-              <span class="reward-level" id="hdr-level">Santri Pemula</span>
-              <span class="reward-streak">🔥 <span id="hdr-streak">0</span> hari</span>
+              <span class="reward-streak">🔥 <span id="hdr-streak">0</span> hari beruntun</span>
             </div>
           </div>
         </div>
@@ -450,9 +445,12 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <button class="cta-btn" id="cta-btn">Mulai →</button>
         </div>
 
-        <!-- REWARD PANEL -->
-        <div class="reward-panel">
-          <div class="reward-panel-title">🎖️ Pencapaianmu</div>
+        <!-- RINGKASAN PENCAPAIAN — tappable, detail tersembunyi default -->
+        <button class="achieve-summary" id="achieveSummary" onclick="toggleAchieveDetail()">
+          <span id="achieve-summary-text">🌱 Santri Pemula · 🏅 0 Lencana</span>
+          <span class="achieve-chevron" id="achieveChevron">▾</span>
+        </button>
+        <div class="reward-panel" id="achieveDetail" style="display:none;">
           <div class="level-display">
             <div class="level-icon" id="reward-level-icon">🌱</div>
             <div style="flex-grow:1">
@@ -468,17 +466,6 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
           <div class="reward-panel-title" style="margin-top:4px;">🏅 Lencana Surah</div>
           <div class="badges-grid" id="badgesGrid">
             <div style="font-size:12px;color:var(--ink-soft);font-weight:600;">Hafal surah penuh untuk dapatkan lencana!</div>
-          </div>
-
-          <div class="streak-card">
-            <div class="streak-fire">🔥</div>
-            <div>
-              <div class="streak-count" id="streak-count">0</div>
-              <div class="streak-label">Hari Berturut</div>
-            </div>
-            <div style="margin-left:4px;">
-              <div class="streak-msg" id="streak-msg">Mulai muroja'ah hari ini!</div>
-            </div>
           </div>
         </div>
         <div class="section-title">🗺️ Pulau Petualangan Juz 30</div>
@@ -1450,14 +1437,15 @@ function getCurrentLevel(stars) {
 }
 
 function updateRewardUI() {
-  const stars  = S.totalHafal;
-  const level  = getCurrentLevel(stars);
+  const stars   = S.totalHafal;
+  const level   = getCurrentLevel(stars);
   const nextLvl = LEVELS[level.index + 1];
+  const badgeCount = S.surahList.filter(s => s.status === 'hafal').length;
 
-  document.getElementById('hdr-stars').textContent = S.totalHafal;
-  document.getElementById('hdr-level').textContent = level.name;
   document.getElementById('reward-level-icon').textContent = level.icon;
   document.getElementById('reward-level-name').textContent = level.name;
+  document.getElementById('achieve-summary-text').textContent =
+    level.icon + ' ' + level.name + ' · 🏅 ' + badgeCount + ' Lencana';
 
   if (nextLvl) {
     const pct = Math.round((stars - level.min) / (nextLvl.min - level.min) * 100);
@@ -1472,6 +1460,19 @@ function updateRewardUI() {
 
   renderBadges();
   renderStreak();
+}
+
+/**
+ * Buka/tutup detail Pencapaian (level lengkap + grid lencana). Defaultnya
+ * tersembunyi supaya Beranda fokus ke satu hal: CTA "apa yang harus
+ * dikerjakan sekarang" — detail pencapaian ada tapi tidak memaksa dilihat.
+ */
+function toggleAchieveDetail() {
+  const panel  = document.getElementById('achieveDetail');
+  const btn    = document.getElementById('achieveSummary');
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  btn.classList.toggle('open', !isOpen);
 }
 
 function renderBadges() {
@@ -1490,11 +1491,7 @@ function renderBadges() {
 }
 
 function renderStreak() {
-  const streak = S.streak || 0;
-  document.getElementById('streak-count').textContent = streak;
-  document.getElementById('hdr-streak').textContent   = streak;
-  const msgs = ['Mulai muroja\'ah hari ini!','Luar biasa, terus pertahankan!','Kamu konsisten sekali!','Semangat terus setiap hari!'];
-  document.getElementById('streak-msg').textContent = streak === 0 ? msgs[0] : streak < 3 ? msgs[1] : streak < 7 ? msgs[2] : msgs[3];
+  document.getElementById('hdr-streak').textContent = S.streak || 0;
 }
 
 function checkLevelUp(prevStars, newStars) {
