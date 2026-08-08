@@ -580,7 +580,11 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       <div class="tab-page" id="page-lanjut">
         <div class="section-title">🎙️ Lanjutkan Setoran Hafalan</div>
         <div class="lanjut-card">
-          <div class="ayat-tag" id="lanjut-surah-tag">Pilih surah di tab Hafal Ayat</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+            <div class="ayat-tag" id="lanjut-surah-tag">Pilih surah di tab Hafal Ayat</div>
+            <button id="lanjut-shuffle-btn" onclick="shuffleLanjutSurah()" style="flex-shrink:0; border:none; background:var(--gray-island); color:var(--ink); font-family:'Quicksand',sans-serif; font-weight:700; font-size:11px; padding:7px 12px; border-radius:99px; cursor:pointer; display:flex; align-items:center; gap:4px;">🔀 Ganti</button>
+          </div>
+          <div id="lanjut-shuffle-hint" style="display:none; font-size:10.5px; color:var(--ink-soft); font-weight:600; margin-top:6px; text-align:left;"></div>
           <div class="lanjut-soal-row">
             <div class="lanjut-arabic" dir="rtl" id="lanjut-soal-arab" style="margin:0">—</div>
             <button class="audio-mini-btn" id="lanjut-audio-btn" style="background:var(--lavender);" onclick="playAudioUrl(S.lanjutSoalAudio)">▶</button>
@@ -1115,6 +1119,9 @@ function _pickLanjutTarget() {
 }
 
 function setupLanjutSoal(forcedSurahNumber) {
+  const hintEl = document.getElementById('lanjut-shuffle-hint');
+  if (hintEl) hintEl.style.display = 'none';
+
   const audioBtn = document.getElementById('lanjut-audio-btn');
   let surah = forcedSurahNumber
     ? S.surahList.find(s => Number(s.surah_number) === Number(forcedSurahNumber))
@@ -1940,6 +1947,32 @@ function playSuccessChime() {
       osc.stop(start + 0.56);
     });
   } catch (e) { /* browser tidak mendukung Web Audio — abaikan diam-diam */ }
+}
+
+/**
+ * Tombol "🔀 Ganti" di tab Lanjutkan. Sengaja BUKAN pemilihan bebas ke
+ * 37 surah — hanya mengacak ke surah lain yang statusnya sudah 'sedang'
+ * (sudah dibuka & minimal 1 ayat lulus dinilai AI di tab Hafal). Ini
+ * menjaga rekomendasi utama tetap surah terdekat ke An-Nas sebagai
+ * prioritas default, sambil memberi jalan keluar kalau anak bosan —
+ * tanpa membuka "shuffle bebas" ke surah yang belum pernah disentuh.
+ */
+function shuffleLanjutSurah() {
+  const pool = S.surahList.filter(s =>
+    s.status === 'sedang' && Number(s.surah_number) !== Number(S.lanjutSurahNumber)
+  );
+
+  const hint = document.getElementById('lanjut-shuffle-hint');
+
+  if (!pool.length) {
+    hint.style.display = 'block';
+    hint.textContent = '🏝️ Belum ada surah lain yang sedang dihafal. Buka salah satu pulau di tab Hafal dan selesaikan ayat pertamanya untuk membukanya di sini.';
+    return;
+  }
+
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  setupLanjutSoal(pick.surah_number);
+  showToast('Pindah ke ' + pick.nama_latin + ' ✨');
 }
 
 async function startRecording() {
