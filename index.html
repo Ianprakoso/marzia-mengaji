@@ -519,6 +519,10 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             <span class="toggle-knob"></span>
           </button>
         </div>
+        <div id="hafal-detail-cta" style="display:none; background:var(--cream); border-radius:16px; padding:10px 14px; margin-bottom:14px; font-size:11px; font-weight:700; color:var(--ink-soft); align-items:center; justify-content:space-between; gap:8px;">
+          <span id="hafal-detail-cta-text"></span>
+          <button onclick="switchTab('lanjut')" style="flex-shrink:0; border:none; background:var(--lavender); color:white; font-family:'Quicksand',sans-serif; font-weight:700; font-size:10.5px; padding:6px 12px; border-radius:99px; cursor:pointer; white-space:nowrap;">🎙️ Coba di Lanjutkan →</button>
+        </div>
         <div id="ayatDetailContainer">
           <div class="loading-state"><div class="loading-spinner"></div>Memuat ayat...</div>
         </div>
@@ -584,7 +588,7 @@ svg.connector { position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             <div class="ayat-tag" id="lanjut-surah-tag">Pilih surah di tab Hafal Ayat</div>
             <button id="lanjut-shuffle-btn" onclick="shuffleLanjutSurah()" style="flex-shrink:0; border:none; background:var(--gray-island); color:var(--ink); font-family:'Quicksand',sans-serif; font-weight:700; font-size:11px; padding:7px 12px; border-radius:99px; cursor:pointer; display:flex; align-items:center; gap:4px;">🔀 Ganti</button>
           </div>
-          <div id="lanjut-shuffle-hint" style="display:none; font-size:10.5px; color:var(--ink-soft); font-weight:600; margin-top:6px; text-align:left;"></div>
+          <div id="lanjut-shuffle-hint" style="font-size:10.5px; color:var(--ink-soft); font-weight:600; margin-top:6px; text-align:left;">💡 Bosan? Dengarkan &amp; coba surah lain dulu di tab 🏝️ Hafal untuk membukanya di sini.</div>
           <div class="lanjut-soal-row">
             <div class="lanjut-arabic" dir="rtl" id="lanjut-soal-arab" style="margin:0">—</div>
             <button class="audio-mini-btn" id="lanjut-audio-btn" style="background:var(--lavender);" onclick="playAudioUrl(S.lanjutSoalAudio)">▶</button>
@@ -1009,6 +1013,17 @@ function openSurahDetail(surahNumber) {
   renderAyatDetail();
   switchTab('hafal-detail');
   setupLanjutSoal(surahNumber);
+
+  const cta     = document.getElementById('hafal-detail-cta');
+  const ctaText = document.getElementById('hafal-detail-cta-text');
+  if (surah.status === 'hafal') {
+    cta.style.display = 'none';
+  } else {
+    cta.style.display = 'flex';
+    ctaText.textContent = surah.status === 'belum'
+      ? '👂 Sudah dengar Ayat 1? Coba baca dari hafalan biar dinilai AI, sekaligus buka surah ini.'
+      : '🎙️ Lanjutkan hafalan surah ini kapan saja lewat tab Lanjutkan.';
+  }
 }
 
 function renderAyatDetail() {
@@ -1119,9 +1134,6 @@ function _pickLanjutTarget() {
 }
 
 function setupLanjutSoal(forcedSurahNumber) {
-  const hintEl = document.getElementById('lanjut-shuffle-hint');
-  if (hintEl) hintEl.style.display = 'none';
-
   const audioBtn = document.getElementById('lanjut-audio-btn');
   let surah = forcedSurahNumber
     ? S.surahList.find(s => Number(s.surah_number) === Number(forcedSurahNumber))
@@ -1962,11 +1974,8 @@ function shuffleLanjutSurah() {
     s.status === 'sedang' && Number(s.surah_number) !== Number(S.lanjutSurahNumber)
   );
 
-  const hint = document.getElementById('lanjut-shuffle-hint');
-
   if (!pool.length) {
-    hint.style.display = 'block';
-    hint.textContent = '🏝️ Belum ada surah lain yang sedang dihafal. Buka salah satu pulau di tab Hafal dan selesaikan ayat pertamanya untuk membukanya di sini.';
+    showToast('🏝️ Belum ada surah lain yang sedang dihafal. Buka pulau lain di tab Hafal dulu, ya!');
     return;
   }
 
